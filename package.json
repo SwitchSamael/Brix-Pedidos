@@ -1,11 +1,31 @@
 {
+  "main": "./src/app.js",
+  "name": "brix-pedidos",
+  "description": "A web site to automatically build an excel file with the order of the client. This is a real project for Brix (my father's enterprise)",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SamuelValmir/Brix---Pedidos.git"
+  },
+  "scripts": {
+    "start": "netlify-lambda serve src",
+    "build": "netlify-lambda build src"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
-    "nodemon": "^2.0.19"
+    "netlify-lambda": "^2.0.15",
+    "nodemon": "^2.0.19",
+    "serverless-http": "^3.0.1"
   },
-  "scripts": {
-    "start": "nodemon app.js"
-  }
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SamuelValmir/Brix---Pedidos/issues"
+  },
+  "homepage": "https://github.com/SamuelValmir/Brix---Pedidos#readme"
 }
+
+
