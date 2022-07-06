@@ -11,7 +11,7 @@ const port = process.env.PORT || 9999;
 router.use(cors({origin: `http://192.168.100.20:${port}`}));
 
 app.use("/.netlify/functions/api", router);
-router.get("/", express.static(path.join("public")));
+router.get("/", express.static(path.join("dist")));
 
 module.exports = app;
 module.exports.handler = serverless(app);
