@@ -8,6 +8,7 @@
     "url": "git+https://github.com/SamuelValmir/Brix---Pedidos.git"
   },
   "scripts": {
+    "nm": "nodemon src/api.js",
     "start": "netlify-lambda serve src",
     "build": "netlify-lambda build src"
   },
@@ -16,8 +17,11 @@
     "ejs": "^3.1.8",
     "express": "^4.18.1",
     "netlify-lambda": "^2.0.15",
-    "nodemon": "^2.0.19",
     "serverless-http": "^3.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19",
+    "xlsx": "^0.18.5"
   },
   "keywords": [],
   "author": "",
@@ -27,5 +31,3 @@
   },
   "homepage": "https://github.com/SamuelValmir/Brix---Pedidos#readme"
 }
-
-
