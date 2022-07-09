@@ -5,76 +5,63 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
 
     <title>Pedidos</title>
 </head>
 
 <body>
-    <!-- <form action="http://192.168.100.20:9999/file/post" method="post" enctype="multipart/form-data"> -->
+    <div class="container p-5">
+
+        <!-- <form action="http://192.168.100.20:9999/file/post" method="post" enctype="multipart/form-data"> -->
         <input type="file"
-        accept=".xlsx, .xlsm, .xlsb, .xlsb, .xlsx, .xltx, .xltm, .xls, .xlt, .xml, .xlam, .xla, .xlw, .xlr" id="file" name="formattedTable">
-        <button onclick="sendFile()">Enviar Planilha</button>
-        <!-- <button type="submit">Enviar Planilha</button> -->
-    <!-- </form> -->
+            accept=".xlsx, .xlsm, .xlsb, .xlsb, .xlsx, .xltx, .xltm, .xls, .xlt, .xml, .xlam, .xla, .xlw, .xlr"
+            id="file" name="formattedTable">
+        <!-- </form> -->
 
-    <div class="div">
-        <table>
-        </table>
-    </div>
+        <div class="" style="border: 1px solid black;">
+            <table>
+            </table>
+        </div>
 
-    <div style="display:none">
+        <div>
+            <button class="btn btn-primary" onclick=""> Selecionar elementos manualmente </button>
+            Você poderá escolher quais colunas e linhas deseja manter
+        </div>
 
-        Gerar manualmente
+        <div>
+            <button class="btn btn-primary" onclick=""> Selecionar elementos automaticamente </button>
+            A geração automática vai selecionar, como elementos, da coluna A à coluna F incluindo a coluna L (estado
+            CE),
+            a partir da linha 7 (Linhas vazias são consideradas como inexistente: Exemplo:(Em uma tabela com 4 linhas se
+            a
+            linha. (Se essas opções não estiverem de acordo com os dados da tabela, experimente selecionar os elementos
+            manualmente)
+        </div>
 
-        Gerar automaticamente
-        A geração automática vai selecionar, como elementos, da coluna A à coluna F incluindo a coluna L (estado CE),
-        a partir da linha 7 (Linhas vazias são consideradas como inexistente: Exemplo:(Em uma tabela com 4 linhas se a
-        linha
+        Exemplo:
         2 estiver vazia, a primeira linha será a 1, a segunda a 3 e a terceira a 4 ))
         Deseja manter essas configurações?
         Manter Mudar configurações de geração
 
-        Gerando
+        <button class="btn btn-primary" onclick="sendFile()">Salvar Planilha</button>
+
+
+        <div style="display:none">
+            (dialog box)
+            Depois de salvo os dados não selecionados serão permanentemente excluídos. Deseja prosseguir?
+            voltar confirmar
+
+
+            Gerando
+        </div>
+
     </div>
 
-
     <script>
-        const inputFile = document.querySelector("#file");
-        const file = inputFile.files[0];
-        const formData = new FormData();
-        formData.append("tabela", file);
-
-        const div = document.querySelector(".div");
-        const table = document.querySelector("table");
-        const tableBody = document.createElement("tbody");
-
-        // table.appendChild(tableBody);
-        // inputFile.addEventListener("change", () => {
-        // console.log(inputFile.files[0])
-        // readXlsxFile(inputFile.files[0]).
-        //     then((rows) => {
-
-        //         rows.forEach((row, index) => {
-        //             if (index >= 6) {
-        //                 const rowElement = document.createElement("tr");
-
-        //                 row.forEach((cell, index) => {
-        //                     if (index < 6 || index === 11) {
-
-        //                         const cellElement = document.createElement("td");
-        //                         cellElement.innerText = cell;
-        //                         rowElement.appendChild(cellElement);
-        //                     }
-        //                 })
-
-        //                 tableBody.appendChild(rowElement);
-        //             }
-        //         });
-
-        //     })
-        // });
-
 
         // function getFile() {
 
@@ -87,21 +74,76 @@
 
 
         function sendFile() {
-            const inputFile = document.querySelector("#file");
-            const file = inputFile.files[0];
-            console.log(file)
-            const formData = new FormData();
-            formData.append("inputtedTable", file);
+            // const inputFile = document.querySelector("#file");
+            // const file = inputFile.files[0];
+            // console.log(file)
+            // const formData = new FormData();
+            // formData.append("inputtedTable", file);
 
-            fetch("http://192.168.100.20:9999/file/post?a=123", {
-                method: "POST",
-                // headers: {"Content-Type": "multipart/form-data", "boundary": "----WebKitFormBoundaryKkKASB0dr15NjVIx"},
-                body: formData
-            })
+            // // fetch("http://192.168.100.20:9999/file/post?a=123", {
+            // fetch("http://localhost:9999/file/post?a=123", {
+            //     method: "POST",
+            //     // headers: {"Content-Type": "multipart/form-data", "boundary": "----WebKitFormBoundaryKkKASB0dr15NjVIx"},
+            //     body: formData
+            // })
             // .then(request => request.body)
             // .then(json => {
             //     console.log(json);
             // })
+
+
+        };
+
+
+        const inputFile = document.querySelector("#file");
+        const file = inputFile.files[0];
+        const formData = new FormData();
+        formData.append("tabela", file);
+
+        const div = document.querySelector(".div");
+        const table = document.querySelector("table");
+        const tableBody = document.createElement("tbody");
+
+        table.appendChild(tableBody);
+        inputFile.addEventListener("change", showTableOnPage);
+
+        function showTableOnPage() {
+            readXlsxFile(inputFile.files[0])
+                .then((rows) => {
+                    rows.forEach((row, rowIndex) => {
+                        const rowElementHead = document.createElement("tr");
+                        // if (index >= 6) {
+                        
+                        const rowElement = document.createElement("tr");
+                        /* I must:
+                        add the lines index to table (into a new column)
+                        colors
+                        select column and start point line
+                        */
+                        row.forEach((cell, cellIndex) => {
+                            if (rowIndex === 0) {
+                                const cellElementHead = document.createElement("td");
+                                let charCode = (97 + cellIndex).toString();
+                                cellElementHead.innerText = String.fromCharCode(charCode).toUpperCase();
+                                rowElementHead.appendChild(cellElementHead);
+                            };
+                            // if (index < 6 || index === 11) {
+                                
+                            const cellElement = document.createElement("td");
+                            cellElement.innerText = cell;
+                            rowElement.appendChild(cellElement);
+                            // }
+                        });
+                        
+                        if (rowIndex === 0) {
+                            tableBody.appendChild(rowElementHead);
+                        };
+
+                        tableBody.appendChild(rowElement);
+                        // }
+                    });
+
+                });
         };
     </script>
 </body>
