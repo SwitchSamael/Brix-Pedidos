@@ -107,43 +107,72 @@
         table.appendChild(tableBody);
         inputFile.addEventListener("change", showTableOnPage);
 
+        console.log("A".charCodeAt())
+
+
         function showTableOnPage() {
             readXlsxFile(inputFile.files[0])
                 .then((rows) => {
                     rows.forEach((row, rowIndex) => {
                         const rowElementHead = document.createElement("tr");
                         // if (index >= 6) {
-                        
                         const rowElement = document.createElement("tr");
                         /* I must:
-                        add the lines index to table (into a new column)
                         colors
                         select column and start point line
                         */
+                        let charCode = 65;
+                        let firstRepetitionOfColumnName = true;
+
+                        let columnNameArray = [String.fromCharCode(charCode)];
+
                         row.forEach((cell, cellIndex) => {
-                            if (rowIndex === 0) {
-                                const cellElementHead = document.createElement("td");
-                                let charCode = (97 + cellIndex).toString();
-                                cellElementHead.innerText = String.fromCharCode(charCode).toUpperCase();
-                                rowElementHead.appendChild(cellElementHead);
+                            columnNameArray.splice(-1);
+                            columnNameArray.push(String.fromCharCode(charCode));
+                            let columnName = columnNameArray.join("");
+
+                            insertRow(rowElement, rowIndex, rowElementHead, cell, charCode, firstRepetitionOfColumnName, columnNameArray);
+                            charCode++;
+
+                            // When goes through all letters, goes back increasing the first letter
+                            if (charCode % 91 === 0) {
+                                charCode = 65;
+                                columnNameArray = ["A", String.fromCharCode(charCode)];
+
+                                if (firstRepetitionOfColumnName) firstRepetitionOfColumnName = false;
+                                else {
+                                    const charCode = columnNameArray[0].charCodeAt(0);
+                                    columnNameArray[0] = String.fromCharCode(charCode + 1);
+                                };
                             };
-                            // if (index < 6 || index === 11) {
-                                
-                            const cellElement = document.createElement("td");
-                            cellElement.innerText = cell;
-                            rowElement.appendChild(cellElement);
-                            // }
+
                         });
-                        
+
                         if (rowIndex === 0) {
                             tableBody.appendChild(rowElementHead);
                         };
 
                         tableBody.appendChild(rowElement);
-                        // }
                     });
 
                 });
+        };
+
+        function insertRow(rowElement, rowIndex, rowElementHead, cell, charCode, firstRepetitionOfColumnName, columnName) {
+            if (rowIndex === 0) {
+                const cellElementHead = document.createElement("td");
+                cellElementHead.innerText = columnName
+                rowElementHead.appendChild(cellElementHead);
+            };
+            // if (index < 6 || index === 11) {
+
+            insertCell(rowElement, cell);
+        };
+
+        function insertCell(rowElement, cell) {
+            const cellElement = document.createElement("td");
+            cellElement.innerText = cell;
+            rowElement.appendChild(cellElement);
         };
     </script>
 </body>
