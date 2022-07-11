@@ -117,11 +117,11 @@
 
         inputFile.addEventListener("change", () => showTableOnPage());
 
-         async function showTableOnPage() {
+        async function showTableOnPage() {
             const loader = document.querySelector("#loader-container");
             loader.classList.remove("visually-hidden");
 
-             await readXlsxFile(inputFile.files[0])
+            await readXlsxFile(inputFile.files[0])
                 .then(rows => {
                     rows.forEach((row, rowIndex) => {
                         const rowElementHead = document.createElement("tr");
@@ -131,40 +131,45 @@
                         colors
                         select column and start point line
                         */
+
+
                         let charCode = 65;
                         let firstRepetitionOfColumnName = true;
 
                         let columnNameArray = [String.fromCharCode(charCode)];
 
-                        row.forEach((cell, cellIndex) => {
-
-
-                            columnNameArray.splice(-1);
-                            columnNameArray.push(String.fromCharCode(charCode));
-                            let columnName = columnNameArray.join("");
-
-                            insertRow(rowElement, rowIndex, rowElementHead, cell, charCode, firstRepetitionOfColumnName, columnNameArray);
-                            charCode++;
-
-                            // When goes through all letters, goes back increasing the first letter
-                            if (charCode % 91 === 0) {
-                                charCode = 65;
-                                columnNameArray = ["A", String.fromCharCode(charCode)];
-
-                                if (firstRepetitionOfColumnName) firstRepetitionOfColumnName = false;
-                                else {
-                                    const charCode = columnNameArray[0].charCodeAt(0);
-                                    columnNameArray[0] = String.fromCharCode(charCode + 1);
-                                };
-                            };
-
-                        });
-
+                        // Insert the table head
                         if (rowIndex === 0) {
-                            tableBody.appendChild(rowElementHead);
+                            insertCell(rowElementHead, "", "td");
+
+                            row.forEach((cell, cellIndex) => {
+                                columnNameArray.splice(-1);
+                                columnNameArray.push(String.fromCharCode(charCode));
+                                let columnName = columnNameArray.join("");
+
+                                insertCell(rowElementHead, columnName, "td");
+
+                                charCode++;
+
+                                // When goes through all letters, goes back increasing the first letter
+                                if (charCode % 91 === 0) {
+                                    charCode = 65;
+                                    columnNameArray = ["A", String.fromCharCode(charCode)];
+
+                                    if (firstRepetitionOfColumnName) firstRepetitionOfColumnName = false;
+                                    else {
+                                        const charCode = columnNameArray[0].charCodeAt(0);
+                                        columnNameArray[0] = String.fromCharCode(charCode + 1);
+                                    };
+                                };
+                            })
                         };
 
-                        tableBody.appendChild(rowElement);
+                        // Insert the table body and index of the row
+                        row.forEach((cell, cellIndex) => {
+                            insertCell(rowElement, cell, "td", rowIndex, cellIndex);
+                        });
+
                     });
 
                 });
@@ -173,22 +178,16 @@
 
         };
 
-
-        function insertRow(rowElement, rowIndex, rowElementHead, cell, charCode, firstRepetitionOfColumnName, columnName) {
-            if (rowIndex === 0) {
-                const cellElementHead = document.createElement("td");
-                cellElementHead.innerText = columnName
-                rowElementHead.appendChild(cellElementHead);
+        function insertCell(rowElement, cellName, type, rowIndex = null, cellIndex = null) {
+            // Insert the index of the row (a new cell)
+            if (cellIndex === 0) {
+                insertCell(rowElement, rowIndex + 1, "td");
             };
-            // if (index < 6 || index === 11) {
 
-            insertCell(rowElement, cell);
-        };
-
-        function insertCell(rowElement, cell) {
-            const cellElement = document.createElement("td");
-            cellElement.innerText = cell;
+            const cellElement = document.createElement(type);
+            cellElement.innerText = cellName;
             rowElement.appendChild(cellElement);
+            tableBody.appendChild(rowElement);
         };
     </script>
 </body>
