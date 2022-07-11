@@ -5,9 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
     <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
 
     <title>Pedidos</title>
@@ -60,6 +63,13 @@
         </div>
 
     </div>
+    <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden"
+        id="loader-container">
+        <div class="spinner-border text-primary fs-1" id="loader"></div>
+        <div class="text-light pt-5 fs-2">Carregando Documento</div>
+    </div>
+
+
 
     <script>
 
@@ -103,16 +113,16 @@
         const div = document.querySelector(".div");
         const table = document.querySelector("table");
         const tableBody = document.createElement("tbody");
-
         table.appendChild(tableBody);
-        inputFile.addEventListener("change", showTableOnPage);
 
-        console.log("A".charCodeAt())
+        inputFile.addEventListener("change", () => showTableOnPage());
 
+         async function showTableOnPage() {
+            const loader = document.querySelector("#loader-container");
+            loader.classList.remove("visually-hidden");
 
-        function showTableOnPage() {
-            readXlsxFile(inputFile.files[0])
-                .then((rows) => {
+             await readXlsxFile(inputFile.files[0])
+                .then(rows => {
                     rows.forEach((row, rowIndex) => {
                         const rowElementHead = document.createElement("tr");
                         // if (index >= 6) {
@@ -127,6 +137,8 @@
                         let columnNameArray = [String.fromCharCode(charCode)];
 
                         row.forEach((cell, cellIndex) => {
+
+
                             columnNameArray.splice(-1);
                             columnNameArray.push(String.fromCharCode(charCode));
                             let columnName = columnNameArray.join("");
@@ -156,7 +168,11 @@
                     });
 
                 });
+
+            loader.classList.add("visually-hidden");
+
         };
+
 
         function insertRow(rowElement, rowIndex, rowElementHead, cell, charCode, firstRepetitionOfColumnName, columnName) {
             if (rowIndex === 0) {
