@@ -4,8 +4,6 @@ const fileController = require("./controllers/fileController");
 const path = require("path");
 const xlsx = require("xlsx");
 
-// //XX const filesPath = path.join("dist", "files"); 
-// const filesPath = path.join(__dirname, "..", "dist", "files");
 
 // let workbook = xlsx.readFile(path.join(filesPath, "Table.xlsx"), { cellDates: true });
 // let worksheet = workbook.Sheets[workbook.SheetNames[0]];
