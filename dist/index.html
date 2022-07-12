@@ -1,3 +1,10 @@
+<!-- I must:
+    bootstrap button effects
+    colors
+    select column and start point line
+    background animations (balls moving)
+-->
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -5,56 +12,55 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
         crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
 
+    <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+        integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="./css/style.css">
     <title>Pedidos</title>
 </head>
 
 <body>
-    <div class="container p-5">
-
-        <!-- <form action="http://192.168.100.20:9999/file/post" method="post" enctype="multipart/form-data"> -->
-        <input type="file"
-            accept=".xlsx, .xlsm, .xlsb, .xlsb, .xlsx, .xltx, .xltm, .xls, .xlt, .xml, .xlam, .xla, .xlw, .xlr"
-            id="file" name="formattedTable">
-        <!-- </form> -->
-
-        <div class="" style="border: 1px solid black;">
-            <table>
-            </table>
+    <div class="container-fluid p-5">
+        <div class="d-flex justify-content-center">
+            <input class="form-control mb-4" type="file"
+                accept=".xlsx, .xlsm, .xlsb, .xlsb, .xlsx, .xltx, .xltm, .xls, .xlt, .xml, .xlam, .xla, .xlw, .xlr"
+                id="file" name="formattedTable">
         </div>
 
-        <div>
-            <button class="btn btn-primary" onclick=""> Selecionar elementos manualmente </button>
-            Você poderá escolher quais colunas e linhas deseja manter
+        <div class="visually-hidden text-center" id="settingsButtons">
+            <div class="mb-2">
+                <button class="btn btn-primary" onclick="" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    title="Você poderá escolher quais colunas e linhas deseja manter"> Selecionar elementos manualmente
+                </button>
+
+                <button class="btn btn-primary" onclick="" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    title="Serão selecionados como elementos da coluna A a coluna F incluindo a coluna L (estado
+            CE), a partir da linha 7
+            (Se essas opções não estiverem de acordo com os dados da tabela, opte por selecionar os elementos manualmente)">
+                    Selecionar elementos automaticamente </button>
+            </div>
+
+            <div class="text-center mb-5">
+                <button class="btn btn-primary" onclick="saveFile()">Salvar Planilha</button>
+            </div>
         </div>
-
-        <div>
-            <button class="btn btn-primary" onclick=""> Selecionar elementos automaticamente </button>
-            A geração automática vai selecionar, como elementos, da coluna A à coluna F incluindo a coluna L (estado
-            CE),
-            a partir da linha 7 (Linhas vazias são consideradas como inexistente: Exemplo:(Em uma tabela com 4 linhas se
-            a
-            linha. (Se essas opções não estiverem de acordo com os dados da tabela, experimente selecionar os elementos
-            manualmente)
-        </div>
-
-        Exemplo:
-        2 estiver vazia, a primeira linha será a 1, a segunda a 3 e a terceira a 4 ))
-        Deseja manter essas configurações?
-        Manter Mudar configurações de geração
-
-        <button class="btn btn-primary" onclick="sendFile()">Salvar Planilha</button>
 
 
         <div style="display:none">
             (dialog box)
+            Confirme que deseja gerar uma nova planilha.
+            Confirmar Cancelar
+
+            Deseja manter essas configurações?
+            Manter Mudar configurações de geração
+
             Depois de salvo os dados não selecionados serão permanentemente excluídos. Deseja prosseguir?
             voltar confirmar
 
@@ -62,7 +68,14 @@
             Gerando
         </div>
 
+        <!-- <div class="w-75 overflow-auto"> -->
+        <div class="table-responsive">
+            <table class="table table-striped-columns table-hover table-bordered">
+            </table>
+        </div>
+
     </div>
+
     <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden"
         id="loader-container">
         <div class="spinner-border text-primary fs-1" id="loader"></div>
@@ -72,6 +85,17 @@
 
 
     <script>
+        // Allow use tooltip
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+        //Remove focus after 2 seconds
+        let allButtons = document.getElementsByClassName("btn");
+        [...allButtons].forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                console.log(e.target)
+            })
+        })
 
         // function getFile() {
 
@@ -82,6 +106,10 @@
         //         })
         // }
 
+
+        function saveFile() {
+            alert()
+        };
 
         function sendFile() {
             // const inputFile = document.querySelector("#file");
@@ -104,7 +132,6 @@
 
         };
 
-
         const inputFile = document.querySelector("#file");
         const file = inputFile.files[0];
         const formData = new FormData();
@@ -112,14 +139,44 @@
 
         const div = document.querySelector(".div");
         const table = document.querySelector("table");
+        const tableHead = document.createElement("thead");
         const tableBody = document.createElement("tbody");
+        table.appendChild(tableHead);
         table.appendChild(tableBody);
 
-        inputFile.addEventListener("change", () => showTableOnPage());
+        inputFile.addEventListener("change", () => tryShowTableOnPage());
+
+        function tryShowTableOnPage() {
+            let fileElement = document.getElementById("file");
+            const extensionPosition = fileElement.value.lastIndexOf(".");
+            const fileExtension = fileElement.value.substring(extensionPosition);
+            const acceptExtensions = fileElement.getAttribute("accept").split(",");
+
+            if (acceptExtensions.includes(fileExtension)) {
+                showTableOnPage();
+            } else if (fileExtension.strip() !== "") {
+                fileElement.value = "";
+                alert(`O arquivo de extensão ${fileExtension} não é válido.\nPor favor, selecione um arquivo com um dos seguintes formatos:\n\n${acceptExtensions}`)
+            }
+        };
+
+        // let length = $("table tbody").html().trim().length 
+        // console.log(length)
+
+        // if(length === 0){
+        //     $("table").hide()
+        // } else{
+        //     $("table").show()
+        // }
+
 
         async function showTableOnPage() {
+            tableHead.innerHTML = "";
+            tableBody.innerHTML = "";
             const loader = document.querySelector("#loader-container");
             loader.classList.remove("visually-hidden");
+
+            disableScroll();
 
             await readXlsxFile(inputFile.files[0])
                 .then(rows => {
@@ -127,11 +184,6 @@
                         const rowElementHead = document.createElement("tr");
                         // if (index >= 6) {
                         const rowElement = document.createElement("tr");
-                        /* I must:
-                        colors
-                        select column and start point line
-                        */
-
 
                         let charCode = 65;
                         let firstRepetitionOfColumnName = true;
@@ -140,14 +192,14 @@
 
                         // Insert the table head
                         if (rowIndex === 0) {
-                            insertCell(rowElementHead, "", "td");
+                            insertCell(rowElementHead, "#", "th", null, null, "head");
 
                             row.forEach((cell, cellIndex) => {
                                 columnNameArray.splice(-1);
                                 columnNameArray.push(String.fromCharCode(charCode));
                                 let columnName = columnNameArray.join("");
 
-                                insertCell(rowElementHead, columnName, "td");
+                                insertCell(rowElementHead, columnName, "th", null, null, "head");
 
                                 charCode++;
 
@@ -175,19 +227,53 @@
                 });
 
             loader.classList.add("visually-hidden");
-
+            document.querySelector("#settingsButtons").classList.remove("visually-hidden");
+            enableScroll();
         };
 
-        function insertCell(rowElement, cellName, type, rowIndex = null, cellIndex = null) {
+        function insertCell(rowElement, cellName, type, rowIndex = null, cellIndex = null, tableSection = "body") {
             // Insert the index of the row (a new cell)
             if (cellIndex === 0) {
-                insertCell(rowElement, rowIndex + 1, "td");
+                insertCell(rowElement, rowIndex + 1, "th");
             };
 
             const cellElement = document.createElement(type);
+            // if(cellElement.offsetLeft > window.innerWidth){
+            //     cellElement.innerText = "asd";
+            // }else{
+                
+            // }
             cellElement.innerText = cellName;
             rowElement.appendChild(cellElement);
-            tableBody.appendChild(rowElement);
+            if (tableSection === "body") {
+                tableBody.appendChild(rowElement);
+            } else if (tableSection === "head") {
+                tableHead.appendChild(rowElement);
+            }
+            
+
+                                /*
+                                
+            let viewportHeight = $(window).height();
+
+            console.log(viewportHeight)
+
+            let tds = $("td");
+            [...tds].forEach(td => {
+                // console.log(td)
+                if (td.offsetLeft > viewportWidth){
+                    td.style.display = "none";
+                }
+            })
+                                */
+        };
+
+        function disableScroll() {
+            document.querySelector("body").style.overflow = "hidden";
+        };
+
+        function enableScroll() {
+            document.querySelector("body").style.overflow = "initial";
         };
     </script>
 </body>
