@@ -12,13 +12,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
         crossorigin="anonymous"></script>
 
+    <!-- Script to read excel files (CDN)-->
     <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
+
+    <!-- Jquery CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
         integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 
@@ -34,22 +40,15 @@
                 id="file" name="formattedTable">
         </div>
 
-        <div class="visually-hidden text-center" id="settingsButtons">
-            <div class="mb-2">
-                <button class="btn btn-primary" onclick="" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                    title="Você poderá escolher quais colunas e linhas deseja manter"> Selecionar elementos manualmente
-                </button>
-
-                <button class="btn btn-primary" onclick="" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                    title="Serão selecionados como elementos da coluna A a coluna F incluindo a coluna L (estado
+        <div class="d-flex flex-column align-items-center visually-hidden" id="settingsButtons">
+            <p>Selecione as colunas e linhas que deseja excluir</p>
+            <button class="btn btn-primary mb-2" onclick="" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                title="Serão selecionados como elementos da coluna A a coluna F incluindo a coluna L (estado
             CE), a partir da linha 7
             (Se essas opções não estiverem de acordo com os dados da tabela, opte por selecionar os elementos manualmente)">
-                    Selecionar elementos automaticamente </button>
-            </div>
+                Selecionar automaticamente </button>
 
-            <div class="text-center mb-5">
-                <button class="btn btn-primary" onclick="saveFile()">Salvar Planilha</button>
-            </div>
+            <button class="btn btn-primary mb-5" onclick="saveFile()">Salvar Planilha</button>
         </div>
 
 
@@ -90,12 +89,12 @@
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
         //Remove focus after 2 seconds
-        let allButtons = document.getElementsByClassName("btn");
-        [...allButtons].forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                console.log(e.target)
-            })
-        })
+        // let allButtons = document.getElementsByClassName("btn");
+        // [...allButtons].forEach(btn => {
+        //     btn.addEventListener("click", (e) => {
+        //         console.log(e.target)
+        //     })
+        // })
 
         // function getFile() {
 
@@ -108,10 +107,30 @@
 
 
         function saveFile() {
-            alert()
+            const json = tableToJson();
+            sendFileToServer(json);
         };
 
-        function sendFile() {
+        function tableToJson() {
+            const jsonObject = {};
+            let tableBody = document.querySelector("tbody").children;
+
+            [...tableBody].forEach((row, rowIndex) => {
+                jsonObject[rowIndex] = [];
+
+                [...row.children].forEach(cell => {
+                    
+                    if (cell.tagName.toLowerCase() === "td") {
+                        jsonObject[rowIndex].push(cell.innerText);
+                    };
+                });
+            });
+
+            return jsonObject;
+        };
+
+
+        function sendFileToServer() {
             // const inputFile = document.querySelector("#file");
             // const file = inputFile.files[0];
             // console.log(file)
@@ -173,9 +192,7 @@
         async function showTableOnPage() {
             tableHead.innerHTML = "";
             tableBody.innerHTML = "";
-            const loader = document.querySelector("#loader-container");
-            loader.classList.remove("visually-hidden");
-
+            showLoaderScreen();
             disableScroll();
 
             await readXlsxFile(inputFile.files[0])
@@ -226,8 +243,8 @@
 
                 });
 
-            loader.classList.add("visually-hidden");
             document.querySelector("#settingsButtons").classList.remove("visually-hidden");
+            hideLoaderScreen();
             enableScroll();
         };
 
@@ -240,9 +257,10 @@
             const cellElement = document.createElement(type);
             // if(cellElement.offsetLeft > window.innerWidth){
             //     cellElement.innerText = "asd";
-            // }else{
-                
+            // }else{     
             // }
+
+
             cellElement.innerText = cellName;
             rowElement.appendChild(cellElement);
             if (tableSection === "body") {
@@ -250,22 +268,22 @@
             } else if (tableSection === "head") {
                 tableHead.appendChild(rowElement);
             }
+
+
+            /*
             
+let viewportHeight = $(window).height();
 
-                                /*
-                                
-            let viewportHeight = $(window).height();
+console.log(viewportHeight)
 
-            console.log(viewportHeight)
-
-            let tds = $("td");
-            [...tds].forEach(td => {
-                // console.log(td)
-                if (td.offsetLeft > viewportWidth){
-                    td.style.display = "none";
-                }
-            })
-                                */
+let tds = $("td");
+[...tds].forEach(td => {
+// console.log(td)
+if (td.offsetLeft > viewportWidth){
+td.style.display = "none";
+}
+})
+            */
         };
 
         function disableScroll() {
@@ -274,6 +292,14 @@
 
         function enableScroll() {
             document.querySelector("body").style.overflow = "initial";
+        };
+
+        function showLoaderScreen() {
+            document.querySelector("#loader-container").classList.remove("visually-hidden");
+        };
+
+        function hideLoaderScreen() {
+            document.querySelector("#loader-container").classList.add("visually-hidden");
         };
     </script>
 </body>
