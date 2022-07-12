@@ -88,6 +88,18 @@
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
+        const inputFile = document.querySelector("#file");
+        const file = inputFile.files[0];
+        const div = document.querySelector(".div");
+        const table = document.querySelector("table");
+        const tableHead = document.createElement("thead");
+        const tableBody = document.createElement("tbody");
+        table.appendChild(tableHead);
+        table.appendChild(tableBody);
+
+        inputFile.addEventListener("change", () => tryShowTableOnPage());
+
+
         //Remove focus after 2 seconds
         // let allButtons = document.getElementsByClassName("btn");
         // [...allButtons].forEach(btn => {
@@ -95,15 +107,6 @@
         //         console.log(e.target)
         //     })
         // })
-
-        // function getFile() {
-
-        //     fetch("http://192.168.100.20:9999/file/get", { method: "GET" })
-        //         // .then(response=>response.body.getReader())
-        //         .then(data => {
-        //             console.log(data)
-        //         })
-        // }
 
 
         function saveFile() {
@@ -119,7 +122,6 @@
                 jsonObject[rowIndex] = [];
 
                 [...row.children].forEach(cell => {
-                    
                     if (cell.tagName.toLowerCase() === "td") {
                         jsonObject[rowIndex].push(cell.innerText);
                     };
@@ -130,40 +132,25 @@
         };
 
 
-        function sendFileToServer() {
-            // const inputFile = document.querySelector("#file");
-            // const file = inputFile.files[0];
-            // console.log(file)
-            // const formData = new FormData();
-            // formData.append("inputtedTable", file);
-
-            // // fetch("http://192.168.100.20:9999/file/post?a=123", {
-            // fetch("http://localhost:9999/file/post?a=123", {
-            //     method: "POST",
-            //     // headers: {"Content-Type": "multipart/form-data", "boundary": "----WebKitFormBoundaryKkKASB0dr15NjVIx"},
-            //     body: formData
-            // })
-            // .then(request => request.body)
-            // .then(json => {
-            //     console.log(json);
-            // })
-
-
+        function sendFileToServer(json) {
+            fetch("http://192.168.100.20:9999/file/post", {
+                method: "post",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(json)
+            });
         };
 
-        const inputFile = document.querySelector("#file");
-        const file = inputFile.files[0];
-        const formData = new FormData();
-        formData.append("tabela", file);
 
-        const div = document.querySelector(".div");
-        const table = document.querySelector("table");
-        const tableHead = document.createElement("thead");
-        const tableBody = document.createElement("tbody");
-        table.appendChild(tableHead);
-        table.appendChild(tableBody);
-
-        inputFile.addEventListener("change", () => tryShowTableOnPage());
+        function getFileFromServer() {
+            fetch("http://192.168.100.20:9999/file/get", {method: "get" })
+                .then(response=>response.json())
+                .then(data => {
+                    console.log(data)
+                });
+        };
 
         function tryShowTableOnPage() {
             let fileElement = document.getElementById("file");

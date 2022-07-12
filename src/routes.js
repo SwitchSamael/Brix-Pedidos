@@ -2,11 +2,10 @@ const express = require("express");
 const router = express.Router();
 const fileController = require("./controllers/fileController");
 const path = require("path");
-const multer = require("multer");
 const xlsx = require("xlsx");
 
-//XX const filesPath = path.join("dist", "files"); 
-const filesPath = path.join(__dirname, "..", "dist", "files");
+// //XX const filesPath = path.join("dist", "files"); 
+// const filesPath = path.join(__dirname, "..", "dist", "files");
 
 // let workbook = xlsx.readFile(path.join(filesPath, "Table.xlsx"), { cellDates: true });
 // let worksheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -44,6 +43,6 @@ const filesPath = path.join(__dirname, "..", "dist", "files");
 
 router.get("/file/get", fileController.get);
 
-router.post("/file/post", fileController.postMiddleware, fileController.post);
+router.post("/file/post", fileController.post);
 
-// module.exports = router;
+module.exports = router;
