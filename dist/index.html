@@ -33,6 +33,7 @@
 </head>
 
 <body>
+
     <div class="container-fluid p-5">
         <div class="d-flex justify-content-center">
             <input class="form-control mb-4" type="file"
@@ -92,8 +93,12 @@
         const file = inputFile.files[0];
         const div = document.querySelector(".div");
         const table = document.querySelector("table");
+        
         const tableHead = document.createElement("thead");
+        // const tableCheckbox = document.createElement("thead");
         const tableBody = document.createElement("tbody");
+        
+        // table.appendChild(tableCheckbox);
         table.appendChild(tableHead);
         table.appendChild(tableBody);
 
@@ -111,7 +116,8 @@
 
         function saveFile() {
             const json = tableToJson();
-            sendFileToServer(json);
+            console.log(json)
+            // sendFileToServer(json);
         };
 
         function tableToJson() {
@@ -145,8 +151,8 @@
 
 
         function getFileFromServer() {
-            fetch("http://192.168.100.20:9999/file/get", {method: "get" })
-                .then(response=>response.json())
+            fetch("http://192.168.100.20:9999/file/get", { method: "get" })
+                .then(response => response.json())
                 .then(data => {
                     console.log(data)
                 });
@@ -186,8 +192,7 @@
                 .then(rows => {
                     rows.forEach((row, rowIndex) => {
                         const rowElementHead = document.createElement("tr");
-                        // if (index >= 6) {
-                        const rowElement = document.createElement("tr");
+                        const rowElementBody = document.createElement("tr");
 
                         let charCode = 65;
                         let firstRepetitionOfColumnName = true;
@@ -196,14 +201,17 @@
 
                         // Insert the table head
                         if (rowIndex === 0) {
-                            insertCell(rowElementHead, "#", "th", null, null, "head");
+                            insertCell(rowElementHead, "()", "th", null, null, "head");
+                            insertCell(rowElementBody, "#", "th", null, null, "body");
 
                             row.forEach((cell, cellIndex) => {
                                 columnNameArray.splice(-1);
                                 columnNameArray.push(String.fromCharCode(charCode));
                                 let columnName = columnNameArray.join("");
 
-                                insertCell(rowElementHead, columnName, "th", null, null, "head");
+                                // insertCell(rowElementHead, "()", "th", null, null, "head");
+                                insertCell(rowElementHead, "()", "th", null, null, "head");
+                                insertCell(rowElementBody, columnName, "th", null, null, "body");
 
                                 charCode++;
 
@@ -223,7 +231,7 @@
 
                         // Insert the table body and index of the row
                         row.forEach((cell, cellIndex) => {
-                            insertCell(rowElement, cell, "td", rowIndex, cellIndex);
+                            insertCell(rowElementBody, cell, "td", rowIndex, cellIndex);
                         });
 
                     });
@@ -238,7 +246,8 @@
         function insertCell(rowElement, cellName, type, rowIndex = null, cellIndex = null, tableSection = "body") {
             // Insert the index of the row (a new cell)
             if (cellIndex === 0) {
-                insertCell(rowElement, rowIndex + 1, "th");
+                // insertCell(rowElement, "", "th");
+                insertCell(rowElement, rowIndex + 1, "td");
             };
 
             const cellElement = document.createElement(type);
@@ -250,12 +259,20 @@
 
             cellElement.innerText = cellName;
             rowElement.appendChild(cellElement);
-            if (tableSection === "body") {
-                tableBody.appendChild(rowElement);
-            } else if (tableSection === "head") {
-                tableHead.appendChild(rowElement);
-            }
 
+            switch (tableSection) {
+                case "checkbox": {
+                    tableCheckbox.appendChild(rowElement);
+                } break;
+
+                case "head": {
+                    tableHead.appendChild(rowElement);
+                } break;
+
+                case "body": {
+                    tableBody.appendChild(rowElement);
+                } break;
+            }
 
             /*
             
