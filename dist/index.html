@@ -33,10 +33,9 @@
 </head>
 
 <body>
-
     <div class="container-fluid p-5">
         <div class="d-flex justify-content-center">
-            <input class="form-control mb-4" type="file"
+            <input class="form-control mb-4 " type="file"
                 accept=".xlsx, .xlsm, .xlsb, .xlsb, .xlsx, .xltx, .xltm, .xls, .xlt, .xml, .xlam, .xla, .xlw, .xlr"
                 id="file" name="formattedTable">
         </div>
@@ -82,7 +81,7 @@
         <div class="text-light pt-5 fs-2">Carregando Documento</div>
     </div>
 
-
+    <script src="js/table.js"></script>
 
     <script>
         // Allow use tooltip
@@ -91,33 +90,44 @@
 
         const inputFile = document.querySelector("#file");
         const file = inputFile.files[0];
-        const div = document.querySelector(".div");
-        const table = document.querySelector("table");
-        
-        const tableHead = document.createElement("thead");
-        // const tableCheckbox = document.createElement("thead");
-        const tableBody = document.createElement("tbody");
-        
-        // table.appendChild(tableCheckbox);
-        table.appendChild(tableHead);
-        table.appendChild(tableBody);
 
         inputFile.addEventListener("change", () => tryShowTableOnPage());
 
+        function tryShowTableOnPage() {
+            let fileElement = document.getElementById("file");
+            const extensionPosition = fileElement.value.lastIndexOf(".");
+            const fileExtension = fileElement.value.substring(extensionPosition);
+            const acceptExtensions = fileElement.getAttribute("accept").split(",");
 
-        //Remove focus after 2 seconds
-        // let allButtons = document.getElementsByClassName("btn");
-        // [...allButtons].forEach(btn => {
-        //     btn.addEventListener("click", (e) => {
-        //         console.log(e.target)
-        //     })
-        // })
+            if (acceptExtensions.includes(fileExtension.toLowerCase())) {
+                showTableOnPage();
+            } else if (fileExtension !== "") {
+                fileElement.value = "";
+                alert(`O arquivo de extensão ${fileExtension} não é válido.\nPor favor, selecione um arquivo com um dos seguintes formatos:\n\n${acceptExtensions}`)
+            }
+        };
 
+        async function showTableOnPage() {
+            tableHead.innerHTML = "";
+            tableBody.innerHTML = "";
+            showLoaderScreen();
+            disableScroll();
+
+            await readXlsxFile(inputFile.files[0])
+                .then(rows => writeTable(rows));
+
+            document.querySelector("#settingsButtons").classList.remove("visually-hidden");
+            hideLoaderScreen();
+            enableScroll();
+        };
 
         function saveFile() {
             const json = tableToJson();
-            console.log(json)
+            // console.log(checkboxList);
+            console.log(json);
+            //  console.log(checkboxList)
             // sendFileToServer(json);
+
         };
 
         function tableToJson() {
@@ -136,176 +146,8 @@
 
             return jsonObject;
         };
-
-
-        function sendFileToServer(json) {
-            fetch("http://192.168.100.20:9999/file/post", {
-                method: "post",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(json)
-            });
-        };
-
-
-        function getFileFromServer() {
-            fetch("http://192.168.100.20:9999/file/get", { method: "get" })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data)
-                });
-        };
-
-        function tryShowTableOnPage() {
-            let fileElement = document.getElementById("file");
-            const extensionPosition = fileElement.value.lastIndexOf(".");
-            const fileExtension = fileElement.value.substring(extensionPosition);
-            const acceptExtensions = fileElement.getAttribute("accept").split(",");
-
-            if (acceptExtensions.includes(fileExtension.toLowerCase())) {
-                showTableOnPage();
-            } else if (fileExtension !== "") {
-                fileElement.value = "";
-                alert(`O arquivo de extensão ${fileExtension} não é válido.\nPor favor, selecione um arquivo com um dos seguintes formatos:\n\n${acceptExtensions}`)
-            }
-        };
-
-        // let length = $("table tbody").html().trim().length 
-        // console.log(length)
-
-        // if(length === 0){
-        //     $("table").hide()
-        // } else{
-        //     $("table").show()
-        // }
-
-
-        async function showTableOnPage() {
-            tableHead.innerHTML = "";
-            tableBody.innerHTML = "";
-            showLoaderScreen();
-            disableScroll();
-
-            await readXlsxFile(inputFile.files[0])
-                .then(rows => {
-                    rows.forEach((row, rowIndex) => {
-                        const rowElementHead = document.createElement("tr");
-                        const rowElementBody = document.createElement("tr");
-
-                        let charCode = 65;
-                        let firstRepetitionOfColumnName = true;
-
-                        let columnNameArray = [String.fromCharCode(charCode)];
-
-                        // Insert the table head
-                        if (rowIndex === 0) {
-                            insertCell(rowElementHead, "()", "th", null, null, "head");
-                            // insertCell(rowElementBody, "#", "th", null, null, "body");
-
-                            row.forEach((cell, cellIndex) => {
-                                columnNameArray.splice(-1);
-                                columnNameArray.push(String.fromCharCode(charCode));
-                                let columnName = columnNameArray.join("");
-
-                                // insertCell(rowElementHead, "()", "th", null, null, "head");
-                                insertCell(rowElementHead, "()", "th", null, null, "head");
-                                // insertCell(rowElementBody, columnName, "th", null, null, "body");
-
-                                charCode++;
-
-                                // When goes through all letters, goes back increasing the first letter
-                                if (charCode % 91 === 0) {
-                                    charCode = 65;
-                                    columnNameArray = ["A", String.fromCharCode(charCode)];
-
-                                    if (firstRepetitionOfColumnName) firstRepetitionOfColumnName = false;
-                                    else {
-                                        const charCode = columnNameArray[0].charCodeAt(0);
-                                        columnNameArray[0] = String.fromCharCode(charCode + 1);
-                                    };
-                                };
-                            })
-                        };
-
-                        // Insert the table body and index of the row
-                        row.forEach((cell, cellIndex) => {
-                            insertCell(rowElementBody, cell, "td", rowIndex, cellIndex);
-                        });
-
-                    });
-
-                });
-
-            document.querySelector("#settingsButtons").classList.remove("visually-hidden");
-            hideLoaderScreen();
-            enableScroll();
-        };
-
-        function insertCell(rowElement, cellName, type, rowIndex = null, cellIndex = null, tableSection = "body") {
-            // Insert the index of the row (a new cell)
-            if (cellIndex === 0) {
-                // insertCell(rowElement, "", "th");
-                insertCell(rowElement, rowIndex + 1, "td");
-            };
-
-            const cellElement = document.createElement(type);
-            // if(cellElement.offsetLeft > window.innerWidth){
-            //     cellElement.innerText = "asd";
-            // }else{     
-            // }
-
-
-            cellElement.innerText = cellName;
-            rowElement.appendChild(cellElement);
-
-            switch (tableSection) {
-                case "checkbox": {
-                    tableCheckbox.appendChild(rowElement);
-                } break;
-
-                case "head": {
-                    tableHead.appendChild(rowElement);
-                } break;
-
-                case "body": {
-                    tableBody.appendChild(rowElement);
-                } break;
-            }
-
-            /*
-            
-let viewportHeight = $(window).height();
-
-console.log(viewportHeight)
-
-let tds = $("td");
-[...tds].forEach(td => {
-// console.log(td)
-if (td.offsetLeft > viewportWidth){
-td.style.display = "none";
-}
-})
-            */
-        };
-
-        function disableScroll() {
-            document.querySelector("body").style.overflow = "hidden";
-        };
-
-        function enableScroll() {
-            document.querySelector("body").style.overflow = "initial";
-        };
-
-        function showLoaderScreen() {
-            document.querySelector("#loader-container").classList.remove("visually-hidden");
-        };
-
-        function hideLoaderScreen() {
-            document.querySelector("#loader-container").classList.add("visually-hidden");
-        };
     </script>
+
 </body>
 
 </html>
