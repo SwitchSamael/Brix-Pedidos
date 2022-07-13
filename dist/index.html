@@ -164,9 +164,9 @@
             const fileExtension = fileElement.value.substring(extensionPosition);
             const acceptExtensions = fileElement.getAttribute("accept").split(",");
 
-            if (acceptExtensions.includes(fileExtension)) {
+            if (acceptExtensions.includes(fileExtension.toLowerCase())) {
                 showTableOnPage();
-            } else if (fileExtension.strip() !== "") {
+            } else if (fileExtension !== "") {
                 fileElement.value = "";
                 alert(`O arquivo de extensão ${fileExtension} não é válido.\nPor favor, selecione um arquivo com um dos seguintes formatos:\n\n${acceptExtensions}`)
             }
@@ -202,7 +202,7 @@
                         // Insert the table head
                         if (rowIndex === 0) {
                             insertCell(rowElementHead, "()", "th", null, null, "head");
-                            insertCell(rowElementBody, "#", "th", null, null, "body");
+                            // insertCell(rowElementBody, "#", "th", null, null, "body");
 
                             row.forEach((cell, cellIndex) => {
                                 columnNameArray.splice(-1);
@@ -211,7 +211,7 @@
 
                                 // insertCell(rowElementHead, "()", "th", null, null, "head");
                                 insertCell(rowElementHead, "()", "th", null, null, "head");
-                                insertCell(rowElementBody, columnName, "th", null, null, "body");
+                                // insertCell(rowElementBody, columnName, "th", null, null, "body");
 
                                 charCode++;
 
