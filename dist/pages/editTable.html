@@ -1,0 +1,218 @@
+<!-- I must:
+    bootstrap button effects
+    colors
+    select column and start point line
+    background animations (balls moving)
+-->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+
+    <!-- Script to read excel files (CDN)-->
+    <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
+
+    <!-- Jquery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+        integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Pedidos</title>
+</head>
+
+<body>
+    <div class="container-fluid p-5">
+        <div class="d-flex justify-content-center">
+            <input class="form-control mb-4 " type="file"
+                accept=".xlsx, .xlsm, .xlsb, .xlsb, .xlsx, .xltx, .xltm, .xls, .xlt, .xml, .xlam, .xla, .xlw, .xlr"
+                id="file" name="formattedTable">
+        </div>
+
+        <div class="d-flex flex-column align-items-center visually-hidden" id="settingsButtons">
+            <p>Selecione as colunas e linhas que deseja excluir</p>
+            <button class="btn btn-primary mb-2" onclick="autoSelectCheckbox()" data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Serão selecionados a coluna G em diante com exceção da coluna L (estado CE), até a linha 6
+            (Se essas opções não estiverem de acordo com os dados da tabela, opte por selecionar os elementos manualmente)">
+                Selecionar automaticamente </button>
+
+            <button class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#tableConfirmModal">Salvar
+                Planilha</button>
+        </div>
+
+        <div style="display:none">
+            (dialog box)
+            Confirme que deseja gerar uma nova planilha.
+            Confirmar Cancelar
+
+            Deseja manter essas configurações?
+            Manter Mudar configurações de geração
+
+
+            Deseja prosseguir?
+            voltar confirmar
+
+            Gerando
+        </div>
+
+        <div class="modal fade" id="tableConfirmModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5>Atenção</h5>
+                        <button class="btn-close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        Depois de salvo os dados selecionados serão permanentemente excluídos e uma nova tabela será
+                        gerada. Deseja prosseguir?
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+                            onclick="saveFile()">Confirmar</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped-columns table-hover table-bordered">
+            </table>
+        </div>
+
+    </div>
+
+    <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden"
+        id="loader-container">
+        <div class="spinner-border text-primary fs-1" id="loader"></div>
+        <div class="text-light pt-5 fs-2">Carregando Documento</div>
+    </div>
+
+    <script src="/js/table.js"></script>
+
+    <script>
+        // Allow use tooltip
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+        const inputFile = document.querySelector("#file");
+        const file = inputFile.files[0];
+
+        inputFile.addEventListener("change", () => tryShowTableOnPage());
+
+        function tryShowTableOnPage() {
+            let fileElement = document.getElementById("file");
+            const extensionPosition = fileElement.value.lastIndexOf(".");
+            const fileExtension = fileElement.value.substring(extensionPosition);
+            const acceptExtensions = fileElement.getAttribute("accept").split(",");
+
+            if (acceptExtensions.includes(fileExtension.toLowerCase())) {
+                showTableOnPage();
+            } else if (fileExtension !== "") {
+                fileElement.value = "";
+                alert(`O arquivo de extensão ${fileExtension} não é válido.\nPor favor, selecione um arquivo com um dos seguintes formatos:\n\n${acceptExtensions}`)
+            }
+        };
+
+        async function showTableOnPage() {
+            tableHead.innerHTML = "";
+            tableBody.innerHTML = "";
+            showLoaderScreen();
+            disableScroll();
+
+            await readXlsxFile(inputFile.files[0])
+                .then(rows => writeTable(rows));
+
+            document.querySelector("#settingsButtons").classList.remove("visually-hidden");
+            hideLoaderScreen();
+            enableScroll();
+        };
+
+        function saveFile() {
+            const json = tableToJson();
+
+            console.log(json)
+            //  console.log(checkboxList)
+            // sendFileToServer(json);
+
+        };
+
+        function tableToJson() {
+            const jsonObject = {};
+            let tableBody = document.querySelector("tbody").children;
+
+            let deleteColumns = [];
+            let deleteRows = [];
+
+            [...tableBody].forEach((row, rowIndex) => {
+                jsonObject[rowIndex] = [];
+
+                [...row.children].forEach((cell, cellIndex) => {
+
+                    if (rowIndex === 0 && cellIndex >= 2) {
+                        const columnCheckbox = cell.firstChild;
+                        checkCheckbox(columnCheckbox, deleteColumns, cellIndex)
+                    } else if (rowIndex >= 2 && cellIndex === 0) {
+                        const rowCheckbox = cell.firstChild;
+                        checkCheckbox(rowCheckbox, deleteRows, rowIndex)
+                    };
+
+                    if (cell.tagName.toLowerCase() === "td") {
+                        if (!deleteColumns.includes(cellIndex) && !deleteRows.includes(rowIndex)) {
+                            jsonObject[rowIndex].push(cell.innerText);
+                        };
+                    };
+                });
+            });
+
+            function checkCheckbox(checkbox, array, index) {
+                if (checkbox.checked) {
+                    array.push(index);
+                };
+            };
+
+            // Removes the empty arrays
+            Object.values(jsonObject).forEach((row, index) => {
+                if (row.length === 0) {
+                    delete jsonObject[index]
+                }
+            });
+
+            return jsonObject;
+        };
+
+        function autoSelectCheckbox() {
+            checkboxList.column.forEach((checkbox, index) => {
+                if (index >= 6 && index !== 11) {
+                    checkbox.checked = true;
+                    console.log(checkbox);
+                } else checkbox.checked = false;
+            });
+
+            checkboxList.row.forEach((checkbox, index) => {
+                if (index <= 3) {
+                    checkbox.checked = true;
+                    console.log(checkbox);
+                } else checkbox.checked = false;
+            });
+        };
+    </script>
+
+</body>
+
+</html>

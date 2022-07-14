@@ -12,7 +12,7 @@ const port = process.env.PORT || 9999;
 
 const corsList = [`http://192.168.100.20:${port}`,
 "http://127.0.0.1:5500/dist/index.html",
-`http://127.0.0.1:${port}`]
+`http://127.0.0.1:${port}`];
 
 app.use((req, res, next)=>{
     if(!corsList.includes(req.headers.origin)){
