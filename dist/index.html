@@ -42,7 +42,7 @@
 
         <div class="d-flex flex-column align-items-center visually-hidden" id="settingsButtons">
             <p>Selecione as colunas e linhas que deseja excluir</p>
-            <button class="btn btn-primary mb-2" onclick="" data-bs-toggle="tooltip" data-bs-placement="bottom"
+            <button class="btn btn-primary mb-2" onclick="autoSelectCheckbox()" data-bs-toggle="tooltip" data-bs-placement="bottom"
                 title="Serão selecionados como elementos da coluna A a coluna F incluindo a coluna L (estado
             CE), a partir da linha 7
             (Se essas opções não estiverem de acordo com os dados da tabela, opte por selecionar os elementos manualmente)">
@@ -123,8 +123,8 @@
 
         function saveFile() {
             const json = tableToJson();
-            // console.log(checkboxList);
-            console.log(json);
+
+            // console.log(json)
             //  console.log(checkboxList)
             // sendFileToServer(json);
 
@@ -134,17 +134,48 @@
             const jsonObject = {};
             let tableBody = document.querySelector("tbody").children;
 
+            let deleteColumns = [];
+            let deleteRows = [];
+
             [...tableBody].forEach((row, rowIndex) => {
                 jsonObject[rowIndex] = [];
 
-                [...row.children].forEach(cell => {
+                [...row.children].forEach((cell, cellIndex) => {
+
+                    if (rowIndex === 0 && cellIndex >= 2) {
+                        const columnCheckbox = cell.firstChild;
+                        checkCheckbox(columnCheckbox, deleteColumns, cellIndex)
+                    } else if (rowIndex >= 2 && cellIndex === 0) {
+                        const rowCheckbox = cell.firstChild;
+                        checkCheckbox(rowCheckbox, deleteRows, rowIndex)
+                    };
+
                     if (cell.tagName.toLowerCase() === "td") {
-                        jsonObject[rowIndex].push(cell.innerText);
+                        if (!deleteColumns.includes(cellIndex) && !deleteRows.includes(rowIndex)) {
+                            jsonObject[rowIndex].push(cell.innerText);
+                        };
                     };
                 });
             });
 
+            function checkCheckbox(checkbox, array, index) {
+                if (checkbox.checked) {
+                    array.push(index);
+                };
+            };
+
+            // Removes the empty arrays
+            Object.values(jsonObject).forEach((row, index) => {
+                if (row.length === 0) {
+                    delete jsonObject[index]
+                }
+            });
+
             return jsonObject;
+        };
+
+        function autoSelectCheckbox(){
+            console.log(checkboxList);
         };
     </script>
 

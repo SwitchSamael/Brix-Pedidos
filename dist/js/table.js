@@ -1,144 +1,140 @@
- const table = document.querySelector("table");
+const table = document.querySelector("table");
 
- const tableHead = document.createElement("thead");
- const tableBody = document.createElement("tbody");
+const tableHead = document.createElement("thead");
+const tableBody = document.createElement("tbody");
 
- const checkboxList = [];
+const checkboxList = { "row": [], "column": [] };
 
- table.appendChild(tableHead);
- table.appendChild(tableBody);
+table.appendChild(tableHead);
+table.appendChild(tableBody);
 
 
- //Remove focus after 2 seconds
- // let allButtons = document.getElementsByClassName("btn");
- // [...allButtons].forEach(btn => {
- //     btn.addEventListener("click", (e) => {
- //         console.log(e.target)
- //     })
- // })
+//Remove focus after 2 seconds
+// let allButtons = document.getElementsByClassName("btn");
+// [...allButtons].forEach(btn => {
+//     btn.addEventListener("click", (e) => {
+//         console.log(e.target)
+//     })
+// })
 
- function sendFileToServer(json) {
-     fetch("http://192.168.100.20:9999/file/post", {
-         method: "post",
-         headers: {
-             "Accept": "application/json",
-             "Content-Type": "application/json"
-         },
-         body: JSON.stringify(json)
-     });
- };
+function sendFileToServer(json) {
+    fetch("http://192.168.100.20:9999/file/post", {
+        method: "post",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(json)
+    });
+};
 
- function getFileFromServer() {
-     fetch("http://192.168.100.20:9999/file/get", { method: "get" })
-         .then(response => response.json())
-         .then(data => {
-             console.log(data)
-         });
- };
+function getFileFromServer() {
+    fetch("http://192.168.100.20:9999/file/get", { method: "get" })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+        });
+};
 
- function writeTable(rows) {
-     rows.forEach((row, rowIndex) => {
-         const rowElementBody = document.createElement("tr");
+function writeTable(rows) {
+    rows.forEach((row, rowIndex) => {
+        const rowElementBody = document.createElement("tr");
+        let charCode = 65;
+        let firstRepetitionOfColumnName = true;
+        let columnNameArray = [String.fromCharCode(charCode)];
 
-         let charCode = 65;
-         let firstRepetitionOfColumnName = true;
+        // Insert the table head
+        if (rowIndex === 0) {
 
-         let columnNameArray = [String.fromCharCode(charCode)];
+            let rowElementHead = document.createElement("tr");
+            insertCell(rowElementHead, "", "th", null, null);
+            insertCell(rowElementHead, "", "th", null, null);
 
-         // Insert the table head
-         if (rowIndex === 0) {
+            row.forEach(() => {
+                insertCell(rowElementHead, "", "th", rowIndex, null, true);
+            });
 
-             let rowElementHead = document.createElement("tr");
-             insertCell(rowElementHead, "", "th", null, null, "head");
-             insertCell(rowElementHead, "column_#", "th", null, null, "head", true);
+            rowElementHead = document.createElement("tr");
+            insertCell(rowElementHead, "", "th", null, null);
+            insertCell(rowElementHead, "#", "th", null, null);
 
-             row.forEach((cell, cellIndex) => {
-                 insertCell(rowElementHead, `column_${cellIndex + 1}`, "th", null, null, "head", true);
-             });
+            row.forEach(() => {
+                columnNameArray.splice(-1);
+                columnNameArray.push(String.fromCharCode(charCode));
+                let columnName = columnNameArray.join("");
 
-             rowElementHead = document.createElement("tr");
-             insertCell(rowElementHead, "row_#", "th", null, null, "head", true);
-             insertCell(rowElementHead, "#", "th", null, null, "head");
+                insertCell(rowElementHead, columnName, "th", null, null);
 
-             row.forEach((cell, cellIndex) => {
-                 columnNameArray.splice(-1);
-                 columnNameArray.push(String.fromCharCode(charCode));
-                 let columnName = columnNameArray.join("");
+                charCode++;
 
-                 insertCell(rowElementHead, columnName, "th", null, null, "head");
+                // When goes through all letters, goes back increasing the first letter
+                if (charCode % 91 === 0) {
+                    charCode = 65;
+                    columnNameArray = ["A", String.fromCharCode(charCode)];
 
-                 charCode++;
+                    if (firstRepetitionOfColumnName) firstRepetitionOfColumnName = false;
+                    else {
+                        const charCode = columnNameArray[0].charCodeAt(0);
+                        columnNameArray[0] = String.fromCharCode(charCode + 1);
+                    };
+                };
+            });
+        };
 
-                 // When goes through all letters, goes back increasing the first letter
-                 if (charCode % 91 === 0) {
-                     charCode = 65;
-                     columnNameArray = ["A", String.fromCharCode(charCode)];
+        // Insert the table body and index of the row
+        row.forEach((cell, cellIndex) => {
+            insertCell(rowElementBody, cell, "td", rowIndex, cellIndex);
+        });
+    });
 
-                     if (firstRepetitionOfColumnName) firstRepetitionOfColumnName = false;
-                     else {
-                         const charCode = columnNameArray[0].charCodeAt(0);
-                         columnNameArray[0] = String.fromCharCode(charCode + 1);
-                     };
-                 };
-             })
-         };
+    function insertCell(rowElement, cellContent, type, rowIndex = null, cellIndex = null, isCheckbox = false) {
+        rowElement.classList.add("text-center");
+        // rowElement.setAttribute("data-align", "center");
 
-         // Insert the table body and index of the row
-         row.forEach((cell, cellIndex) => {
-             insertCell(rowElementBody, cell, "td", rowIndex, cellIndex);
-         });
+        // Insert the checkbox and index of the row (two new cells)
+        if (cellIndex === 0) {
+            insertCell(rowElement, "", "th", null, null, true);
+            insertCell(rowElement, rowIndex + 1, "th");
+        };
 
-     });
-     function insertCell(rowElement, cellContent, type, rowIndex = null, cellIndex = null, tableSection = "body", isCheckbox = false) {
-         rowElement.classList.add("text-center");
-         // rowElement.setAttribute("data-align", "center");
+        const cellElement = document.createElement(type);
 
-         // Insert the index of the row (a new cell)
-         if (cellIndex === 0) {
-             insertCell(rowElement, `row_${rowIndex + 1}`, "th", null, null, null, true);
-             insertCell(rowElement, rowIndex + 1, "th");
-         };
+        if (isCheckbox === true) {
+            const checkbox = createCheckbox(rowIndex);
+            cellElement.appendChild(checkbox);
+        } else {
+            cellElement.innerHTML = cellContent;
+        };
 
-         const cellElement = document.createElement(type);
+        rowElement.appendChild(cellElement);
+        tableBody.appendChild(rowElement);
 
-         if (isCheckbox === true) {
-             const checkbox = document.createElement("input");
-             checkbox.type = "checkbox";
-             checkbox.classList.add("form-check-input", "custom-check-danger");
-             cellElement.appendChild(checkbox);
-             cellElement.id = cellContent;
-             checkbox.id = cellContent;
-             checkboxList.push(checkbox);
-         } else {
-             cellElement.innerHTML = cellContent;
-         }
-         rowElement.appendChild(cellElement);
-         // cellElement.style.backgroundColor =  "rgba(250, 0, 0, .6)";
+    };
 
-         switch (tableSection) {
-             case "head": {
-                 tableHead.appendChild(rowElement);
-             } break;
+    function createCheckbox(rowIndex){
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.classList.add("form-check-input", "custom-check-danger");
+        
+        if(rowIndex === 0) checkboxList.column.push(checkbox);
+        else checkboxList.row.push(checkbox);
 
-             case "body": {
-                 tableBody.appendChild(rowElement);
-             } break;
-         }
-     };
- };
+        return checkbox;
+    };
+};
 
- function disableScroll() {
-     document.querySelector("body").style.overflow = "hidden";
- };
+function disableScroll() {
+    document.querySelector("body").style.overflow = "hidden";
+};
 
- function enableScroll() {
-     document.querySelector("body").style.overflow = "initial";
- };
+function enableScroll() {
+    document.querySelector("body").style.overflow = "initial";
+};
 
- function showLoaderScreen() {
-     document.querySelector("#loader-container").classList.remove("visually-hidden");
- };
+function showLoaderScreen() {
+    document.querySelector("#loader-container").classList.remove("visually-hidden");
+};
 
- function hideLoaderScreen() {
-     document.querySelector("#loader-container").classList.add("visually-hidden");
- };
+function hideLoaderScreen() {
+    document.querySelector("#loader-container").classList.add("visually-hidden");
+};
