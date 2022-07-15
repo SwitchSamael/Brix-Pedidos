@@ -3,6 +3,11 @@
     colors
     select column and start point line
     background animations (balls moving)
+
+    
+    How to build site with static page.
+    How to change page(between) with static page
+    Store data so that client don't need request server
 -->
 
 <!DOCTYPE html>
@@ -33,9 +38,6 @@
 <body>
     <div class="container-fluid p-5">
         <a type="button" class="btn btn-primary mb-5" href="/pages/editTable.html">Adicionar Nova Tabela</a>
-
-        <!-- How to build site with static page.
-How to change page(between) with static page-->
 
         <div class="overflow-auto mb-5" id="tableContainer">
             <table class="table table-striped-columns table-hover table-bordered"> </table>
@@ -68,9 +70,9 @@ How to change page(between) with static page-->
     <script>
         showLoaderScreen();
         disableScroll();
-        
+
         getTableFromServer()
-        .then(tableJson => {
+            .then(tableJson => {
                 document.getElementById("tableContainer").style.height = 0;
 
                 hideLoaderScreen();
@@ -78,10 +80,10 @@ How to change page(between) with static page-->
 
                 if (tableJson) {
                     writeTable(Object.values(tableJson), false)
-                    .then(()=>{
-                        document.getElementById("tableContainer").style.height = "30rem";
-                    })
-                  } else {
+                        .then(() => {
+                            document.getElementById("tableContainer").style.height = "30rem";
+                        })
+                } else {
                     document.querySelector("table").innerText = "Nenhuma tabela selecionada";
                 };
             })
