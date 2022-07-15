@@ -1,3 +1,9 @@
-#table-container{
+#tableContainer{
     border: 1px solid var(--bs-blue);
+    border-radius: 3px;
+}
+
+#selectedItems{
+    border: 1px solid var(--bs-gray);
+    border-radius: 3px;
 }

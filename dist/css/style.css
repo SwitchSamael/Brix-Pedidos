@@ -27,29 +27,3 @@
     background-color: red;
     color: blue;
 }
-
-#table-container{
-    height: 30rem;
-}
-
-/* 
-.btn:focus {
-    animation: hide 2s ;
-    /* outline: none;
-    box-shadow: none; 
-}
-
-@keyframes hide {
-    from{
-        outline: red;
-         box-shadow: initial; 
-    }
-    to {
-        outline: none;
-        box-shadow: none;
-    }
-}
-
-input[type=file] {
-    width: fit-content;
-} */
