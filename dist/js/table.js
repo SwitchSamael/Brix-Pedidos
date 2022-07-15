@@ -1,4 +1,5 @@
 const table = document.querySelector("table");
+table.innerHTML = "";
 
 const tableHead = document.createElement("thead");
 const tableBody = document.createElement("tbody");
@@ -17,84 +18,76 @@ table.appendChild(tableBody);
 //     })
 // })
 
-function sendFileToServer(json) {
-    fetch("http://192.168.100.20:9999/file/post", {
-        method: "post",
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(json)
-    });
-};
+function writeTable(rows, includeCheckbox = true, defaultTable = true) {
+    return new Promise(async resolve => {
+        await rows.forEach((row, rowIndex) => {
+            const rowElementBody = document.createElement("tr");
+            let charCode = 65;
+            let firstRepetitionOfColumnName = true;
+            let columnNameArray = [String.fromCharCode(charCode)];
 
-function getFileFromServer() {
-    fetch("http://192.168.100.20:9999/file/get", { method: "get" })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)
-        });
-};
+            // Insert the table head
+            if (includeCheckbox && rowIndex === 0) {
 
-function writeTable(rows) {
-    rows.forEach((row, rowIndex) => {
-        const rowElementBody = document.createElement("tr");
-        let charCode = 65;
-        let firstRepetitionOfColumnName = true;
-        let columnNameArray = [String.fromCharCode(charCode)];
+                let rowElementHead = document.createElement("tr");
+                insertCell(rowElementHead, "", "th", null, null);
+                insertCell(rowElementHead, "", "th", null, null);
 
-        // Insert the table head
-        if (rowIndex === 0) {
+                row.forEach(() => {
+                    insertCell(rowElementHead, "", "th", rowIndex, null, true);
+                });
 
-            let rowElementHead = document.createElement("tr");
-            insertCell(rowElementHead, "", "th", null, null);
-            insertCell(rowElementHead, "", "th", null, null);
+                rowElementHead = document.createElement("tr");
+                insertCell(rowElementHead, "", "th", null, null);
+                insertCell(rowElementHead, "#", "th", null, null);
 
-            row.forEach(() => {
-                insertCell(rowElementHead, "", "th", rowIndex, null, true);
-            });
+                row.forEach(() => {
+                    columnNameArray.splice(-1);
+                    columnNameArray.push(String.fromCharCode(charCode));
+                    let columnName = columnNameArray.join("");
 
-            rowElementHead = document.createElement("tr");
-            insertCell(rowElementHead, "", "th", null, null);
-            insertCell(rowElementHead, "#", "th", null, null);
+                    insertCell(rowElementHead, columnName, "th", null, null);
 
-            row.forEach(() => {
-                columnNameArray.splice(-1);
-                columnNameArray.push(String.fromCharCode(charCode));
-                let columnName = columnNameArray.join("");
+                    charCode++;
 
-                insertCell(rowElementHead, columnName, "th", null, null);
+                    // When goes through all letters, goes back increasing the first letter
+                    if (charCode % 91 === 0) {
+                        charCode = 65;
+                        columnNameArray = ["A", String.fromCharCode(charCode)];
 
-                charCode++;
-
-                // When goes through all letters, goes back increasing the first letter
-                if (charCode % 91 === 0) {
-                    charCode = 65;
-                    columnNameArray = ["A", String.fromCharCode(charCode)];
-
-                    if (firstRepetitionOfColumnName) firstRepetitionOfColumnName = false;
-                    else {
-                        const charCode = columnNameArray[0].charCodeAt(0);
-                        columnNameArray[0] = String.fromCharCode(charCode + 1);
+                        if (firstRepetitionOfColumnName) firstRepetitionOfColumnName = false;
+                        else {
+                            const charCode = columnNameArray[0].charCodeAt(0);
+                            columnNameArray[0] = String.fromCharCode(charCode + 1);
+                        };
                     };
-                };
-            });
-        };
+                });
+            };
 
-        // Insert the table body and index of the row
-        row.forEach((cell, cellIndex) => {
-            insertCell(rowElementBody, cell, "td", rowIndex, cellIndex);
+            // Insert the table body and index of the row
+            row.forEach((cell, cellIndex) => {
+                insertCell(rowElementBody, cell, "td", rowIndex, cellIndex);
+            });
         });
+
+        resolve();
     });
+
 
     function insertCell(rowElement, cellContent, type, rowIndex = null, cellIndex = null, isCheckbox = false) {
         rowElement.classList.add("text-center");
         // rowElement.setAttribute("data-align", "center");
 
         // Insert the checkbox and index of the row (two new cells)
-        if (cellIndex === 0) {
+        if (includeCheckbox && cellIndex === 0) {
             insertCell(rowElement, "", "th", null, null, true);
             insertCell(rowElement, rowIndex + 1, "th");
+        } else if(rowIndex === 0){
+            type = "th";
+        }/
+
+        if(defaultTable && cellIndex === 0){
+            insertCell(rowElement, "", "td")
         };
 
         const cellElement = document.createElement(type);
@@ -111,12 +104,12 @@ function writeTable(rows) {
 
     };
 
-    function createCheckbox(rowIndex){
+    function createCheckbox(rowIndex) {
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.classList.add("form-check-input", "custom-check-danger");
-        
-        if(rowIndex === 0) checkboxList.column.push(checkbox);
+
+        if (rowIndex === 0) checkboxList.column.push(checkbox);
         else checkboxList.row.push(checkbox);
 
         return checkbox;

@@ -5,10 +5,14 @@ const fs = require("fs");
 const filePath = path.join("dist", "file", "table.json");
 
 exports.get = (_, res) => {
-    const jsonFilePath = path.join(__dirname, "..", "dist", "files", "formattedTable.json");
+    const jsonTablePath = path.join(__dirname, "..", "..", "dist", "file", "table.json");
 
     res.type("json");
-    //    res.send(json)
+    if (fs.existsSync(jsonTablePath)) {
+        res.sendFile(jsonTablePath);
+    }
+    else res.status(404).send({"Error 404": "Table not created!"});
+
     return;
 };
 

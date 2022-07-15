@@ -28,6 +28,10 @@
     color: blue;
 }
 
+#table-container{
+    height: 30rem;
+}
+
 /* 
 .btn:focus {
     animation: hide 2s ;

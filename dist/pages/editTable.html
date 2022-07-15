@@ -52,21 +52,6 @@
                 Planilha</button>
         </div>
 
-        <div style="display:none">
-            (dialog box)
-            Confirme que deseja gerar uma nova planilha.
-            Confirmar Cancelar
-
-            Deseja manter essas configurações?
-            Manter Mudar configurações de geração
-
-
-            Deseja prosseguir?
-            voltar confirmar
-
-            Gerando
-        </div>
-
         <div class="modal fade" id="tableConfirmModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -97,13 +82,14 @@
 
     </div>
 
-    <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden"
+    <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden "
         id="loader-container">
         <div class="spinner-border text-primary fs-1" id="loader"></div>
         <div class="text-light pt-5 fs-2">Carregando Documento</div>
     </div>
 
     <script src="/js/table.js"></script>
+    <script src="/js/communicateWithServer.js"></script>
 
     <script>
         // Allow use tooltip
@@ -145,11 +131,8 @@
 
         function saveFile() {
             const json = tableToJson();
-
-            console.log(json)
-            //  console.log(checkboxList)
-            // sendFileToServer(json);
-
+            sendTableToServer(json);
+            window.location.href = "/";
         };
 
         function tableToJson() {
@@ -200,14 +183,12 @@
             checkboxList.column.forEach((checkbox, index) => {
                 if (index >= 6 && index !== 11) {
                     checkbox.checked = true;
-                    console.log(checkbox);
                 } else checkbox.checked = false;
             });
 
             checkboxList.row.forEach((checkbox, index) => {
-                if (index <= 3) {
+                if (index <= 5) {
                     checkbox.checked = true;
-                    console.log(checkbox);
                 } else checkbox.checked = false;
             });
         };

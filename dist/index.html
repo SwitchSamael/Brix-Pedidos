@@ -26,23 +26,53 @@
         integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/indexStyle.css">
     <title>Pedidos</title>
 </head>
 
 <body>
+
     <div class="container-fluid p-5">
-        <!-- <button type="button" class="btn btn-primary mb-5" onclick="goToEditTable()">Adicionar Nova Tabela</button> -->
         <a type="button" class="btn btn-primary mb-5" href="/pages/editTable.html">Adicionar Nova Tabela</a>
-<!-- How to build site with static page.
+
+        <!-- How to build site with static page.
 How to change page(between) with static page-->
-        <div>
-            <table>Nenhuma tabela selecionada</table>
+
+        <div class="container overflow-auto" id="table-container">
+            <table class="table table-striped-columns table-hover table-bordered"> </table>
         </div>
     </div>
 
-    <!-- <script src="js/table.js"></script> -->
+    <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden"
+    id="loader-container">
+        <div class="spinner-border text-primary fs-1" id="loader"></div>
+        <div class="text-light pt-5 fs-2">Carregando Documento</div>
+    </div>
+
+    <script src="js/table.js"></script>
+    <script src="./js/communicateWithServer.js"></script>
 
     <script>
+
+        showLoaderScreen();
+        disableScroll();
+        
+        getTableFromServer()
+            .then(tableJson => {                
+                hideLoaderScreen();
+                enableScroll();
+
+                if (tableJson) {
+                    writeTable(Object.values(tableJson), false)
+                        .then(() => {
+                            console.log(123)
+                        });
+
+                } else {
+                    document.querySelector("table").innerText = "Nenhuma tabela selecionada";
+                };
+            })
+
         function goToEditTable() {
             fetch("http://192.168.100.20:9999/", {
                 method: "get"
