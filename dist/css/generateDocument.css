@@ -1,0 +1,9 @@
+#logoImg{
+    width: 5rem;
+    height: 5rem;
+}
+
+.danger-message{
+    color: rgb(255, 20, 20);
+    font-weight: 500;
+}

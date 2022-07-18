@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const fileController = require("./controllers/fileController");
-const goToController = require("./controllers/goToController");
 const path = require("path");
 const xlsx = require("xlsx");
 

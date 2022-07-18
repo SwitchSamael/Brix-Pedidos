@@ -38,6 +38,7 @@
 <body>
     <div class="container-fluid p-5">
         <a type="button" class="btn btn-primary mb-5" href="/pages/editTable.html">Adicionar Nova Tabela</a>
+        <a type="button" class="btn btn-primary mb-5" href="/pages/generateDocument.html">Zé Zé</a>
 
         <div class="overflow-auto mb-5" id="tableContainer">
             <table class="table table-striped-columns table-hover table-bordered" id="productsTable"> </table>
@@ -49,8 +50,18 @@
             <div id="noSelectedItem">Nenhum Item Selecionado.</div>
         </div>
 
-        <div class="text-center">
-            <button class="btn btn-success" onclick="window.print()">Gerar Documento</button>
+        <form class="w-50">
+             <div class="row"><label class="col col-3"> Cliente: </label><div class="col col-2"><input type="text"  id="name"></div></div>
+             <div class="row"><label class="col col-3"> Endereço:</label><div class="col col-2"><input type="text"  id="address"></div></div>
+             <div class="row"><label class="col col-3"> Cidade:  </label><div class="col col-2"><input type="text"  id="city"></div></div>
+             <div class="row"><label class="col col-3"> Cep:     </label><div class="col col-2"><input type="text"  id="cep"></div></div>
+             <div class="row"><label class="col col-3"> Bairro:  </label><div class="col col-2"><input type="text"  id="district"></div></div>
+             <div class="row"><label class="col col-3"> Telefone:</label><div class="col col-2"><input type="tel"   id="tel"></div></div>
+             <div class="row"><label class="col col-3"> E-mail:  </label><div class="col col-2"><input type="email" id="email"></div></div>
+        </form>
+
+        <div class="text-center pt-5">
+            <button class="btn btn-success" onclick="generateDocument()">Gerar Documento</button>
         </div>
     </div>
 
@@ -63,6 +74,8 @@
     <script src="js/table.js"></script>
     <script src="./js/communicateWithServer.js"></script>
     <script>
+        sessionStorage.setItem("a", "123");
+
         showLoaderScreen();
         disableScroll();
 
@@ -93,6 +106,10 @@
 
             // window.location.assign("/pages");
             // window.location.href = "/pages/editTable.html";
+        };
+
+        function generateDocument() {
+            alert()
         };
     </script>
 
