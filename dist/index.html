@@ -40,22 +40,20 @@
         <a type="button" class="btn btn-primary mb-5" href="/pages/editTable.html">Adicionar Nova Tabela</a>
 
         <div class="overflow-auto mb-5" id="tableContainer">
-            <table class="table table-striped-columns table-hover table-bordered"> </table>
+            <table class="table table-striped-columns table-hover table-bordered" id="productsTable"> </table>
         </div>
 
         <div class="mb-5">
             <h5>Itens selecionados</h5>
-            <div class="d-flex flex-column" id="selectedItems">
-            </div>
-
+            <table class="table table-bordered" id="selectedItems">
+              
+            </table>
         </div>
 
         <div class="text-center">
-
-            <button class="btn btn-success">Gerar Documento</button>
+            <button class="btn btn-success" onclick="window.print()">Gerar Documento</button>
         </div>
     </div>
-
 
     <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden"
         id="loader-container">
@@ -65,8 +63,6 @@
 
     <script src="js/table.js"></script>
     <script src="./js/communicateWithServer.js"></script>
-
-
     <script>
         showLoaderScreen();
         disableScroll();
@@ -79,10 +75,10 @@
                 enableScroll();
 
                 if (tableJson) {
-                    writeTable(Object.values(tableJson), false)
+                    writeTable(Object.values(tableJson), "productsTable", false)
                         .then(() => {
                             document.getElementById("tableContainer").style.height = "30rem";
-                        })
+                        });
                 } else {
                     document.querySelector("table").innerText = "Nenhuma tabela selecionada";
                 };

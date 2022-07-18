@@ -76,7 +76,7 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-striped-columns table-hover table-bordered">
+            <table class="table table-striped-columns table-hover table-bordered" id="editTable">
             </table>
         </div>
 
@@ -87,7 +87,7 @@
         <div class="spinner-border text-primary fs-1" id="loader"></div>
         <div class="text-light pt-5 fs-2">Carregando Documento</div>
     </div>
-
+    
     <script src="/js/table.js"></script>
     <script src="/js/communicateWithServer.js"></script>
 
@@ -116,13 +116,11 @@
         };
 
         async function showTableOnPage() {
-            tableHead.innerHTML = "";
-            tableBody.innerHTML = "";
             showLoaderScreen();
             disableScroll();
 
             await readXlsxFile(inputFile.files[0])
-                .then(rows => writeTable(rows));
+                .then(rows => writeTable(rows, "editTable"));
 
             document.querySelector("#settingsButtons").classList.remove("visually-hidden");
             hideLoaderScreen();
