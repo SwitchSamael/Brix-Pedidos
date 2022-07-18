@@ -284,7 +284,15 @@ function checkIfSelectedItemAlreadyExists(id) {
 
 function updateSelectedItemsContainer() {
     const selectedItemsContainer = document.querySelector("#selectedItems");
+    const noItemMessage = document.querySelector("#noSelectedItem");
     selectedItemsContainer.innerHTML = "";
+
+
+    if(selectedItemsObjectList.length === 0){
+        noItemMessage.classList.remove("visually-hidden");
+    } else{
+        noItemMessage.classList.add("visually-hidden");
+    };
 
     selectedItemsObjectList.forEach(selectedItemObject => {
         selectedItemsContainer.innerHTML += createSelectedItem(
