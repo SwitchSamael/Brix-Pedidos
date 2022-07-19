@@ -5,6 +5,7 @@ let tableHead;
 let tableBody;
 let checkboxList;
 const selectedItemsObjectList = [];
+const selectedItemsContainer = document.querySelector("#selectedItems tbody");
 
 function initialConfig(tableId) {
     table = document.getElementById(tableId);
@@ -115,7 +116,7 @@ function writeTable(rows, tableId,
     });
 
 
-    function insertCell(rowElement, cellContent, cellType, rowIndex = null, cellIndex = null, elementType = "text", disabled = false) {
+    function insertCell(rowElement, cellContent, cellType, rowIndex = null, cellIndex = null, elementType = "text", listener = false) {
         rowElement.classList.add("text-center");
         // rowElement.setAttribute("data-align", "center");
 
@@ -143,7 +144,7 @@ function writeTable(rows, tableId,
             if (rowIndex === 0 && cellIndex === 0) {
                 insertCell(rowElement, "Serviço", "th", null, null);
             } else if (cellIndex === 0) {
-                insertCell(rowElement, "", "td", null, null, "checkbox");
+                insertCell(rowElement, "", "td", null, null, "checkbox", true);
             };
 
             // Insert input column
@@ -158,7 +159,7 @@ function writeTable(rows, tableId,
         const cellElement = document.createElement(cellType);
 
         if (elementType === "checkbox") {
-            const checkbox = disabled ? createCheckbox(rowIndex, true) : createCheckbox(rowIndex);
+            const checkbox = createCheckbox(rowIndex, listener);
 
             cellElement.appendChild(checkbox);
         } else if (elementType === "input") {
@@ -194,12 +195,24 @@ function writeTable(rows, tableId,
 
     };
 
-    function createCheckbox(rowIndex, disabled = false) {
+    function createCheckbox(rowIndex, listener = false) {
         const checkbox = document.createElement("input");
+        if (listener) {
+            checkbox.addEventListener("click", e => {
+                const checkbox = e.target;
+                const rowId = checkbox.parentElement.parentElement.id
+                console.log(rowId)
+
+                Array.from(selectedItemsContainer.children).forEach(selectedItem=>{
+                    console.log(selectedItem)
+                });
+
+            });
+        };
         checkbox.type = "checkbox";
         checkbox.classList.add("form-check-input", "custom-check-danger");
 
-        if (disabled) {
+        if (!defaultTable) {
             checkbox.setAttribute("disabled", true);
         };
 
@@ -258,17 +271,19 @@ function inputListener(e, element) {
     const checkbox = row.children[0].children[0];
     const serviceCheckbox = row.children[1].children[0];
     const amount = input.value;
-    const id = row.children[2].innerText;
+    const id = row.children[3].innerText;
 
     if (amount === "0" || amount === "") {
-        const selectedItemObject = checkIfSelectedItemAlreadyExists(id)
+        const selectedItemObject = checkIfSelectedItemAlreadyExists(id);
         const selectedItemObjectListIndex = selectedItemsObjectList.indexOf(selectedItemObject);
         selectedItemsObjectList.splice(selectedItemObjectListIndex, 1);
         input.value = "";
         checkbox.checked = false;
         serviceCheckbox.checked = false;
+        serviceCheckbox.disabled = true;
     } else {
         checkbox.checked = true;
+        serviceCheckbox.disabled = false;
 
         const itemDescription = row.children[6].innerText;
         const unitPrice = row.children[9].innerText.split(" ")[0];
@@ -299,7 +314,6 @@ function checkIfSelectedItemAlreadyExists(id) {
 };
 
 function updateSelectedItemsContainer() {
-    const selectedItemsContainer = document.querySelector("#selectedItems tbody");
     const noItemMessage = document.querySelector("#noSelectedItem");
     selectedItemsContainer.innerHTML = "";
 
