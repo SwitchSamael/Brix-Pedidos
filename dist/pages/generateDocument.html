@@ -19,9 +19,6 @@
 </head>
 
 <body>
-    <script>
-        console.log()
-    </script>
     <div class="container">
 
         <div class=" pt-5 pb-5 ps-4">
@@ -146,9 +143,14 @@
                 (88) 9 8829-8387 / (85) 9 9739-2442.
             </div>
 
-            <button onclick="window.print()">Print</button>
+            <button class="btn btn-primary" onclick="window.print()">Print</button>
         </div>
 
+        <script src="../js/getDate.js"></script>
+        <script>
+            console.log(sessionStorage.getItem("data"));
+            console.log(getCurrentData());
+        </script>
 </body>
 
 </html>

@@ -1,15 +1,3 @@
-<!-- I must:
-    bootstrap button effects
-    colors
-    select column and start point line
-    background animations (balls moving)
-
-    
-    How to build site with static page.
-    How to change page(between) with static page
-    Store data so that client don't need request server
--->
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -20,15 +8,11 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
     <!-- Bootstrap CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-        crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 
     <!-- Jquery CDN -->
-    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
-        integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/indexStyle.css">
@@ -38,7 +22,7 @@
 <body>
     <div class="container-fluid p-5">
         <a type="button" class="btn btn-primary mb-5" href="/pages/editTable.html">Adicionar Nova Tabela</a>
-        <a type="button" class="btn btn-primary mb-5" href="/pages/generateDocument.html">Zé Zé</a>
+        <a type="button" class="btn btn-danger mb-5" href="/pages/generateDocument.html">Sample Document to Download</a>
 
         <div class="overflow-auto mb-5" id="tableContainer">
             <table class="table table-striped-columns table-hover table-bordered" id="productsTable"> </table>
@@ -46,27 +30,65 @@
 
         <div class="mb-5">
             <h5>Itens selecionados</h5>
-            <table class="table table-bordered" id="selectedItems"></table>
+            <table class="table table-bordered" id="selectedItems">
+                <thead>
+                    <th>Quantidade</th>
+                    <th>Descrição</th>
+                    <th>Preço Total</th>
+                    <th>Alterar Quant.</th>
+                    <th>Deletar</th>
+                    <th>Serviço</th>
+                </thead>
+                <tbody></tbody>
+            </table>
             <div id="noSelectedItem">Nenhum Item Selecionado.</div>
         </div>
 
         <form class="w-50">
-             <div class="row"><label class="col col-3"> Cliente: </label><div class="col col-2"><input type="text"  id="name"></div></div>
-             <div class="row"><label class="col col-3"> Endereço:</label><div class="col col-2"><input type="text"  id="address"></div></div>
-             <div class="row"><label class="col col-3"> Cidade:  </label><div class="col col-2"><input type="text"  id="city"></div></div>
-             <div class="row"><label class="col col-3"> Cep:     </label><div class="col col-2"><input type="text"  id="cep"></div></div>
-             <div class="row"><label class="col col-3"> Bairro:  </label><div class="col col-2"><input type="text"  id="district"></div></div>
-             <div class="row"><label class="col col-3"> Telefone:</label><div class="col col-2"><input type="tel"   id="tel"></div></div>
-             <div class="row"><label class="col col-3"> E-mail:  </label><div class="col col-2"><input type="email" id="email"></div></div>
+            <div class="d-flex gap-3 justify-content-between">
+                <label> Cliente <span class="text-danger">*</span> </label><input type="text" id="name" required>
+            </div>
+
+            <div class="d-flex gap-3 justify-content-between">
+                <label> Endereço <span class="text-danger">*</span></label><input type="text" id="address" required>
+            </div>
+
+            <div class="d-flex gap-3 justify-content-between">
+                <label> Cidade </label><input type="text" id="city">
+            </div>
+
+            <div class="d-flex gap-3 justify-content-between">
+                <label> Cep </label><input type="text" id="cep">
+            </div>
+
+            <div class="d-flex gap-3 justify-content-between">
+                <label> Bairro </label><input type="text" id="district">
+            </div>
+
+            <div class="d-flex gap-3 justify-content-between">
+                <label> Telefone <span class="text-danger">*</span></label><input type="tel" id="tel" required>
+            </div>
+
+            <div class="d-flex gap-3 justify-content-between">
+                <label> E-mail </label><input type="email" id="email">
+            </div>
+
+            <div class="d-flex gap-3 justify-content-between">
+                <label> Serviço:</label><input class="form-check" type="checkbox" id="service">
+            </div>
+
+            <div> (40% + 60% (Over the old price))</div>
+
+            <div class="d-flex mt-5">
+                <button type="submit" class="btn btn-success">Gerar Documento</button>
+                <button type="reset" class="btn btn-danger">Apagar Campos </button>
+            </div>
+
         </form>
 
-        <div class="text-center pt-5">
-            <button class="btn btn-success" onclick="generateDocument()">Gerar Documento</button>
-        </div>
     </div>
 
-    <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden"
-        id="loader-container">
+    <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden" id="loader-container">
         <div class="spinner-border text-primary fs-1" id="loader"></div>
         <div class="text-light pt-5 fs-2">Carregando Documento</div>
     </div>
@@ -74,7 +96,10 @@
     <script src="js/table.js"></script>
     <script src="./js/communicateWithServer.js"></script>
     <script>
-        sessionStorage.setItem("a", "123");
+        document.querySelector("form").addEventListener("submit", e => {
+            e.preventDefault();
+            tryGenerateDocument();
+        });
 
         showLoaderScreen();
         disableScroll();
@@ -94,7 +119,7 @@
                 } else {
                     document.querySelector("table").innerText = "Nenhuma tabela selecionada";
                 };
-            })
+            });
 
         function goToEditTable() {
             fetch("http://192.168.100.20:9999/", {
@@ -108,8 +133,33 @@
             // window.location.href = "/pages/editTable.html";
         };
 
-        function generateDocument() {
-            alert()
+        function tryGenerateDocument() {
+            let canGenerate = true;
+
+            if (!document.querySelector("#noSelectedItem").classList.contains("visually-hidden")) {
+                canGenerate = false;
+                alert("Você Precisa Selecionar Pelo Menos Um Produto Para Prosseguir");
+            };
+
+            if (true) {
+                const clientData = {};
+                clientData.name = document.getElementById("name").value;
+                clientData.address = document.getElementById("address").value;
+                clientData.city = document.getElementById("city").value;
+                clientData.cep = document.getElementById("cep").value;
+                clientData.district = document.getElementById("district").value;
+                clientData.tel = document.getElementById("tel").value;
+                clientData.email = document.getElementById("email").value;
+
+                console.log(getSelectedItensObject());
+                console.log(clientData);
+                generateDocument(JSON.stringify(clientData));
+            };
+        };
+
+        function generateDocument(data) {
+            // sessionStorage.setItem("data", data);
+            // window.location.href = "pages/generateDocument.html";
         };
     </script>
 

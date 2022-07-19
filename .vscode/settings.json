@@ -1,5 +1,12 @@
 {
     "cSpell.words": [
         "originalname"
-    ]
+    ],
+    "editor.wordWrapColumn": 80,
+    "editor.wordWrap": "off",
+    "html.format.wrapLineLength": 0,
+    "html.format.wrapAttributes": "auto",
+    "html.format.wrapAttributesIndentSize": null,
+    "C_Cpp.vcFormat.wrap.preserveBlocks": "oneLiners",
+    "editor.wrappingStrategy": "simple"
 }
