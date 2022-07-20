@@ -201,10 +201,18 @@ function writeTable(rows, tableId,
             checkbox.addEventListener("click", e => {
                 const checkbox = e.target;
                 const rowId = checkbox.parentElement.parentElement.id
-                console.log(rowId)
 
-                Array.from(selectedItemsContainer.children).forEach(selectedItem=>{
-                    console.log(selectedItem)
+                // Change the checked attribute of the checkbox of the selected items container to the same checkbox of the main table
+                Array.from(selectedItemsContainer.children).forEach(selectedItemElement => {
+                    const associatedCheckbox = selectedItemElement.children[5].children[0];
+
+                    if (selectedItemElement.getAttribute("data-rowId") === rowId) {
+                        associatedCheckbox.checked = checkbox.checked;
+
+                        const selectedItemObject = checkIfSelectedItemAlreadyExists(null, rowId);
+                        selectedItemObject["service"] = associatedCheckbox.checked;
+                        updateSelectedItemsContainer();
+                    };
                 });
 
             });
@@ -244,9 +252,11 @@ function changeItemAmount(rowId, amount) {
 };
 
 function changeItemService(rowId, isService) {
-    // const serviceElement = document.getElementById(rowId).children[1].children[0];
-    // inputElement.value = Number(inputElement.value) + amount;
-    // inputListener(null, inputElement);
+    const checkboxServiceElement = document.getElementById(rowId).children[1].children[0];
+    checkboxServiceElement.checked = isService;
+    const selectedItemObject = checkIfSelectedItemAlreadyExists(null, rowId);
+    selectedItemObject["service"] = isService;
+    updateSelectedItemsContainer();
 };
 
 function deleteItem(rowId) {
@@ -285,29 +295,50 @@ function inputListener(e, element) {
         checkbox.checked = true;
         serviceCheckbox.disabled = false;
 
-        const itemDescription = row.children[6].innerText;
-        const unitPrice = row.children[9].innerText.split(" ")[0];
-        const totalPrice = (amount * unitPrice).toFixed(2);
-        const service = false;
+        const description = row.children[6].innerText;
+        const oldPrice = row.children[9].innerText.split(" ")[0];
+        const unitPrice = row.children[10].innerText.split(" ")[0];
 
-
-        let selectedItemObject
+        let selectedItemObject;
         if (selectedItemObject = checkIfSelectedItemAlreadyExists(id)) {
             selectedItemObject.amount = amount;
-            selectedItemObject.itemDescription = itemDescription;
-            selectedItemObject.unitPrice = unitPrice;
-            selectedItemObject.totalPrice = totalPrice;
-            selectedItemObject.service = service;
         } else {
-            selectedItemsObjectList.push({ id, rowId, amount, itemDescription, unitPrice, totalPrice, service: false });
+            selectedItemsObjectList.push({
+                id, rowId, amount, description, unitPrice, oldPrice,
+                getTotalPrice: function(){
+                    if (this.service) {
+                        const plus40percent = (Number(this.oldPrice) + Number(this.oldPrice) * 0.4);
+                        const total = (plus40percent + plus40percent * 0.6);
+                        this.totalPrice = (this.amount * total).toFixed(2);
+                    } else{
+                        this.totalPrice = (this.amount * this.unitPrice).toFixed(2);
+                    }
+
+                    this.getServicePrice();
+                    return this.totalPrice
+                },
+                getServicePrice(){
+                    if(this.service){
+                        this.servicePrice = this.totalPrice - (this.unitPrice * this.amount);
+                    }
+                    else{
+                        this.servicePrice = 0;
+                    }
+                }
+            });
         };
     };
 
     updateSelectedItemsContainer();
 };
 
-function checkIfSelectedItemAlreadyExists(id) {
-    const filtered = selectedItemsObjectList.filter(selectedItemObject => selectedItemObject.id === id);
+function checkIfSelectedItemAlreadyExists(id, rowId = null) {
+    let filtered;
+    if (id) {
+        filtered = selectedItemsObjectList.filter(selectedItemObject => selectedItemObject.id === id);
+    } else if (rowId) {
+        filtered = selectedItemsObjectList.filter(selectedItemObject => selectedItemObject.rowId === rowId);
+    };
 
     if (filtered.length === 1) return filtered[0];
     return false;
@@ -327,16 +358,17 @@ function updateSelectedItemsContainer() {
     selectedItemsObjectList.forEach(selectedItemObject => {
         selectedItemsContainer.innerHTML += createSelectedItem(
             selectedItemObject.amount,
-            selectedItemObject.itemDescription,
-            selectedItemObject.totalPrice,
-            selectedItemObject.rowId
+            selectedItemObject.description,
+            selectedItemObject.getTotalPrice(),
+            selectedItemObject.rowId,
+            selectedItemObject.service
         );
     });
 };
 
-function createSelectedItem(amount, description, totalPrice, rowId) {
+function createSelectedItem(amount, description, totalPrice, rowId, service) {
     return `
-        <tr class="text-center">
+        <tr class="text-center" data-rowId="${rowId}">
         <td class="selected-item-amount align-middle">${amount} x</td>
         <td class="selected-item-description align-middle">${description}</td>
         <td class="selected-item-total-price align-middle">${totalPrice} R$</td>
@@ -350,7 +382,7 @@ function createSelectedItem(amount, description, totalPrice, rowId) {
             <div class="btn btn-close text-bg-danger" data-rowId="${rowId}" onclick="deleteItem(this.getAttribute('data-rowId'))"></div>
         </td>
         <td class="align-middle">
-            <input class="form-check-input" type="checkbox" data-rowId="${rowId}" onclick="changeItemService(this.getAttribute('data-rowId'), this.checked)"></input>
+            <input class="form-check-input" type="checkbox" ${service === true ? "checked" : ""} data-rowId="${rowId}" onclick="changeItemService(this.getAttribute('data-rowId'), this.checked)"></input>
         </td>
     </tr>        
         `;

@@ -8,11 +8,8 @@
     <title>Document</title>
 
     <!-- Bootstrap CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-        crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="/css/generateDocument.css">
 
@@ -20,7 +17,6 @@
 
 <body>
     <div class="container">
-
         <div class=" pt-5 pb-5 ps-4">
             <div class=" text-center">
                 <div class="">
@@ -46,30 +42,15 @@
         </div>
 
         <div class="container">
-            <table class="table table-bordered">
-                <tr>
-                    <td>Código</td>
-                    <td>DESCRIÇÃO DO PRODUTO</td>
-                    <td>QTDADE</td>
-                    <td>PREÇO UN</td>
-                    <td>PREÇO TOTAL</td>
-                </tr>
-
-                <tr>
-                    <td>123</td>
-                    <td>TC 60 ID - Telefone com fio</td>
-                    <td>1</td>
-                    <td>100 R$</td>
-                    <td>100 R$</td>
-                </tr>
-
-                <tr>
-                    <td>456</td>
-                    <td>TC Telefone sem fio</td>
-                    <td>2</td>
-                    <td>30 R$</td>
-                    <td>60 R$</td>
-                </tr>
+            <table class="table table-bordered" id="itemsTable">
+                <thead>
+                    <th>Código</th>
+                    <th>DESCRIÇÃO DO PRODUTO</th>
+                    <th>QTDADE</th>
+                    <th>PREÇO UN</th>
+                    <th>PREÇO TOTAL</th>
+                </thead>
+                <tbody></tbody>
             </table>
         </div>
 
@@ -147,9 +128,49 @@
         </div>
 
         <script src="../js/getDate.js"></script>
+
         <script>
-            console.log(sessionStorage.getItem("data"));
-            console.log(getCurrentData());
+            const itemsTable = document.querySelector("#itemsTable tbody");
+            const sessionData = JSON.parse(sessionStorage.getItem("data"));
+            console.log(sessionData.clientData);
+            console.log(sessionData.itemsData);
+
+
+            sessionData.itemsData.forEach(itemData => {
+                itemsTable.appendChild(createItemElement(itemData));
+            });
+
+            function createItemElement(itemData){
+                const rowElement = document.createElement("tr");
+                const idElement = document.createElement("td");
+                const descriptionElement = document.createElement("td");
+                const amountElement = document.createElement("td");
+                const unitPriceElement = document.createElement("td");
+                const servicePriceElement = document.createElement("td");
+                const totalPriceElement = document.createElement("td");
+
+
+idElement.innerText = itemData.id;
+descriptionElement.innerText = itemData.description;
+amountElement.innerText = itemData.amount;
+servicePriceElement.innerText = itemData.servicePrice;
+unitPriceElement.innerText = itemData.unitPrice;
+totalPriceElement.innerText = itemData.totalPrice;
+
+
+                
+                
+                rowElement.appendChild(idElement);
+                rowElement.appendChild(descriptionElement);
+                rowElement.appendChild(amountElement);
+                rowElement.appendChild(unitPriceElement);
+                rowElement.appendChild(totalPriceElement);
+
+                return rowElement;
+                //Add new column to service price, if exists.
+            };
+
+            console.log(getCurrentDate());
         </script>
 </body>
 

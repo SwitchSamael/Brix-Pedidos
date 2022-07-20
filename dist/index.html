@@ -73,17 +73,10 @@
                 <label> E-mail </label><input type="email" id="email">
             </div>
 
-            <div class="d-flex gap-3 justify-content-between">
-                <label> Serviço:</label><input class="form-check" type="checkbox" id="service">
-            </div>
-
-            <div> (40% + 60% (Over the old price))</div>
-
             <div class="d-flex mt-5">
                 <button type="submit" class="btn btn-success">Gerar Documento</button>
                 <button type="reset" class="btn btn-danger">Apagar Campos </button>
             </div>
-
         </form>
 
     </div>
@@ -128,9 +121,6 @@
                 .then(data => {
                     console.log(data)
                 });
-
-            // window.location.assign("/pages");
-            // window.location.href = "/pages/editTable.html";
         };
 
         function tryGenerateDocument() {
@@ -151,15 +141,15 @@
                 clientData.tel = document.getElementById("tel").value;
                 clientData.email = document.getElementById("email").value;
 
-                console.log(getSelectedItensObject());
-                console.log(clientData);
-                generateDocument(JSON.stringify(clientData));
+                const data = {itemsData: getSelectedItensObject(), clientData}
+                console.log(data)
+                generateDocument(JSON.stringify(data));
             };
         };
 
         function generateDocument(data) {
-            // sessionStorage.setItem("data", data);
-            // window.location.href = "pages/generateDocument.html";
+            sessionStorage.setItem("data", data);
+            window.location.href = "pages/generateDocument.html";
         };
     </script>
 
