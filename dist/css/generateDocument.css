@@ -7,3 +7,9 @@
     color: rgb(255, 20, 20);
     font-weight: 500;
 }
+
+.date-element{
+    box-sizing: border-box;
+    padding: 0 4px;
+    border-bottom: 1px solid black;
+}

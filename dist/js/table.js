@@ -280,10 +280,10 @@ function inputListener(e, element) {
     const rowId = row.id;
     const checkbox = row.children[0].children[0];
     const serviceCheckbox = row.children[1].children[0];
-    const amount = input.value;
+    const amount = Number(input.value);
     const id = row.children[3].innerText;
 
-    if (amount === "0" || amount === "") {
+    if (amount === 0 || amount === "") {
         const selectedItemObject = checkIfSelectedItemAlreadyExists(id);
         const selectedItemObjectListIndex = selectedItemsObjectList.indexOf(selectedItemObject);
         selectedItemsObjectList.splice(selectedItemObjectListIndex, 1);
@@ -296,8 +296,8 @@ function inputListener(e, element) {
         serviceCheckbox.disabled = false;
 
         const description = row.children[6].innerText;
-        const oldPrice = row.children[9].innerText.split(" ")[0];
-        const unitPrice = row.children[10].innerText.split(" ")[0];
+        const oldPrice = Number(row.children[9].innerText.split(" ")[0]);
+        const unitPrice = Number(row.children[10].innerText.split(" ")[0]);
 
         let selectedItemObject;
         if (selectedItemObject = checkIfSelectedItemAlreadyExists(id)) {
@@ -305,23 +305,23 @@ function inputListener(e, element) {
         } else {
             selectedItemsObjectList.push({
                 id, rowId, amount, description, unitPrice, oldPrice,
-                getTotalPrice: function(){
+                getTotalPrice: function () {
                     if (this.service) {
-                        const plus40percent = (Number(this.oldPrice) + Number(this.oldPrice) * 0.4);
+                        const plus40percent = (this.oldPrice + this.oldPrice * 0.4);
                         const total = (plus40percent + plus40percent * 0.6);
-                        this.totalPrice = (this.amount * total).toFixed(2);
-                    } else{
-                        this.totalPrice = (this.amount * this.unitPrice).toFixed(2);
+                        this.totalPrice = Number((this.amount * total).toFixed(2));
+                    } else {
+                        this.totalPrice = Number((this.amount * this.unitPrice).toFixed(2));
                     }
 
                     this.getServicePrice();
                     return this.totalPrice
                 },
-                getServicePrice(){
-                    if(this.service){
-                        this.servicePrice = this.totalPrice - (this.unitPrice * this.amount);
+                getServicePrice() {
+                    if (this.service) {
+                        this.servicePrice = Number((this.totalPrice - (this.unitPrice * this.amount)).toFixed(2));
                     }
-                    else{
+                    else {
                         this.servicePrice = 0;
                     }
                 }
@@ -390,6 +390,14 @@ function createSelectedItem(amount, description, totalPrice, rowId, service) {
 
 function getSelectedItensObject() {
     return selectedItemsObjectList;
+};
+
+function getTotalPrice() {
+    console.log(selectedItemsObjectList.reduce((previous, current) => {
+        console.log(previous)
+        console.log(current)
+        return previous.getTotalPrice() + current.getTotalPrice();
+    }));
 };
 
 function disableScroll() {

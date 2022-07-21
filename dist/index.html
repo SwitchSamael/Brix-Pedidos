@@ -22,7 +22,6 @@
 <body>
     <div class="container-fluid p-5">
         <a type="button" class="btn btn-primary mb-5" href="/pages/editTable.html">Adicionar Nova Tabela</a>
-        <a type="button" class="btn btn-danger mb-5" href="/pages/generateDocument.html">Sample Document to Download</a>
 
         <div class="overflow-auto mb-5" id="tableContainer">
             <table class="table table-striped-columns table-hover table-bordered" id="productsTable"> </table>
@@ -45,38 +44,88 @@
         </div>
 
         <form class="w-50">
-            <div class="d-flex gap-3 justify-content-between">
-                <label> Cliente <span class="text-danger">*</span> </label><input type="text" id="name" required>
-            </div>
+            <table class="table table-borderless">
 
-            <div class="d-flex gap-3 justify-content-between">
-                <label> Endereço <span class="text-danger">*</span></label><input type="text" id="address" required>
-            </div>
+                <tr>
+                    <td> <label> Cliente: <span class="text-danger">*</span> </label></td>
+                    <td><input class="w-100" type="text" id="name" required> </td>
+                </tr>
 
-            <div class="d-flex gap-3 justify-content-between">
-                <label> Cidade </label><input type="text" id="city">
-            </div>
+                <tr>
+                    <td> <label> Número: <span class="text-danger">*</span></label></td>
+                    <td><input class="w-100" type="number" id="houseNumber" required></td>
+                </tr>
 
-            <div class="d-flex gap-3 justify-content-between">
-                <label> Cep </label><input type="text" id="cep">
-            </div>
+                <tr>
+                    <td> <label> Endereço: <span class="text-danger">*</span></label></td>
+                    <td><input class="w-100" type="text" id="address" required></td>
+                </tr>
 
-            <div class="d-flex gap-3 justify-content-between">
-                <label> Bairro </label><input type="text" id="district">
-            </div>
+                <tr>
+                    <td> <label> Cidade: </label></td>
+                    <td><input class="w-100" type="text" id="city"></td>
+                </tr>
 
-            <div class="d-flex gap-3 justify-content-between">
-                <label> Telefone <span class="text-danger">*</span></label><input type="tel" id="tel" required>
-            </div>
+                <tr>
+                    <td> <label> Cep: </label></td>
+                    <td><input class="w-100" type="text" id="cep"></td>
+                </tr>
 
-            <div class="d-flex gap-3 justify-content-between">
-                <label> E-mail </label><input type="email" id="email">
-            </div>
+                <tr>
+                    <td> <label> Bairro: </label></td>
+                    <td><input class="w-100" type="text" id="district"></td>
+                </tr>
 
-            <div class="d-flex mt-5">
-                <button type="submit" class="btn btn-success">Gerar Documento</button>
-                <button type="reset" class="btn btn-danger">Apagar Campos </button>
-            </div>
+                <tr>
+                    <td><label> Telefone: <span class="text-danger">*</span></label></td>
+                    <td><input class="w-100" type="tel" id="tel" required></td>
+                </tr>
+
+                <tr>
+                    <td><label> E-mail: </label></td>
+                    <td><input class="w-100" type="email" id="email"></td>
+                </tr>
+
+                <tr>
+                    <td> <label> Forma de Pagamento: </label></td>
+
+                    <td id="paymentMethods">
+                        <input type="radio" id="radioCashPayment" name="radioPayment" checked value="A vista" onchange="changeDropdownVisibility(false)">
+                        <label>A vista</label>
+
+                        <div class="dropdown d-flex">
+                            <input type="radio" id="radioInstallmentPayment" name="radioPayment" value="Parcelado" data-installments="2" data-newTotalPrice="" onchange="changeDropdownVisibility(true)">
+                            <label class="ps-1 pe-2">Parcelado</label>
+                            <button class="btn btn-outline-primary dropdown-toggle visually-hidden" type="button" id="installmentPaymentDropdownToggle" data-bs-toggle="dropdown">2x</button>
+                            <ul class="dropdown-menu text-center">
+                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">2x</li>
+                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">3x</li>
+                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">4x</li>
+                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">&GreaterEqual; 5x</li>
+                            </ul>
+
+                            <input class="form-check btn border-success w-100 p-0 visually-hidden" type="number" id="fiveOrMoreInstallmentPrice" disabled required oninput="changeRadioNewTotalPrice(this.value)">
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><label> Descrição </label></td>
+                    <td><textarea class="w-100" id="generalObservation" oninput="autoGrowGeneralObservation(this)"></textarea></td>
+                </tr>
+
+                <tr class="d-flex mt-5">
+                    <td>
+                        <button type="submit" class="btn btn-success">Gerar Documento</button>
+                    </td>
+                    <td>
+                        <button type="reset" class="btn btn-danger" onclick="{
+                            changeDropdownVisibility(false);
+                            changeFiveOrMoreInstallmentPriceVisibility(false);
+                            }">Apagar Campos </button>
+                    </td>
+                </tr>
+            </table>
         </form>
 
     </div>
@@ -88,6 +137,7 @@
 
     <script src="js/table.js"></script>
     <script src="./js/communicateWithServer.js"></script>
+    <script src="./js/getDate.js"></script>
     <script>
         document.querySelector("form").addEventListener("submit", e => {
             e.preventDefault();
@@ -114,14 +164,72 @@
                 };
             });
 
-        function goToEditTable() {
-            fetch("http://192.168.100.20:9999/", {
-                method: "get"
-            }).then(res => res.text())
-                .then(data => {
-                    console.log(data)
-                });
+        function autoGrowGeneralObservation(textarea) {
+            textarea.style.height = "1px";
+            textarea.style.height = textarea.scrollHeight + "px";
         };
+
+        function updateInstallmentPayment(text) {
+            document.querySelector("#installmentPaymentDropdownToggle").innerText = text;
+
+            const installmentAmount = text.slice(-2, -1);
+            changeRadioInstallments(installmentAmount);
+            changeFiveOrMoreInstallmentPriceVisibility();
+        };
+
+        function changeDropdownVisibility(show) {
+            getTotalPrice();
+            const dropdownToggleButton = document.querySelector("#installmentPaymentDropdownToggle");
+
+            if (show) {
+                dropdownToggleButton.classList.remove("visually-hidden");
+                changeFiveOrMoreInstallmentPriceVisibility();
+            }
+            else {
+                dropdownToggleButton.classList.add("visually-hidden");
+                changeFiveOrMoreInstallmentPriceVisibility(false);
+            };
+        };
+
+        function changeRadioInstallments(installments) {
+            const radio = document.querySelector("#radioInstallmentPayment");
+            radio.setAttribute("data-installments", installments)
+        };
+
+        function changeRadioNewTotalPrice(newTotalPrice) {
+            const radio = document.querySelector("#radioInstallmentPayment");
+            radio.setAttribute("data-newTotalPrice", newTotalPrice)
+        };
+
+        function changeFiveOrMoreInstallmentPriceVisibility(manualVisibility = null) {
+            const installmentPaymentDropdownToggle = document.querySelector("#installmentPaymentDropdownToggle");
+            const fiveOrMoreInstallmentPrice = document.querySelector("#fiveOrMoreInstallmentPrice");
+
+            if (manualVisibility) {
+                enable();
+                return;
+            } else if (manualVisibility === false) {
+                disable();
+                return;
+            };
+
+            if (installmentPaymentDropdownToggle.innerText.includes("5")) {
+                enable();
+            } else {
+                disable();
+            };
+
+            function enable() {
+                fiveOrMoreInstallmentPrice.classList.remove("visually-hidden");
+                fiveOrMoreInstallmentPrice.removeAttribute("disabled");
+            };
+
+            function disable() {
+                fiveOrMoreInstallmentPrice.classList.add("visually-hidden");
+                fiveOrMoreInstallmentPrice.setAttribute("disabled", "");
+            };
+        };
+
 
         function tryGenerateDocument() {
             let canGenerate = true;
@@ -131,19 +239,51 @@
                 alert("Você Precisa Selecionar Pelo Menos Um Produto Para Prosseguir");
             };
 
+            // if (canGenerate) {
             if (true) {
+                const checkedRadio = document.querySelector("#paymentMethods input[name=radioPayment]:checked");
+
                 const clientData = {};
                 clientData.name = document.getElementById("name").value;
+                clientData.houseNumber = document.getElementById("houseNumber").value;
                 clientData.address = document.getElementById("address").value;
                 clientData.city = document.getElementById("city").value;
                 clientData.cep = document.getElementById("cep").value;
                 clientData.district = document.getElementById("district").value;
                 clientData.tel = document.getElementById("tel").value;
                 clientData.email = document.getElementById("email").value;
+                clientData.paymentMethod = checkedRadio.value;
+                clientData.discount = true;
+                clientData.fees = 0;
+                
+                switch (checkedRadio.id) {
+                    case "radioCashPayment": {
+                        clientData.discount = true; // 0.5%
+                        // const totalPrice = getTotalPriceFromSelectedItemsTable();
+                        // clientData.newTotalPrice = totalPrice + totalPrice * 0.5; // Must get the discount in table properties
+                        // Actually clientData.newTotalPrice will be equal to the value in form field.
+                    } return;
 
-                const data = {itemsData: getSelectedItensObject(), clientData}
-                console.log(data)
-                generateDocument(JSON.stringify(data));
+                    case "radioInstallmentPayment": {
+                        clientData.discount = false;
+                        clientData.installments = checkedRadio.getAttribute("data-installments");
+
+                        if (clientData.installments === 5) {
+                            // clientData.fees = checkedRadio.getAttribute("data-fees");
+                            clientData.newTotalPrice = checkedRadio.getAttribute("data-newTotalPrice");
+                        };
+                        clientData.newTotalPrice = checkedRadio.getAttribute("data-newTotalPrice");
+
+                    } return;
+                    default: { throw new Error };
+                };
+
+
+
+                clientData.description = document.getElementById("generalObservation").value;
+
+                const data = { itemsData: getSelectedItensObject(), clientData, date: getCurrentDate() }
+                // generateDocument(JSON.stringify(data));
             };
         };
 

@@ -42,29 +42,18 @@
     border-bottom: 1px;
 }
 
-/* 
-.arrows::before {
-    content: '';
-    width: 100%;
-    height: 100%;
-    border-width: .8vmin .8vmin 0 0;
-    border-style: solid;
-    border-color: black;
-    transition: .2s ease;
-    display: block;
-    transform-origin: 100% 0;
+#installmentPaymentDropdownToggle{
+    padding: 0;
+    width: 4rem;
 }
 
-.arrows:after {
-    content: '';
-    float: left;
-    position: relative;
-    top: -100%;
-    width: 100%;
-    height: 100%;
-    border-width: 0 .8vmin 0 0;
-    border-style: solid;
-    border-color: black;
-    transform-origin: 100% 0;
-    transition: .2s ease;
-} */
+#fiveOrMoreInstallmentPrice{
+    min-width: 3rem;
+}
+
+#geralObservation{
+    min-width: 12rem;
+    min-height: 2rem;
+    max-height: 10rem;
+    height: 2rem;
+}

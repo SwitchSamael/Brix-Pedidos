@@ -17,7 +17,7 @@ function getCurrentDate() {
     const date = new Date();
     const year = date.getFullYear();
     const month = monthNames[date.getMonth()];
-    const day = date.getDay();
+    const day = date.getDate();
     const hours = date.getHours();
     const minutes = date.getMinutes();
     const seconds = date.getSeconds();

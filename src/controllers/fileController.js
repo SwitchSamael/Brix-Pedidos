@@ -1,11 +1,10 @@
 const path = require("path");
 const fs = require("fs");
 
-//XX const filesPath = path.join("dist", "files"); 
-const filePath = path.join("dist", "file", "table.json");
+const filePath = path.join("dist", "files", "table.json");
 
 exports.get = (_, res) => {
-    const jsonTablePath = path.join(__dirname, "..", "..", "dist", "file", "table.json");
+    const jsonTablePath = path.join(__dirname, "..", "..", "dist", "files", "table.json");
 
     res.type("json");
     if (fs.existsSync(jsonTablePath)) {

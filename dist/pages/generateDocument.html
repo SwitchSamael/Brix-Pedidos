@@ -23,155 +23,215 @@
                     <h5 class="text-primary"> PROPOSTA DE COMPRA E VENDA </h5>
                 </div>
 
-                <div class="">
-                    <div class="row">CLIENTE:</div>
-                    <div class="row">ENDEREÇO:</div>
-                    <div class="row p-0">
-                        <div class="col text-start p-0">CIDADE:</div>
-                        <div class="col">CEP:</div>
-                        <div class="col">BAIRRO:</div>
-                    </div>
-                    <div class="row p-0">
-                        <div class="col col-2 p-0 text-start"> TELEFONE:</div>
-                        <div class="col col-8"> E-MAIL:</div>
-                    </div>
-                </div>
+                <table class="table text-start" id="clientDataTable">
+                    <tr>
+                        <td>CLIENTE:</td>
+                        <td id="name"></td>
+                        <td>N°:</td>
+                        <td id="houseNumber"></td>
+                    </tr>
+
+                    <tr>
+                        <td>ENDEREÇO:</td>
+                        <td id="address"></td>
+                        <td>CEP:</td>
+                        <td id="cep"></td>
+                    </tr>
+
+                    <tr>
+                        <td>CIDADE:</td>
+                        <td id="city"></td>
+                        <td>BAIRRO:</td>
+                        <td id="district"></td>
+                    </tr>
+
+                    <tr>
+                        <td>TELEFONE:</td>
+                        <td id="tel"></td>
+                        <td> E-MAIL:</td>
+                        <td id="email"></td>
+                    </tr>
             </div>
-
-            <div class="position-absolute end-0 top-0"><img src="../images/Brix_logo.jpeg" id="logoImg"></div>
         </div>
 
-        <div class="container">
-            <table class="table table-bordered" id="itemsTable">
-                <thead>
-                    <th>Código</th>
-                    <th>DESCRIÇÃO DO PRODUTO</th>
-                    <th>QTDADE</th>
-                    <th>PREÇO UN</th>
-                    <th>PREÇO TOTAL</th>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <div class="position-absolute end-0 top-0"><img src="../images/Brix_logo.jpeg" id="logoImg"></div>
+    </div>
+
+    <div class="container">
+        <table class="table table-bordered" id="itemsTable">
+            <thead>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>Preço Un.</th>
+                <th>Serviço</th>
+                <th>Preço Total</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="pt-3 pb-5">
+        <div><b>FORMA DE PAGAMENTO: </b></div>
+        <div><b>VALIDADE DA PROPOSTA: </b></div>
+    </div>
+
+    <div>
+        <h5 class="text-center text-primary pb-3">CONDIÇÕES COMERCIAIS:</h5>
+        <ol class="ps-3">
+            <li>Formas de Pagamento: A vista 5% de desconto ou 4x no cartão de crédito;</li>
+            <li>Prazo de Entrega: 10 (Dez) Dias úteis a contar do aceite da proposta;</li>
+            <li>Frete: Entregue no cliente</li>
+            <li>Garantia do produto: 12 (doze) meses</li>
+        </ol>
+
+        <div class="danger-message">Equipamento entregue em nosso balcão.</d>
         </div>
 
-        <div class="pt-3 pb-5">
-            <div><b>FORMA DE PAGAMENTO: </b></div>
-            <div><b>VALIDADE DA PROPOSTA: </b></div>
+        <div class="p-4">
+            As garantias seguem as especificações do fabricante, desde que observadas às condições de trabalho e
+            operação
+            constantes nos manuais dos mesmos.
         </div>
 
         <div>
-            <h5 class="text-center text-primary pb-3">CONDIÇÕES COMERCIAIS:</h5>
-            <ol class="ps-3">
-                <li>Formas de Pagamento: A vista 5% de desconto ou 4x no cartão de crédito;</li>
-                <li>Prazo de Entrega: 10 (Dez) Dias úteis a contar do aceite da proposta;</li>
-                <li>Frete: Entregue no cliente</li>
-                <li>Garantia do produto: 12 (doze) meses</li>
-            </ol>
+            <h5 class="text-primary text-center pb-4">
+                INSTALAÇÃO, CONFIGURAÇÃO E TREINAMENTO:
+            </h5>
 
-            <div class="danger-message">Equipamento entregue em nosso balcão.</d>
-            </div>
-
-            <div class="p-4">
-                As garantias seguem as especificações do fabricante, desde que observadas às condições de trabalho e
-                operação
-                constantes nos manuais dos mesmos.
-            </div>
-
-            <div>
-                <h5 class="text-primary text-center pb-4">
-                    INSTALAÇÃO, CONFIGURAÇÃO E TREINAMENTO:
-                </h5>
-
-                <ul>
-                    <li>Instalação e configuração bem como todas as despesas de deslocamento e alimentação fica por
-                        conta da contratada.</li>
-                    <li>Treinamentos e configuração no celular do cliente.</li>
-                    <li>A estabilidade elétrica de extrema importância para um bom funcionamento dos equipamentos e
-                        sistema é total responsabilidade do cliente, portanto indicamos o uso de aterramento e
-                        equipamentos auxiliares como: no-break, estabilizadores ou módulos isoladores.</li>
-                </ul>
-            </div>
-
-            <div class="danger-message p-3">
-                ATENDIMENTO DE VISITA TÉCNICA com custo adicional <u>após 90 dias</u> da instalação. ATEDIMENTO REMOTO
-                OU
-                TELEFÔNICO
-                sem custo adicional, podendo o mesmo ser agendado.
-            </div>
-
-            <div class="pt-3">Estando justo e acerto, firmo em presente via.</div>
-
-            <div class="text-end pt-4"> <b> Juazeiro do Norte, _____ de ________ de ________</div></b>
-            <div class="pt-3">Atenciosamente,</div>
-
-            <div class="d-flex pt-5 justify-content-evenly">
-                <div>
-                    <div class="pt-3">_______________________________________</div>
-                    <div class="pt-3 ps-5"> <b> Consultor Comercial </b></div>
-                </div>
-
-                <div class="pt-3 pb-5 text-end">
-                    <div>___________________________________</div>
-                    <div><b> Assinatura e carimbo do cliente;</div></b>
-                    <div><b> Aceito tal proposta de venda!</div></b>
-                </div>
-            </div>
-
-            <div class="p-4">
-                <div> <b>J V T REINALDO AUTOMACAO E INTEGRACAO TECNOLOGICA – CNPJ 23.441.210/0001-10</b></div>
-                AV Ailton Gomes de Alencar, 1087, Bairro Franciscanos - CEP: 63.020-005, Juazeiro do Norte-CE /
-                Contatos:
-                (88) 9 8829-8387 / (85) 9 9739-2442.
-            </div>
-
-            <button class="btn btn-primary" onclick="window.print()">Print</button>
+            <ul>
+                <li>Instalação e configuração bem como todas as despesas de deslocamento e alimentação fica por
+                    conta da contratada.</li>
+                <li>Treinamentos e configuração no celular do cliente.</li>
+                <li>A estabilidade elétrica de extrema importância para um bom funcionamento dos equipamentos e
+                    sistema é total responsabilidade do cliente, portanto indicamos o uso de aterramento e
+                    equipamentos auxiliares como: no-break, estabilizadores ou módulos isoladores.</li>
+            </ul>
         </div>
 
-        <script src="../js/getDate.js"></script>
+        <div class="danger-message p-3">
+            ATENDIMENTO DE VISITA TÉCNICA com custo adicional <u>após 90 dias</u> da instalação. ATEDIMENTO REMOTO
+            OU
+            TELEFÔNICO
+            sem custo adicional, podendo o mesmo ser agendado.
+        </div>
 
-        <script>
+        <div class="pt-3">Estando justo e acerto, firmo em presente via.</div>
+
+        <div class="text-end pt-4"> <b> Juazeiro do Norte, <span class="date-element" id="day"></span> de <span class="date-element" id="month"></span> de <span class="date-element" id="year"></span></div></b>
+        <div class="pt-3">Atenciosamente,</div>
+
+        <div class="d-flex pt-5 justify-content-evenly">
+            <div>
+                <div class="pt-3">_______________________________________</div>
+                <div class="pt-3 ps-5"> <b> Consultor Comercial </b></div>
+            </div>
+
+            <div class="pt-3 pb-5 text-end">
+                <div>___________________________________</div>
+                <div><b> Assinatura e carimbo do cliente;</div></b>
+                <div><b> Aceito tal proposta de venda!</div></b>
+            </div>
+        </div>
+
+        <div class="p-4">
+            <div> <b>J V T REINALDO AUTOMACAO E INTEGRACAO TECNOLOGICA – CNPJ 23.441.210/0001-10</b></div>
+            AV Ailton Gomes de Alencar, 1087, Bairro Franciscanos - CEP: 63.020-005, Juazeiro do Norte-CE /
+            Contatos:
+            (88) 9 8829-8387 / (85) 9 9739-2442.
+        </div>
+
+        <div class="text-center">
+            <button class="btn btn-primary center" id="printButton" onclick="saveDocument()">Imprimir</button>
+        </div>
+    </div>
+
+    <script src="../js/getDate.js"></script>
+    <script src="../js/communicateWithServer.js"></script>
+    <script>
+        const sessionData = JSON.parse(sessionStorage.getItem("data"));
+        const clientData = sessionData.clientData;
+        const itemsData = sessionData.itemsData;
+
+        (function fillDocument() {
+            fillClientFields();
+            fillItemsTable();
+            fillDateFields();
+        })();
+
+        function fillClientFields() {
+            const nameElement = document.querySelector("#clientDataTable #name");
+            const houseNumberElement = document.querySelector("#clientDataTable #houseNumber");
+            const addressElement = document.querySelector("#clientDataTable #address");
+            const cepElement = document.querySelector("#clientDataTable #cep");
+            const cityElement = document.querySelector("#clientDataTable #city");
+            const districtElement = document.querySelector("#clientDataTable #district");
+            const telElement = document.querySelector("#clientDataTable #tel");
+            const emailElement = document.querySelector("#clientDataTable #email");
+
+            nameElement.innerText = clientData.name;
+            houseNumberElement.innerText = clientData.houseNumber;
+            addressElement.innerText = clientData.address;
+            cepElement.innerText = clientData.cep;
+            cityElement.innerText = clientData.city;
+            districtElement.innerText = clientData.district;
+            telElement.innerText = clientData.tel;
+            emailElement.innerText = clientData.email;
+        };
+
+        function fillItemsTable() {
             const itemsTable = document.querySelector("#itemsTable tbody");
-            const sessionData = JSON.parse(sessionStorage.getItem("data"));
-            console.log(sessionData.clientData);
-            console.log(sessionData.itemsData);
-
-
-            sessionData.itemsData.forEach(itemData => {
+            itemsData.forEach(itemData => {
                 itemsTable.appendChild(createItemElement(itemData));
             });
+        };
 
-            function createItemElement(itemData){
-                const rowElement = document.createElement("tr");
-                const idElement = document.createElement("td");
-                const descriptionElement = document.createElement("td");
-                const amountElement = document.createElement("td");
-                const unitPriceElement = document.createElement("td");
-                const servicePriceElement = document.createElement("td");
-                const totalPriceElement = document.createElement("td");
+        function fillDateFields() {
+            const day = getCurrentDate().day;
+            const month = getCurrentDate().month;
+            const year = getCurrentDate().year;
 
+            const dayElement = document.querySelector("#day");
+            const monthElement = document.querySelector("#month");
+            const yearElement = document.querySelector("#year");
 
-idElement.innerText = itemData.id;
-descriptionElement.innerText = itemData.description;
-amountElement.innerText = itemData.amount;
-servicePriceElement.innerText = itemData.servicePrice;
-unitPriceElement.innerText = itemData.unitPrice;
-totalPriceElement.innerText = itemData.totalPrice;
+            dayElement.textContent += day;
+            monthElement.textContent += month;
+            yearElement.textContent += year;
+        };
 
+        function createItemElement(itemData) {
+            const rowElement = document.createElement("tr");
+            const idElement = document.createElement("td");
+            const descriptionElement = document.createElement("td");
+            const amountElement = document.createElement("td");
+            const unitPriceElement = document.createElement("td");
+            const servicePriceElement = document.createElement("td");
+            const totalPriceElement = document.createElement("td");
 
-                
-                
-                rowElement.appendChild(idElement);
-                rowElement.appendChild(descriptionElement);
-                rowElement.appendChild(amountElement);
-                rowElement.appendChild(unitPriceElement);
-                rowElement.appendChild(totalPriceElement);
+            idElement.innerText = itemData.id;
+            descriptionElement.innerText = itemData.description;
+            amountElement.innerText = itemData.amount;
+            unitPriceElement.innerText = itemData.unitPrice + " R$";
+            servicePriceElement.innerText = itemData.servicePrice + " R$";
+            totalPriceElement.innerText = itemData.totalPrice + " R$";
 
-                return rowElement;
-                //Add new column to service price, if exists.
-            };
+            rowElement.appendChild(idElement);
+            rowElement.appendChild(descriptionElement);
+            rowElement.appendChild(amountElement);
+            rowElement.appendChild(unitPriceElement);
+            rowElement.appendChild(servicePriceElement);
+            rowElement.appendChild(totalPriceElement);
 
-            console.log(getCurrentDate());
-        </script>
+            return rowElement;
+        };
+
+        function saveDocument() {
+            document.querySelector("#printButton").style.display = "none";
+            sendTransactionToServer(sessionStorage.getItem("data"));
+            // window.print();
+        };
+    </script>
 </body>
 
 </html>

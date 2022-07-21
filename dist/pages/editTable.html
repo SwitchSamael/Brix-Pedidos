@@ -129,7 +129,7 @@
 
         function saveFile() {
             const json = tableToJson();
-            sendTableToServer(json);
+            sendTableToServer(JSON.stringify(json));
             window.location.href = "/";
         };
 

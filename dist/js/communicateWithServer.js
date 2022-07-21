@@ -21,13 +21,24 @@ async function getTableFromServer() {
 };
 
 
-function sendTableToServer(json) {
+function sendTableToServer(jsonString) {
     fetch("http://192.168.100.20:9999/file/post", {
         method: "post",
         headers: {
             "Accept": "application/json",
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(json)
+        body: jsonString
+    });
+};
+
+function sendTransactionToServer(jsonString) {
+    fetch("http://192.168.100.20:9999/document/post", {
+        method: "post",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: jsonString
     });
 };

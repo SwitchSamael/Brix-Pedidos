@@ -19,13 +19,15 @@ form with some data of the client such as name, address, city, cep, district, te
 ### Back-end
 Send data
 
+(Extra service)
+
 - Store solicitation of change table (name, date, etc)
 
 - Store generated documents with date 
 
 - Check password and allow or deny access to change table 
 
-- Dashboard 
+- Dashboard (month profit, amount of new clients, new clients, amount of sells)
 
 - Store data so that client don't need request server
   

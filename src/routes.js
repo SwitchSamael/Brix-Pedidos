@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const fileController = require("./controllers/fileController");
+const documentController = require("./controllers/documentController");
 const path = require("path");
 const xlsx = require("xlsx");
 
@@ -43,24 +44,10 @@ router.get("/file/get", fileController.get);
 
 router.post("/file/post", fileController.post);
 
-// router.use("/goTo", express.static(path.join(__dirname, "..", "dist", "pages")));
-// router.get("/goTo", goToController.get);
-router.get("/", (_, res) => {
-// res.
-    // res.setHeader("Content-Type", "text/html")
-    res.redirect(307, "/dist/index.html")
-    // res.send('<script>window.location.href="/pages/editTable.html"</script>')
-})
+router.post("/document/post", documentController.post);
 
-// router.get("/pages", (_, res)=>{
-//     // res.setHeader("Content-Type", "text/html")
-//     // return res.redirect("editTable.html")
-//     res.send('<script>window.location.href="/editTable.html"</script>')
-// })
-// router.get("/goTo", (_, res)=>{
-//     res.type("html");
-//     res.sendFile(path.join(__dirname, "..", "dist", "pages", "editTable.html"))
-//     // path.join(__dirname, "..", "dist", "files", "formattedTable.json")console.log("123")
-// });
+router.get("/", (_, res) => {
+    res.redirect(307, "/dist/index.html")
+});
 
 module.exports = router;
