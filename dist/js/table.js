@@ -285,8 +285,12 @@ function inputListener(e, element) {
 
     if (amount === 0 || amount === "") {
         const selectedItemObject = checkIfSelectedItemAlreadyExists(id);
-        const selectedItemObjectListIndex = selectedItemsObjectList.indexOf(selectedItemObject);
-        selectedItemsObjectList.splice(selectedItemObjectListIndex, 1);
+
+        if (selectedItemObject) {
+            const selectedItemObjectListIndex = selectedItemsObjectList.indexOf(selectedItemObject);
+            selectedItemsObjectList.splice(selectedItemObjectListIndex, 1);
+        }
+
         input.value = "";
         checkbox.checked = false;
         serviceCheckbox.checked = false;
@@ -305,19 +309,19 @@ function inputListener(e, element) {
         } else {
             selectedItemsObjectList.push({
                 id, rowId, amount, description, unitPrice, oldPrice,
-                getTotalPrice: function () {
+                getTotalPrice() {
                     if (this.service) {
                         const plus40percent = (this.oldPrice + this.oldPrice * 0.4);
                         const total = (plus40percent + plus40percent * 0.6);
                         this.totalPrice = Number((this.amount * total).toFixed(2));
                     } else {
                         this.totalPrice = Number((this.amount * this.unitPrice).toFixed(2));
-                    }
+                    };
 
-                    this.getServicePrice();
+                    this.setServicePrice();
                     return this.totalPrice
                 },
-                getServicePrice() {
+                setServicePrice() {
                     if (this.service) {
                         this.servicePrice = Number((this.totalPrice - (this.unitPrice * this.amount)).toFixed(2));
                     }
@@ -347,7 +351,6 @@ function checkIfSelectedItemAlreadyExists(id, rowId = null) {
 function updateSelectedItemsContainer() {
     const noItemMessage = document.querySelector("#noSelectedItem");
     selectedItemsContainer.innerHTML = "";
-
 
     if (selectedItemsObjectList.length === 0) {
         noItemMessage.classList.remove("visually-hidden");
@@ -393,11 +396,12 @@ function getSelectedItensObject() {
 };
 
 function getTotalPrice() {
-    console.log(selectedItemsObjectList.reduce((previous, current) => {
-        console.log(previous)
-        console.log(current)
-        return previous.getTotalPrice() + current.getTotalPrice();
-    }));
+    let total = 0;
+    selectedItemsObjectList.forEach(selectedItemsObject => {
+        total += selectedItemsObject.getTotalPrice();
+    });
+
+    return total;
 };
 
 function disableScroll() {

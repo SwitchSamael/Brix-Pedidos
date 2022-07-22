@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="./images/Brix_logo.jpeg" type="image/x-icon">
 
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
@@ -110,8 +110,14 @@
                 </tr>
 
                 <tr>
-                    <td><label> Descrição </label></td>
+                    <td><label> Observação </label></td>
                     <td><textarea class="w-100" id="generalObservation" oninput="autoGrowGeneralObservation(this)"></textarea></td>
+                </tr>
+
+
+                <tr>
+                    <td><label> Valor Total: </label></td>
+                    <td><input class="w-100" type="text" id="totalPrice" value="0 R$" disabled></td>
                 </tr>
 
                 <tr class="d-flex mt-5">
@@ -130,6 +136,27 @@
 
     </div>
 
+
+    <div class="modal fade" id="selectItemModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Atenção</h5>
+                    <button class="btn-close"></button>
+                </div>
+
+                <div class="modal-body">
+                    Você Precisa Selecionar Pelo Menos Um Produto Para Prosseguir.
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden" id="loader-container">
         <div class="spinner-border text-primary fs-1" id="loader"></div>
         <div class="text-light pt-5 fs-2">Carregando Documento</div>
@@ -139,11 +166,18 @@
     <script src="./js/communicateWithServer.js"></script>
     <script src="./js/getDate.js"></script>
     <script>
-        document.querySelector("form").addEventListener("submit", e => {
-            e.preventDefault();
-            tryGenerateDocument();
-        });
+        // const intelbrasTable = localStorage.getItem("intelbrasTable");
 
+        // if (intelbrasTable) {
+        //     showLoaderScreen();
+        //     disableScroll();
+        //     writeTable(Object.values(JSON.parse(intelbrasTable)), "productsTable", false)
+        //         .then(() => {
+        //             hideLoaderScreen();
+        //             enableScroll();
+
+        //         });
+        // } else {
         showLoaderScreen();
         disableScroll();
 
@@ -155,6 +189,7 @@
                 enableScroll();
 
                 if (tableJson) {
+                    // localStorage.setItem("intelbrasTable", JSON.stringify(tableJson));
                     writeTable(Object.values(tableJson), "productsTable", false)
                         .then(() => {
                             document.getElementById("tableContainer").style.height = "30rem";
@@ -163,6 +198,12 @@
                     document.querySelector("table").innerText = "Nenhuma tabela selecionada";
                 };
             });
+        // }
+
+        document.querySelector("form").addEventListener("submit", e => {
+            e.preventDefault();
+            tryGenerateDocument();
+        });
 
         function autoGrowGeneralObservation(textarea) {
             textarea.style.height = "1px";
@@ -178,17 +219,21 @@
         };
 
         function changeDropdownVisibility(show) {
-            getTotalPrice();
+            updateTotalPriceInput();
+
             const dropdownToggleButton = document.querySelector("#installmentPaymentDropdownToggle");
 
             if (show) {
                 dropdownToggleButton.classList.remove("visually-hidden");
                 changeFiveOrMoreInstallmentPriceVisibility();
-            }
-            else {
+            } else {
                 dropdownToggleButton.classList.add("visually-hidden");
                 changeFiveOrMoreInstallmentPriceVisibility(false);
             };
+        };
+
+        function updateTotalPriceInput() {
+            document.querySelector("#totalPrice").value = getTotalPrice() + " R$";
         };
 
         function changeRadioInstallments(installments) {
@@ -234,9 +279,11 @@
         function tryGenerateDocument() {
             let canGenerate = true;
 
+            const selectItemModal = new bootstrap.Modal(document.getElementById("selectItemModal"));
             if (!document.querySelector("#noSelectedItem").classList.contains("visually-hidden")) {
                 canGenerate = false;
-                alert("Você Precisa Selecionar Pelo Menos Um Produto Para Prosseguir");
+                // selectItemModal.show();
+                alert("Você precisa selecionar pelo menos um item para prosseguir.")
             };
 
             // if (canGenerate) {
@@ -255,7 +302,7 @@
                 clientData.paymentMethod = checkedRadio.value;
                 clientData.discount = true;
                 clientData.fees = 0;
-                
+
                 switch (checkedRadio.id) {
                     case "radioCashPayment": {
                         clientData.discount = true; // 0.5%
