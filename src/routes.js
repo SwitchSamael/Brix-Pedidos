@@ -41,8 +41,10 @@ const xlsx = require("xlsx");
 
 
 router.get("/file/get", fileController.get);
+router.get("/file/getTest", fileController.getTest);
 
 router.post("/file/post", fileController.post);
+router.post("/file/process", fileController.process);
 
 router.post("/document/post", documentController.post);
 

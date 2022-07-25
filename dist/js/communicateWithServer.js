@@ -52,6 +52,17 @@ function sendTableToServer(jsonString) {
     });
 };
 
+function processTable(jsonString) {
+    fetch("http://192.168.100.20:9999/file/process", {
+        method: "post",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: jsonString
+    });
+};
+
 function sendTransactionToServer(jsonString) {
     fetch("http://192.168.100.20:9999/document/post", {
         method: "post",
