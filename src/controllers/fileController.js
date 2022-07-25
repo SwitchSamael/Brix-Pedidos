@@ -10,14 +10,17 @@ exports.get = (_, res) => {
     if (fs.existsSync(jsonTablePath)) {
         res.sendFile(jsonTablePath);
     }
-    else res.status(404).send({"Error 404": "Table not created!"});
+    else res.status(204).send({ "Error 204": "Table not created!" });
+
+    return;
+};
+
 
     return;
 };
 
 exports.post = (req, res) => {
     res.end();
-    saveJson(JSON.stringify(req.body));
     return;
 };
 

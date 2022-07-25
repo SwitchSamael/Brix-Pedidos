@@ -4,7 +4,8 @@ let table;
 let tableHead;
 let tableBody;
 let checkboxList;
-const selectedItemsObjectList = [];
+
+const selectedItemsModel = new SelectedItems();
 const selectedItemsContainer = document.querySelector("#selectedItems tbody");
 
 function initialConfig(tableId) {
@@ -22,51 +23,18 @@ function initialConfig(tableId) {
 
 };
 
-//Remove focus after 2 seconds
-// let allButtons = document.getElementsByClassName("btn");
-// [...allButtons].forEach(btn => {
-//     btn.addEventListener("click", (e) => {
-//         console.log(e.target)
-//     })
-// })
-
-function writeTable(rows, tableId,
-
-    defaultTable = true
-    // bothCheckbox,
-    // leftCheckbox,
-    // topCheckbox,
-    // bothIndex,
-    // leftIndex,
-    // topIndex,
-    // inputColumn
-
-) {
+function writeTable(rows, tableId, defaultTable = true) {
     initialConfig(tableId);
-    let oldPrice = 0;
-
-    // if (defaultTable) {
-    //     console.log(123)
-    //     leftCheckbox, topCheckbox, inputColumn = false;
-    // };
-
-    // if (bothCheckbox) {
-    //     leftCheckbox, topCheckbox = true;
-    // };
-
-    // if (bothIndex) {
-    //     leftIndex, topIndex = true;
-    // };
+    let originalPrice = 0;
 
     return new Promise(async resolve => {
-        await rows.forEach((row, rowIndex) => {
+        await rows.forEach((row, rowIndex, rowList) => {
             const rowElementBody = document.createElement("tr");
             rowElementBody.id = "row_" + rowIndex;
 
             let charCode = 65;
             let firstRepetitionOfColumnName = true;
             let columnNameArray = [String.fromCharCode(charCode)];
-
 
             // Insert the table head
             if (defaultTable && rowIndex === 0) {
@@ -118,7 +86,6 @@ function writeTable(rows, tableId,
 
     function insertCell(rowElement, cellContent, cellType, rowIndex = null, cellIndex = null, elementType = "text", listener = false) {
         rowElement.classList.add("text-center");
-        // rowElement.setAttribute("data-align", "center");
 
         // Insert the checkbox and index of the row (two new cells)
         if (cellIndex === 0) {
@@ -140,11 +107,18 @@ function writeTable(rows, tableId,
 
         // Insert new columns (before index)
         if (!defaultTable) {
-            // Insert service column
+            // Insert automatic service column
             if (rowIndex === 0 && cellIndex === 0) {
-                insertCell(rowElement, "Serviço", "th", null, null);
+                insertCell(rowElement, "Serviço (Automático)", "th", null, null);
             } else if (cellIndex === 0) {
                 insertCell(rowElement, "", "td", null, null, "checkbox", true);
+            };
+
+            // Insert manuel service column
+            if (rowIndex === 0 && cellIndex === 0) {
+                insertCell(rowElement, "Serviço (Manual)", "th", null, null);
+            } else if (cellIndex === 0) {
+                insertCell(rowElement, "", "td", rowIndex, null, "input");
             };
 
             // Insert input column
@@ -178,8 +152,8 @@ function writeTable(rows, tableId,
 
             // Add the money sign in "CE column's cells"
             if (rowIndex !== 0 && cellIndex === 6) {
-                oldPrice = Number(cellContent);
-                cellElement.innerHTML = oldPrice + " R$";
+                originalPrice = Number(cellContent);
+                cellElement.innerHTML = originalPrice + " R$";
             };
 
             // Insert price column
@@ -187,36 +161,35 @@ function writeTable(rows, tableId,
 
                 insertCell(rowElement, "Preço", "th", null, null);
             } else if (cellIndex === 6) {
-                const off30 = oldPrice + (oldPrice * 0.3);
-                const newPrice = (off30 + (off30 * 0.3)).toFixed(2) + " R$";
+                const newPrice = SelectedItem.getNewPrice(originalPrice).toFixed(2) + " R$";
                 insertCell(rowElement, newPrice, "td", null, null);
             };
         };
-
     };
 
     function createCheckbox(rowIndex, listener = false) {
         const checkbox = document.createElement("input");
         if (listener) {
             checkbox.addEventListener("click", e => {
-                const checkbox = e.target;
-                const rowId = checkbox.parentElement.parentElement.id
+                const automaticServiceCheckbox = e.target;
+                const rowId = automaticServiceCheckbox.parentElement.parentElement.id
 
                 // Change the checked attribute of the checkbox of the selected items container to the same checkbox of the main table
                 Array.from(selectedItemsContainer.children).forEach(selectedItemElement => {
-                    const associatedCheckbox = selectedItemElement.children[5].children[0];
+                    const selectedItemCheckbox = selectedItemElement.children[5].children[0];
 
                     if (selectedItemElement.getAttribute("data-rowId") === rowId) {
-                        associatedCheckbox.checked = checkbox.checked;
+                        selectedItemCheckbox.checked = automaticServiceCheckbox.checked;
 
-                        const selectedItemObject = checkIfSelectedItemAlreadyExists(null, rowId);
-                        selectedItemObject["service"] = associatedCheckbox.checked;
+                        const selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(null, rowId);
+                        selectedItemObject["automaticService"] = selectedItemCheckbox.checked;
                         updateSelectedItemsContainer();
                     };
                 });
 
             });
         };
+
         checkbox.type = "checkbox";
         checkbox.classList.add("form-check-input", "custom-check-danger");
 
@@ -254,15 +227,17 @@ function changeItemAmount(rowId, amount) {
 function changeItemService(rowId, isService) {
     const checkboxServiceElement = document.getElementById(rowId).children[1].children[0];
     checkboxServiceElement.checked = isService;
-    const selectedItemObject = checkIfSelectedItemAlreadyExists(null, rowId);
-    selectedItemObject["service"] = isService;
+    const selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(null, rowId);
+    selectedItemObject["automaticService"] = isService;
     updateSelectedItemsContainer();
 };
 
 function deleteItem(rowId) {
-    const inputElement = document.getElementById(rowId).children[2].children[0];
-    inputElement.value = 0;
-    inputListener(null, inputElement);
+    const manuelServiceInputElement = document.getElementById(rowId).children[2].children[0];
+    const amountInputElement = document.getElementById(rowId).children[3].children[0];
+    manuelServiceInputElement.value = "";
+    amountInputElement.value = 0;
+    inputListener(null, amountInputElement);
 };
 
 function inputListener(e, element) {
@@ -279,97 +254,62 @@ function inputListener(e, element) {
 
     const rowId = row.id;
     const checkbox = row.children[0].children[0];
-    const serviceCheckbox = row.children[1].children[0];
+    const automaticServiceCheckbox = row.children[1].children[0];
     const amount = Number(input.value);
-    const id = row.children[3].innerText;
+    const id = row.children[4].innerText;
 
     if (amount === 0 || amount === "") {
-        const selectedItemObject = checkIfSelectedItemAlreadyExists(id);
+        let selectedItemObject;
 
-        if (selectedItemObject) {
-            const selectedItemObjectListIndex = selectedItemsObjectList.indexOf(selectedItemObject);
-            selectedItemsObjectList.splice(selectedItemObjectListIndex, 1);
-        }
+        if (selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(id)) {
+            selectedItemsModel.deleteItem(selectedItemObject);
+        };
 
         input.value = "";
         checkbox.checked = false;
-        serviceCheckbox.checked = false;
-        serviceCheckbox.disabled = true;
+        automaticServiceCheckbox.checked = false;
+        automaticServiceCheckbox.disabled = true;
     } else {
         checkbox.checked = true;
-        serviceCheckbox.disabled = false;
+        automaticServiceCheckbox.disabled = false;
 
-        const description = row.children[6].innerText;
-        const oldPrice = Number(row.children[9].innerText.split(" ")[0]);
-        const unitPrice = Number(row.children[10].innerText.split(" ")[0]);
+        const description = row.children[7].innerText;
+        const originalPrice = Number(row.children[10].innerText.split(" ")[0]);
+        const unitPrice = Number(row.children[11].innerText.split(" ")[0]);
 
         let selectedItemObject;
-        if (selectedItemObject = checkIfSelectedItemAlreadyExists(id)) {
+        if (selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(id)) {
             selectedItemObject.amount = amount;
         } else {
-            selectedItemsObjectList.push({
-                id, rowId, amount, description, unitPrice, oldPrice,
-                getTotalPrice() {
-                    if (this.service) {
-                        const plus40percent = (this.oldPrice + this.oldPrice * 0.4);
-                        const total = (plus40percent + plus40percent * 0.6);
-                        this.totalPrice = Number((this.amount * total).toFixed(2));
-                    } else {
-                        this.totalPrice = Number((this.amount * this.unitPrice).toFixed(2));
-                    };
-
-                    this.setServicePrice();
-                    return this.totalPrice
-                },
-                setServicePrice() {
-                    if (this.service) {
-                        this.servicePrice = Number((this.totalPrice - (this.unitPrice * this.amount)).toFixed(2));
-                    }
-                    else {
-                        this.servicePrice = 0;
-                    }
-                }
-            });
+            selectedItemsModel.addItem(id, rowId, amount, description, false, null, originalPrice);
         };
     };
 
     updateSelectedItemsContainer();
 };
 
-function checkIfSelectedItemAlreadyExists(id, rowId = null) {
-    let filtered;
-    if (id) {
-        filtered = selectedItemsObjectList.filter(selectedItemObject => selectedItemObject.id === id);
-    } else if (rowId) {
-        filtered = selectedItemsObjectList.filter(selectedItemObject => selectedItemObject.rowId === rowId);
-    };
-
-    if (filtered.length === 1) return filtered[0];
-    return false;
-};
-
 function updateSelectedItemsContainer() {
     const noItemMessage = document.querySelector("#noSelectedItem");
     selectedItemsContainer.innerHTML = "";
 
-    if (selectedItemsObjectList.length === 0) {
+    if (selectedItemsModel.items.length === 0) {
         noItemMessage.classList.remove("visually-hidden");
     } else {
         noItemMessage.classList.add("visually-hidden");
     };
 
-    selectedItemsObjectList.forEach(selectedItemObject => {
-        selectedItemsContainer.innerHTML += createSelectedItem(
-            selectedItemObject.amount,
-            selectedItemObject.description,
-            selectedItemObject.getTotalPrice(),
-            selectedItemObject.rowId,
-            selectedItemObject.service
+    selectedItemsModel.items.forEach(selectedItemModel => {
+        selectedItemsContainer.innerHTML += createSelectedItemElement(
+            selectedItemModel.amount,
+            selectedItemModel.description,
+            selectedItemModel.getTotalPrice(),
+            selectedItemModel.rowId,
+            selectedItemModel.service
         );
     });
 };
 
-function createSelectedItem(amount, description, totalPrice, rowId, service) {
+function createSelectedItemElement(amount, description, totalPrice, rowId, service) {
     return `
         <tr class="text-center" data-rowId="${rowId}">
         <td class="selected-item-amount align-middle">${amount} x</td>
@@ -392,16 +332,11 @@ function createSelectedItem(amount, description, totalPrice, rowId, service) {
 };
 
 function getSelectedItensObject() {
-    return selectedItemsObjectList;
+    return selectedItemsModel.items;
 };
 
 function getTotalPrice() {
-    let total = 0;
-    selectedItemsObjectList.forEach(selectedItemsObject => {
-        total += selectedItemsObject.getTotalPrice();
-    });
-
-    return total;
+    return selectedItemsModel.getTotalPrice();
 };
 
 function disableScroll() {
