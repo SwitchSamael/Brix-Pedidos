@@ -15,18 +15,14 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
     <!-- Bootstrap CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-        crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 
     <!-- Script to read excel files (CDN)-->
     <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
 
     <!-- Jquery CDN -->
-    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
-        integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="/css/style.css">
     <title>Pedidos</title>
@@ -35,16 +31,12 @@
 <body>
     <div class="container-fluid p-5">
         <div class="d-flex justify-content-center">
-            <input class="form-control mb-4 " type="file"
-                accept=".xlsx, .xlsm, .xlsb, .xlsb, .xlsx, .xltx, .xltm, .xls, .xlt, .xml, .xlam, .xla, .xlw, .xlr"
-                id="file" name="formattedTable">
+            <input class="form-control mb-4 " type="file" accept=".xlsx, .xlsm, .xlsb, .xlsb, .xlsx, .xltx, .xltm, .xls, .xlt, .xml, .xlam, .xla, .xlw, .xlr" id="file" name="formattedTable">
         </div>
 
         <div class="d-flex flex-column align-items-center visually-hidden" id="settingsButtons">
             <p>Selecione as colunas e linhas que deseja excluir</p>
-            <button class="btn btn-primary mb-2" onclick="autoSelectCheckbox()" data-bs-toggle="tooltip"
-                data-bs-placement="bottom"
-                title="Serão selecionados a coluna G em diante com exceção da coluna L (estado CE), até a linha 6
+            <button class="btn btn-primary mb-2" onclick="autoSelectCheckbox()" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Serão selecionados a coluna G em diante com exceção da coluna L (estado CE), até a linha 6
             (Se essas opções não estiverem de acordo com os dados da tabela, opte por selecionar os elementos manualmente)">
                 Selecionar automaticamente </button>
 
@@ -57,7 +49,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5>Atenção</h5>
-                        <button class="btn-close"></button>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
                     <div class="modal-body">
@@ -67,8 +59,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
-                        <button type="button" class="btn btn-success" data-bs-dismiss="modal"
-                            onclick="saveFile()">Confirmar</button>
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="saveFile()">Confirmar</button>
                     </div>
                 </div>
 
@@ -82,12 +73,11 @@
 
     </div>
 
-    <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden "
-        id="loader-container">
+    <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden " id="loader-container">
         <div class="spinner-border text-primary fs-1" id="loader"></div>
         <div class="text-light pt-5 fs-2">Carregando Documento</div>
     </div>
-    
+
     <script src="/js/model/selectedItem.js"></script>
     <script src="/js/model/selectedItems.js"></script>
     <script src="../js/controller/index.js"></script>
@@ -123,13 +113,10 @@
             disableScroll();
 
             await readXlsxFile(inputFile.files[0])
-                .then(rows =>
-                {
-                    processTable(rows);
-
-                }
-                //  writeTable(rows, "editTable")
-                 );
+                .then(async rows => {
+                    let table = await processTable(JSON.stringify(rows));
+                    writeTable(table, "editTable");
+                });
 
             document.querySelector("#settingsButtons").classList.remove("visually-hidden");
             hideLoaderScreen();
@@ -139,7 +126,7 @@
         function saveFile() {
             const json = tableToJson();
             sendTableToServer(JSON.stringify(json));
-            // window.location.href = "/";
+            window.location.href = "/test";
         };
 
         function tableToJson() {
@@ -180,7 +167,7 @@
             Object.values(jsonObject).forEach((row, index) => {
                 if (row.length === 0) {
                     delete jsonObject[index]
-                }
+                };
             });
 
             return jsonObject;

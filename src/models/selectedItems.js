@@ -1,4 +1,6 @@
-class SelectedItems {    
+const SelectedItem = require("./selectedItem");
+
+exports = class SelectedItems {    
     items = [];
     discount = true;
     discountValue = .05;

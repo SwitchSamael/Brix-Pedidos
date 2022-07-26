@@ -1,10 +1,18 @@
-const express = require("express");
-const router = express.Router();
-const fileController = require("./controllers/fileController");
-const documentController = require("./controllers/documentController");
-const path = require("path");
-const xlsx = require("xlsx");
+// const express = require("express");
 
+import express from "express";
+
+const router = express.Router();
+// const tableController = require("./controllers/tableController");
+import {getIntelbrasHTML} from "./controllers/tableController.js";
+
+// const fileController = require("./controllers/fileController");
+// const documentController = require("./controllers/documentController");
+
+// const path = require("path");
+import pathPkg from "path";
+const path = {pathPkg};
+// const xlsx = require("xlsx");
 
 // let workbook = xlsx.readFile(path.join(filesPath, "Table.xlsx"), { cellDates: true });
 // let worksheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -39,17 +47,28 @@ const xlsx = require("xlsx");
 //     console.error(error);
 // }
 
+router.get("/table/get/intelbrasHTML", getIntelbrasHTML);
 
-router.get("/file/get", fileController.get);
-router.get("/file/getTest", fileController.getTest);
+// router.get("/file/get", fileController.get);
+// router.get("/file/getTest", fileController.getTest);
 
-router.post("/file/post", fileController.post);
-router.post("/file/process", fileController.process);
+// router.post("/file/post", fileController.post);
 
-router.post("/document/post", documentController.post);
+// router.post("/file/process", fileController.process);
 
-router.get("/", (_, res) => {
-    res.redirect(307, "/dist/index.html")
+// router.post("/document/post", documentController.post);
+
+router.get("/test", (_, res) => {
+    res.render("home");
 });
 
-module.exports = router;
+// router.get("/test/editTable", (_, res) => {
+//     res.render("editTable");
+// });
+
+// router.get("/test/generateDocument", (_, res) => {
+//     res.render("generateDocument");
+// });
+
+export {router};
+// module.exports = router;

@@ -12,6 +12,8 @@ Request data from server
 
 Insert Selected items in a new table for have sure of what items will be inserted in the document
 
+System for the form to add a new client or fill the fields with an existent one.****
+
 form with some data of the client such as name, address, city, cep, district, telephone number and email. (name, address and telephone are required)
 
 - Generate document to be downloaded with the data of the form, selected items and actual data

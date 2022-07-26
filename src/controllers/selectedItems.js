@@ -40,7 +40,7 @@ function changeItemService(rowId, isService) {
     updateSelectedItemsContainer();
 };
 
-export function updateSelectedItemsContainer() {
+function updateSelectedItemsContainer() {
     showHideNoItemMessage();
 
     selectedItemsModel.items.forEach(selectedItemModel => {

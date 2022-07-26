@@ -1,11 +1,17 @@
 // // All //XX content must be un commented when upload to hosted server
 
-const express = require("express");
+import express from "express";
+// const express = require("express");
 // //XX const serverless = require("serverless-http");
-const path = require("path");
-const fs = require("fs");
-const router = require("./routes");
-const bodyParser = require("body-parser");
+import path from "path";
+// const path = require("path");
+// import {fs} from "fs/promises";
+// const fs = require("fs");
+import {router} from "./routes.js";
+// const router = require("./routes");
+import bodyParserPkg from "body-parser";
+const {bodyParser} = bodyParserPkg;
+// const bodyParser = require("body-parser");
 
 const app = express();
 const port = process.env.PORT || 9999;
@@ -27,6 +33,9 @@ app.use(bodyParser.json({limit: "1mb"}));
 
 // //XX router.get("/", express.static(path.join("dist")));
 app.use("/", express.static(path.join(__dirname, "..", "dist")));
+
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 
 // //XX app.use("/.netlify/functions/api", router);
 app.use(router);

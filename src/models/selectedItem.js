@@ -1,4 +1,4 @@
-class SelectedItem {
+exports = class SelectedItem {
     constructor(id, rowId, amount, description, automaticService, manualService, originalPrice, totalPrice) {
         this.id = id;
         this.rowId = rowId;

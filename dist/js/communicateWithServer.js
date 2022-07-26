@@ -1,43 +1,47 @@
 
 async function getTableFromServer() {
-    let tableJson = await fetch("http://192.168.100.20:9999/file/get", {
+    return await fetch("http://192.168.100.20:9999/file/get", {
         method: "get",
         headers: { "Content-Type": "text/plain" }
     })
         .then(async (response) => {
             const json = await response.json();
-            return ([response.status, json]) 
+            return ([response.status, json])
         })
         .then(data => {
             const errorCode = data[0];
             const json = data[1];
 
-            if(errorCode !== 204){
+            if (errorCode !== 204) {
                 return json;
             };
         });
-
-        return tableJson;
 };
+
+async function getIntelbrasHTMLTable() {
+    return await fetch("http://192.168.100.20:9999/table/get/intelbrasHTML", {
+        method: "get",
+    })
+        .then(async (response) => await response.text())
+};
+
 async function getTableTestFromServer() {
-    let tableJson = await fetch("http://192.168.100.20:9999/file/getTest", {
+    return await fetch("http://192.168.100.20:9999/file/getTest", {
         method: "get",
         headers: { "Content-Type": "text/plain" }
     })
         .then(async (response) => {
             const json = await response.json();
-            return ([response.status, json]) 
+            return ([response.status, json])
         })
         .then(data => {
             const errorCode = data[0];
             const json = data[1];
 
-            if(errorCode !== 204){
+            if (errorCode !== 204) {
                 return json;
             };
         });
-
-        return tableJson;
 };
 
 
@@ -52,15 +56,15 @@ function sendTableToServer(jsonString) {
     });
 };
 
-function processTable(jsonString) {
-    fetch("http://192.168.100.20:9999/file/process", {
+async function processTable(jsonString) {
+    return await fetch("http://192.168.100.20:9999/file/process", {
         method: "post",
         headers: {
             "Accept": "application/json",
             "Content-Type": "application/json"
         },
         body: jsonString
-    });
+    }).then(response => response.json());
 };
 
 function sendTransactionToServer(jsonString) {
