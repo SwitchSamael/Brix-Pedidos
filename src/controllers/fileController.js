@@ -1,5 +1,10 @@
-const path = require("path");
-const fs = require("fs");
+import path from "path";
+import {fileURLToPath} from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import fs from "fs";
 
 // const filePath = path.join("dist", "files", "table.json");
 const filePath = path.join("dist", "files", "tableTest.json");
@@ -12,7 +17,7 @@ function createCell(element, name, type = "td", disabled = false, content = null
     return { element: element, name: name, type: type, disabled: disabled, content: content };
 };
 
-exports.get = (_, res) => {
+function get(_, res) {
     const jsonTablePath = path.join(__dirname, "..", "..", "dist", "files", "table.json");
 
     res.type("json");
@@ -23,7 +28,7 @@ exports.get = (_, res) => {
     return;
 };
 
-exports.getTest = (_, res) => {
+function getTest(_, res) {
     const jsonTablePath = path.join(__dirname, "..", "..", "dist", "files", "tableTest.json");
 
     res.type("json");
@@ -34,7 +39,7 @@ exports.getTest = (_, res) => {
     return;
 };
 
-exports.post = (req, res) => {
+function post(req, res) {
     res.end();
 
     generateNewTable(req.body);
@@ -73,7 +78,8 @@ function generateNewTable(json) {
             // Calculate the new price to last column
             if (cellIndex === 10) {
                 const oldPrice = row[9];
-                const newPrice = Number(oldPrice) + Number(oldPrice) * 0.3;
+                const off30 = Number(oldPrice) + Number(oldPrice) * 0.3;
+                const newPrice = off30 + off30 * 0.3;
 
                 if (newPrice !== null) {
                     row[cellIndex] = newPrice.toFixed(2);
@@ -100,7 +106,7 @@ function saveJson(jsonString) {
 };
 
 
-exports.process = (req, res) => {
+function process(req, res) {
     generateNewEditTable(req.body);
     res.json(req.body);
     return;
@@ -162,3 +168,12 @@ function getAlphaOrder() {
 
     return columnName;
 };
+
+const fileController = {
+    get: get,
+    getTest: getTest,
+    post: post,
+    process: process
+};
+
+export { fileController };

@@ -181,7 +181,7 @@ function writeTable(rows, tableId, defaultTable = true) {
                     if (selectedItemElement.getAttribute("data-rowId") === rowId) {
                         selectedItemCheckbox.checked = automaticServiceCheckbox.checked;
 
-                        const selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(null, rowId);
+                        const selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
                         selectedItemObject["automaticService"] = selectedItemCheckbox.checked;
                         updateSelectedItemsContainer();
                     };
@@ -227,7 +227,7 @@ function changeItemAmount(rowId, amount) {
 function changeItemService(rowId, isService) {
     const checkboxServiceElement = document.getElementById(rowId).children[1].children[0];
     checkboxServiceElement.checked = isService;
-    const selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(null, rowId);
+    const selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
     selectedItemObject["automaticService"] = isService;
     updateSelectedItemsContainer();
 };
@@ -261,7 +261,7 @@ function inputListener(e, element) {
     if (amount === 0 || amount === "") {
         let selectedItemObject;
 
-        if (selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(id)) {
+        if (selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId)) {
             selectedItemsModel.deleteItem(selectedItemObject);
         };
 
@@ -278,7 +278,7 @@ function inputListener(e, element) {
         const unitPrice = Number(row.children[11].innerText.split(" ")[0]);
 
         let selectedItemObject;
-        if (selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(id)) {
+        if (selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId)) {
             selectedItemObject.amount = amount;
         } else {
             selectedItemsModel.addItem(id, rowId, amount, description, false, null, originalPrice);

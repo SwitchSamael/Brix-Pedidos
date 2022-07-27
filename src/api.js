@@ -3,14 +3,19 @@
 import express from "express";
 // const express = require("express");
 // //XX const serverless = require("serverless-http");
+
 import path from "path";
 // const path = require("path");
-// import {fs} from "fs/promises";
-// const fs = require("fs");
+
+import {fileURLToPath} from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 import {router} from "./routes.js";
 // const router = require("./routes");
-import bodyParserPkg from "body-parser";
-const {bodyParser} = bodyParserPkg;
+
+import bodyParser from "body-parser";
 // const bodyParser = require("body-parser");
 
 const app = express();

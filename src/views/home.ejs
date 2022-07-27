@@ -20,11 +20,11 @@
 </head>
 
 <body>
-    <div class="container-fluid p-5">
+    <div class="container-fluid p-5" id="mainContainer">
         <a type="button" class="btn btn-primary mb-5" href="/test/editTable">Adicionar Nova Tabela</a>
 
         <div class="overflow-auto mb-5" id="tableContainer">
-            <table class="table table-striped-columns table-hover table-bordered" id="productsTable"> </table>
+            <table class="table table-striped-columns table-hover table-bordered" id="customTable"> </table>
         </div>
 
         <div class="mb-5">
@@ -32,11 +32,11 @@
             <table class="table table-bordered" id="selectedItems">
                 <thead>
                     <th>Quantidade</th>
+                    <th>Alterar Quant.</th>
                     <th>Descrição</th>
                     <th>Preço Total</th>
-                    <th>Alterar Quant.</th>
+                    <th>Preço Com Serviço</th>
                     <th>Deletar</th>
-                    <th>Serviço</th>
                 </thead>
                 <tbody></tbody>
             </table>
@@ -87,37 +87,51 @@
                 </tr>
 
                 <tr>
+                    <td><label> Observação </label></td>
+                    <td><textarea class="w-100" id="generalObservation" oninput="autoGrowGeneralObservation(this)"></textarea></td>
+                </tr>
+
+                <tr>
                     <td> <label> Forma de Pagamento: </label></td>
 
                     <td id="paymentMethods">
-                        <input type="radio" id="radioCashPayment" name="radioPayment" checked value="A vista" onchange="changeDropdownVisibility(false)">
+                        <input type="radio" id="radioCashPayment" name="radioPayment" checked value="A vista" onchange="setDropdownVisibility(false)">
                         <label>A vista</label>
 
                         <div class="dropdown d-flex">
-                            <input type="radio" id="radioInstallmentPayment" name="radioPayment" value="Parcelado" data-installments="2" data-newTotalPrice="" onchange="changeDropdownVisibility(true)">
+                            <input type="radio" id="radioInstallmentPayment" name="radioPayment" value="Parcelado" data-installments="2" data-newTotalPrice="" onchange="setDropdownVisibility(true, this.getAttribute('data-installments'))">
                             <label class="ps-1 pe-2">Parcelado</label>
                             <button class="btn btn-outline-primary dropdown-toggle visually-hidden" type="button" id="installmentPaymentDropdownToggle" data-bs-toggle="dropdown">2x</button>
                             <ul class="dropdown-menu text-center">
                                 <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">2x</li>
                                 <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">3x</li>
                                 <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">4x</li>
-                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">&GreaterEqual; 5x</li>
+                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">5x</li>
+                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">6x</li>
+                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">7x</li>
+                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">8x</li>
+                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">9x</li>
+                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">10x</li>
+                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">11x</li>
+                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">12x</li>
                             </ul>
-
-                            <input class="form-check btn border-success w-100 p-0 visually-hidden" type="number" id="fiveOrMoreInstallmentPrice" disabled required oninput="changeRadioNewTotalPrice(this.value)">
                         </div>
                     </td>
                 </tr>
 
-                <tr>
-                    <td><label> Observação </label></td>
-                    <td><textarea class="w-100" id="generalObservation" oninput="autoGrowGeneralObservation(this)"></textarea></td>
+                <tr class="visually-hidden" id="rowInstallmentPrice">
+                    <td><label> Valor Parcelado: </label></td>
+                    <td><input class="w-100" type="text" id="formInstallmentPrice" value="0.00 R$" disabled></td>
                 </tr>
-
 
                 <tr>
                     <td><label> Valor Total: </label></td>
-                    <td><input class="w-100" type="text" id="totalPrice" value="0 R$" disabled></td>
+                    <td><input class="w-100" type="text" id="formTotalPrice" value="0.00 R$" disabled></td>
+                </tr>
+
+                <tr>
+                    <td><label> Valor Final (R$): </label></td>
+                    <td><input class="w-100" type="number" min="0" id="formFinalPrice" value="0.00"></td>
                 </tr>
 
                 <tr class="d-flex mt-5">
@@ -126,8 +140,8 @@
                     </td>
                     <td>
                         <button type="reset" class="btn btn-danger" onclick="{
-                            changeDropdownVisibility(false);
-                            changeFiveOrMoreInstallmentPriceVisibility(false);
+                            setDropdownVisibility(false);
+                            setInstallmentPriceVisibility(false);
                             }">Apagar Campos </button>
                     </td>
                 </tr>
@@ -164,13 +178,13 @@
 
 
     <!-- <script src="../js/model/client.js"></script> -->
-    <!-- <script src="../js/model/selectedItem.js"></script> -->
-    <!-- <script src="../js/model/selectedItems.js"></script> -->
-    <!-- <script src="../js/controller/index.js"></script> -->
-    <!-- <script src="../js/controller/selectedItems.js"></script> -->
-    <!-- <script src="../js/controller/tableTest.js"></script> -->
+    <script src="../js/model/selectedItem.js"></script>
+    <script src="../js/model/selectedItems.js"></script>
+    <script src="../js/controller/index.js"></script>
+    <script src="../js/controller/selectedItems.js"></script>
+    <script src="../js/controller/tableTest.js"></script>
     <script src="../js/communicateWithServer.js"></script>
-    <!-- <script src="../js/getDate.js"></script> -->
+    <script src="../js/getDate.js"></script>
 
     <script>
         // const intelbrasTable = localStorage.getItem("intelbrasTable");
@@ -186,32 +200,40 @@
         //         });
         // } else {
 
+        showLoaderScreen();
+        disableScroll();
+
+        getTableTestFromServer()
+            .then(tableJson => {
+
+                hideLoaderScreen();
+                enableScroll();
+
+                if (tableJson) {
+                    // localStorage.setItem("intelbrasTable", JSON.stringify(tableJson));
+                    writeTable(Object.values(tableJson), "customTable", false)
+                        .then(() => {
+                            // Add event listener in each checkbox of automatic service column (First column)
+                            document.getElementById("tableContainer").style.height = "30rem";
+                            [...document.querySelectorAll("[data-cell='0'] input")].forEach(checkbox=>{
+                                checkbox.addEventListener("click", automaticServiceInputListener);
+                            });
+                        });
+                } else {
+                    document.querySelector("table").innerText = "Nenhuma tabela selecionada";
+                };
+            });
+        // }
+
         // showLoaderScreen();
         // disableScroll();
+        // getIntelbrasHTMLTable().then(tableHTML => {
+        //     document.getElementById("customTable").innerHTML = tableHTML;
+        //     document.getElementById("tableContainer").style.height = "30rem";
+        //     hideLoaderScreen();
+        //     enableScroll();
+        // })
 
-        // getTableTestFromServer()
-        //     .then(tableJson => {
-        //         document.getElementById("tableContainer").style.height = 0;
-
-        //         hideLoaderScreen();
-        //         enableScroll();
-
-        //         if (tableJson) {
-        //             // localStorage.setItem("intelbrasTable", JSON.stringify(tableJson));
-        //             writeTable(Object.values(tableJson), "productsTable", false)
-        //                 .then(() => {
-        //                     document.getElementById("tableContainer").style.height = "30rem";
-        //                 });
-        //         } else {
-        //             document.querySelector("table").innerText = "Nenhuma tabela selecionada";
-        //         };
-        //     });
-
-
-        getIntelbrasHTMLTable().then(data=>{
-            console.log(data);
-        })
-        // }
 
         document.querySelector("form").addEventListener("submit", e => {
             e.preventDefault();
@@ -226,27 +248,37 @@
         function updateInstallmentPayment(text) {
             document.querySelector("#installmentPaymentDropdownToggle").innerText = text;
 
-            const installmentAmount = text.slice(-2, -1);
-            changeRadioInstallments(installmentAmount);
-            changeFiveOrMoreInstallmentPriceVisibility();
+            const installments = text.slice(-2, -1);
+            changeRadioInstallments(installments);
+            changeItemsDiscount(false, installments);
+
+            setInstallmentPriceVisibility(true);
         };
 
-        function changeDropdownVisibility(show) {
-            updateTotalPriceInput();
-
+        function setDropdownVisibility(show, installments = null) {
             const dropdownToggleButton = document.querySelector("#installmentPaymentDropdownToggle");
 
             if (show) {
+                changeItemsDiscount(false, installments);
                 dropdownToggleButton.classList.remove("visually-hidden");
-                changeFiveOrMoreInstallmentPriceVisibility();
+                setInstallmentPriceVisibility(true);
             } else {
+                changeItemsDiscount(true);
                 dropdownToggleButton.classList.add("visually-hidden");
-                changeFiveOrMoreInstallmentPriceVisibility(false);
+                setInstallmentPriceVisibility(false);
             };
+
+            updateFormPayment();
         };
 
-        function updateTotalPriceInput() {
-            document.querySelector("#totalPrice").value = getTotalPrice() + " R$";
+        function updateFormPayment() {
+            document.querySelector("#formTotalPrice").value = getTotalPrice() + " R$";
+            setFormInstallmentPrice();
+            updateFormFinalPrice();
+        };
+
+        function updateFormFinalPrice() {
+            document.querySelector("#formFinalPrice").value = getFinalPrice();
         };
 
         function changeRadioInstallments(installments) {
@@ -259,35 +291,23 @@
             radio.setAttribute("data-newTotalPrice", newTotalPrice)
         };
 
-        function changeFiveOrMoreInstallmentPriceVisibility(manualVisibility = null) {
-            const installmentPaymentDropdownToggle = document.querySelector("#installmentPaymentDropdownToggle");
-            const fiveOrMoreInstallmentPrice = document.querySelector("#fiveOrMoreInstallmentPrice");
+        function setInstallmentPriceVisibility(visibility) {
+            const installmentPriceContainer = document.querySelector("#rowInstallmentPrice");
+            const installmentPriceElement = document.querySelector("#formInstallmentPrice");
 
-            if (manualVisibility) {
-                enable();
-                return;
-            } else if (manualVisibility === false) {
-                disable();
-                return;
-            };
-
-            if (installmentPaymentDropdownToggle.innerText.includes("5")) {
-                enable();
+            if (visibility) {
+                installmentPriceContainer.classList.remove("visually-hidden");
+                installmentPriceContainer.removeAttribute("disabled");
+                setFormInstallmentPrice();
             } else {
-                disable();
-            };
-
-            function enable() {
-                fiveOrMoreInstallmentPrice.classList.remove("visually-hidden");
-                fiveOrMoreInstallmentPrice.removeAttribute("disabled");
-            };
-
-            function disable() {
-                fiveOrMoreInstallmentPrice.classList.add("visually-hidden");
-                fiveOrMoreInstallmentPrice.setAttribute("disabled", "");
+                installmentPriceContainer.classList.add("visually-hidden");
+                installmentPriceContainer.setAttribute("disabled", true);
             };
         };
 
+        function setFormInstallmentPrice() {
+            document.querySelector("#formInstallmentPrice").value = `${getInstallments()} x ${getInstallmentPrice().toFixed(2)} R$`;
+        };
 
         function tryGenerateDocument() {
             let canGenerate = true;
@@ -315,19 +335,19 @@
                 const paymentMethod = checkedRadio.value;
                 const fees = 0;
 
-                const client = new Client(name, houseNumber, address, city, cep, district, tel, email, paymentMethod, discount,
+                const client = new Client(name, houseNumber, address, city, cep, district, tel, email, paymentMethod, hasDiscount,
                     fees);
 
                 switch (checkedRadio.id) {
                     case "radioCashPayment": {
-                        clientData.discount = true; // 0.5%
+                        changeItemsDiscount(true);
                         // const totalPrice = getTotalPriceFromSelectedItemsTable();
                         // clientData.newTotalPrice = totalPrice + totalPrice * 0.5; // Must get the discount in table properties
                         // Actually clientData.newTotalPrice will be equal to the value in form field.
                     } break;
 
                     case "radioInstallmentPayment": {
-                        clientData.discount = false;
+                        changeItemsDiscount(false);
                         clientData.installments = checkedRadio.getAttribute("data-installments");
 
                         if (clientData.installments === 5) {

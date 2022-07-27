@@ -1,10 +1,10 @@
-const fs = require("fs");
-const path = require("path");
-const transactionsJson = require("../../dist/files/transactions.json").transactions;
+import fs from "fs";
+import path from "path";
+import transactionsJson from "../../dist/files/transactions.json" assert {type: "json"};
 
 const filePath = path.join("dist", "files", "transactions.json");
 
-exports.post = (req, res) => {
+function post(req, res) {
     res.end();
     saveTransaction(req.body);
     return;
@@ -21,3 +21,10 @@ function saveTransaction(transaction) {
         console.error(error);
     }
 };
+
+const documentController = {
+    post: post
+};
+
+export { documentController };
+

@@ -2,6 +2,8 @@
 ## Functionalities
 
 ### Front-end
+Virtual Scrolling
+
 Edit and upload table's data to server
 
 Request data from server

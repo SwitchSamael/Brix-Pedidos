@@ -35,7 +35,7 @@ function changeItemAmount(rowId, amount) {
 function changeItemService(rowId, isService) {
     const checkboxServiceElement = document.getElementById(rowId).children[1].children[0];
     checkboxServiceElement.checked = isService;
-    const selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(null, rowId);
+    const selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
     selectedItemObject["automaticService"] = isService;
     updateSelectedItemsContainer();
 };

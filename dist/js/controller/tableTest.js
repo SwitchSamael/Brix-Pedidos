@@ -33,11 +33,11 @@ function writeTable(rows, tableId) {
                 let rowElementHead = document.createElement("tr");
 
                 row.forEach(cell => {
-                    insertCell(cell, rowElementHead, rowIndex);
+                    insertCell(cell, null, rowElementHead, rowIndex);
                 });
-            } else{
-                row.forEach(cell => {
-                    insertCell(cell, rowElementBody, rowIndex);
+            } else {
+                row.forEach((cell, cellIndex) => {
+                    insertCell(cell, cellIndex, rowElementBody, rowIndex);
                 });
             };
         });
@@ -46,19 +46,22 @@ function writeTable(rows, tableId) {
     });
 
 
-    function insertCell(cell, rowElement, rowIndex, listener = false) {
+    function insertCell(cell, cellIndex, rowElement, rowIndex) {
         rowElement.classList.add("text-center");
 
         let cellElement;
-        if(cell.type){
-             cellElement = document.createElement(cell.type);
-        } else{
-             cellElement = document.createElement("td");
+        if (cell.type) {
+            cellElement = document.createElement(cell.type);
+        } else {
+            cellElement = document.createElement("td");
         };
+
+        cellElement.setAttribute("data-cell", cellIndex);
+
 
         switch (cell.element) {
             case "checkbox": {
-                const checkbox = createCheckbox(rowIndex, listener, cell.disabled);
+                const checkbox = createCheckbox(rowIndex, null, cell.disabled);
                 cellElement.appendChild(checkbox);
             } break;
 
@@ -87,10 +90,12 @@ function writeTable(rows, tableId) {
         tableBody.appendChild(rowElement);
     };
 
-    function createCheckbox(rowIndex, listener = false, disabled) {
+    function createCheckbox(rowIndex, listener = null, disabled) {
         const checkbox = document.createElement("input");
+
         if (listener) {
             checkbox.addEventListener("click", e => {
+                e.preventDefault();
                 const automaticServiceCheckbox = e.target;
                 const rowId = automaticServiceCheckbox.parentElement.parentElement.id
 
@@ -101,7 +106,7 @@ function writeTable(rows, tableId) {
                     if (selectedItemElement.getAttribute("data-rowId") === rowId) {
                         selectedItemCheckbox.checked = automaticServiceCheckbox.checked;
 
-                        const selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(null, rowId);
+                        const selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
                         selectedItemObject["automaticService"] = selectedItemCheckbox.checked;
                         updateSelectedItemsContainer();
                     };
@@ -132,7 +137,7 @@ function writeTable(rows, tableId) {
         input.style.width = "4rem";
         input.style.padding = "5px";
 
-        
+
         if (disabled) {
             input.setAttribute("disabled", true);
         };
@@ -160,54 +165,41 @@ function clearRow(row) {
 };
 
 function automaticServiceInputListener(e) {
+    const row = e.target.parentElement.parentElement;
+    const rowId = row.id;
+    const automaticServiceCheckbox = row.children[0].children[0];
+    const manualServiceInput = row.children[1].children[0];
+    const selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
 
+    if (automaticServiceCheckbox.checked) {
+        manualServiceInput.value = "";
+        selectedItemObject.service = "automatic";
+    } else {
+        selectedItemObject.service = "";
+    };
+
+    updateSelectedItemsContainer();
 };
 
-function manualServiceInputListener(e, element) {
-    // let input;
-    // let row;
+function manualServiceInputListener(e) {
+    const input = e.target;
+    const row = e.target.parentElement.parentElement;
+    const rowId = row.id;
+    const automaticServiceCheckbox = row.children[0].children[0];
+    const manualServiceInput = row.children[1].children[0];
+    const manualServicePrice = Number(input.value);
+    const selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
 
-    // if (element) {
-    //     input = element;
-    //     row = element.parentElement.parentElement;
-    // } else {
-    //     input = e.target;
-    //     row = e.target.parentElement.parentElement;
-    // };
+    if (manualServicePrice === 0 || manualServicePrice === "") {
+        manualServiceInput.value = "";
+        selectedItemObject.service = null;
+    } else {
+        automaticServiceCheckbox.checked = false;
+        selectedItemObject.service = "manual";
+        selectedItemObject.manualServicePrice = manualServicePrice;
+    };
 
-    // const rowId = row.id;
-    // const checkbox = row.children[0].children[0];
-    // const automaticServiceCheckbox = row.children[1].children[0];
-    // const manualServiceInput = row.children[2].children[0];
-    // const amount = Number(input.value);
-    // const id = row.children[4].innerText;
-
-    // if (amount === 0 || amount === "") {
-    //     clearRow(rowId);
-
-    //     let selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(id);
-
-    //     if (selectedItemObject) {
-    //         selectedItemsModel.deleteItem(selectedItemObject);
-    //     };
-    // } else {
-    //     checkbox.checked = true;
-    //     automaticServiceCheckbox.disabled = false;
-    //     manualServiceInput.disabled = false;
-
-    //     const description = row.children[7].innerText;
-    //     const originalPrice = Number(row.children[10].innerText.split(" ")[0]);
-    //     const unitPrice = Number(row.children[11].innerText.split(" ")[0]);
-
-    //     let selectedItemObject;
-    //     if (selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(id)) {
-    //         selectedItemObject.amount = amount;
-    //     } else {
-    //         selectedItemsModel.addItem(id, rowId, amount, description, false, null, originalPrice);
-    //     };
-    // };
-
-    // updateSelectedItemsContainer();
+    updateSelectedItemsContainer();
 };
 
 function amountInputListener(e, element) {
@@ -231,7 +223,7 @@ function amountInputListener(e, element) {
     if (amount === 0 || amount === "") {
         clearRow(row);
 
-        let selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(id);
+        let selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
 
         if (selectedItemObject) {
             selectedItemsModel.deleteItem(selectedItemObject);
@@ -244,13 +236,12 @@ function amountInputListener(e, element) {
 
         const description = row.children[6].innerText;
         const originalPrice = Number(row.children[9].innerText.split(" ")[0]);
-        const unitPrice = Number(row.children[10].innerText.split(" ")[0]);
 
-        let selectedItemObject = selectedItemsModel.checkIfItemAlreadyExists(id);
+        let selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
         if (selectedItemObject) {
             selectedItemObject.amount = amount;
         } else {
-            selectedItemsModel.addItem(id, rowId, amount, description, false, null, originalPrice);
+            selectedItemsModel.addItem(id, rowId, amount, description, null, originalPrice);
         };
     };
 
@@ -262,5 +253,23 @@ function getSelectedItensObject() {
 };
 
 function getTotalPrice() {
-    return selectedItemsModel.getTotalPrice();
+    return selectedItemsModel.getTotalPrice().toFixed(2);
+};
+
+function getFinalPrice() {
+    console.log(selectedItemsModel.getFinalPrice())
+    return selectedItemsModel.getFinalPrice().toFixed(2);
+};
+
+function changeItemsDiscount(hasDiscount, installments = 0) {
+    selectedItemsModel.hasDiscount = hasDiscount;
+    selectedItemsModel.installments = installments;
+};
+
+function getInstallments() {
+    return selectedItemsModel.installments;
+};
+
+function getInstallmentPrice() {
+    return selectedItemsModel.getInstallmentPrice();
 };

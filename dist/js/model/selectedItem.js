@@ -1,27 +1,18 @@
 class SelectedItem {
-    constructor(id, rowId, amount, description, automaticService, manualService, originalPrice, totalPrice) {
+    constructor(id, rowId, amount, description, service, originalPrice) {
         this.id = id;
         this.rowId = rowId;
         this.amount = amount;
         this.description = description;
-        this.automaticService = automaticService;
-        this.manualService = manualService;
+        this.service = service;
         this.originalPrice = originalPrice;
-        this.totalPrice = totalPrice;
     };
 
-    automaticServicePrice = null;
-    
-    manualServicePrice = null;
-    manualServicePercentage = null;
+    manualServicePrice = 0;
 
-    setAutomaticServicePrice() {
+    getAutomaticServicePrice() {
         const plus40percent = (this.originalPrice + this.originalPrice * 0.4);
-        this.automaticServicePrice = (plus40percent + plus40percent * 0.6);
-    };
-
-    setManualServicePrice(percentage) {
-        this.manualServicePrice = 1.23;
+        return plus40percent + plus40percent * 0.6;
     };
 
     getNewPrice() {
@@ -34,14 +25,20 @@ class SelectedItem {
     };
 
     getTotalPrice() {
-        if (this.automaticService) {
-            this.setAutomaticServicePrice();
-            return this.automaticServicePrice.toFixed(2);
-        } else if (this.manualService) {
-            this.setManualServicePrice();
-            return this.manualServicePrice.toFixed(2);
-        };
+        return this.getNewPrice() * this.amount;
+    };
 
-        return (this.getNewPrice() * this.amount).toFixed(2);
+    getFinalPrice() {
+        switch (this.service) {
+            case "manual": {
+                return this.getTotalPrice() + this.manualServicePrice;
+            };
+
+            case "automatic": {
+                return this.getAutomaticServicePrice() * this.amount;
+            };
+
+            default: return this.getTotalPrice();
+        };
     };
 };
