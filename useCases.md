@@ -10,7 +10,7 @@ Request data from server
 
 - Request permission to server to change table
 
--- Insert Columns with the new price, amount control and profit
+-- Insert Columns with the new price, quantity control and profit
 
 Insert Selected items in a new table for have sure of what items will be inserted in the document
 
@@ -31,7 +31,7 @@ Send data
 
 - Check password and allow or deny access to change table 
 
-- Dashboard (month profit, amount of new clients, new clients, amount of sells)
+- Dashboard (month profit, quantity of new clients, new clients, quantity of sells)
 
 - Store data so that client don't need request server
   

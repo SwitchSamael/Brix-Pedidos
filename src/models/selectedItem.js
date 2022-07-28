@@ -1,8 +1,8 @@
 export class SelectedItem {
-    constructor(id, rowId, amount, description, automaticService, manualService, originalPrice, totalPrice) {
+    constructor(id, rowId, quantity, description, automaticService, manualService, originalPrice, totalPrice) {
         this.id = id;
         this.rowId = rowId;
-        this.amount = amount;
+        this.quantity = quantity;
         this.description = description;
         this.automaticService = automaticService;
         this.manualService = manualService;
@@ -42,6 +42,6 @@ export class SelectedItem {
             return this.manualServicePrice.toFixed(2);
         };
 
-        return (this.getNewPrice() * this.amount).toFixed(2);
+        return (this.getNewPrice() * this.quantity).toFixed(2);
     };
 };

@@ -1,11 +1,11 @@
-function createSelectedItemElement(amount, description, totalPrice, priceWithService, rowId) {
+function createSelectedItemElement(quantity, description, totalPrice, priceWithService, rowId) {
     return `
         <tr class="text-center" data-rowId="${rowId}">
-        <td class="selected-item-amount align-middle">${amount} x</td>
+        <td class="selected-item-quantity align-middle">${quantity} x</td>
         <td class="arrows-container position-relative align-middle">
             <div class="d-flex arrows">
-                <div class="arrow arrow_left" data-rowId="${rowId}" onclick="changeItemAmount(this.getAttribute('data-rowId'), -1)"></div>
-                <div class="arrow arrow_right" data-rowId="${rowId}" onclick="changeItemAmount(this.getAttribute('data-rowId'), 1)"></div>
+                <div class="arrow arrow_left" data-rowId="${rowId}" onclick="changeItemQuantity(this.getAttribute('data-rowId'), -1)"></div>
+                <div class="arrow arrow_right" data-rowId="${rowId}" onclick="changeItemQuantity(this.getAttribute('data-rowId'), 1)"></div>
             </div>
         </td>
         <td class="selected-item-description align-middle">${description}</td>
@@ -20,15 +20,15 @@ function createSelectedItemElement(amount, description, totalPrice, priceWithSer
 };
 
 function deleteItem(rowId) {
-    const amountInputElement = document.getElementById(rowId).children[2].children[0];
-    amountInputElement.value = 0;
-    amountInputListener(null, amountInputElement);
+    const quantityInputElement = document.getElementById(rowId).children[2].children[0];
+    quantityInputElement.value = 0;
+    quantityInputListener(null, quantityInputElement);
 };
 
-function changeItemAmount(rowId, amount) {
-    const amountInputElement = document.getElementById(rowId).children[2].children[0];
-    amountInputElement.value = Number(amountInputElement.value) + amount;
-    amountInputListener(null, amountInputElement);
+function changeItemQuantity(rowId, quantity) {
+    const quantityInputElement = document.getElementById(rowId).children[2].children[0];
+    quantityInputElement.value = Number(quantityInputElement.value) + quantity;
+    quantityInputListener(null, quantityInputElement);
 };
 
 function changeItemService(rowId, isService) {
@@ -44,20 +44,17 @@ function updateSelectedItemsContainer() {
 
     selectedItemsModel.items.forEach(selectedItemModel => {
         let priceWithService;
-        const total = selectedItemModel.getFinalPrice();
-        const service = selectedItemModel.service;
 
-        console.log(total)
-        if (service) {
-            priceWithService = total;
+        if (selectedItemModel.service) {
+            priceWithService = selectedItemModel.getFinalPrice();
         } else {
             priceWithService = 0;
         };
 
         selectedItemsContainer.innerHTML += createSelectedItemElement(
-            selectedItemModel.amount,
+            selectedItemModel.quantity,
             selectedItemModel.description,
-            selectedItemModel.getTotalPrice().toFixed(2),
+            selectedItemModel.getCapitalPrice().toFixed(2),
             priceWithService.toFixed(2),
             selectedItemModel.rowId 
         );
@@ -72,7 +69,9 @@ function showHideNoItemMessage() {
 
     if (selectedItemsModel.items.length === 0) {
         noItemMessage.classList.remove("visually-hidden");
+        changeFormVisibility(false);
     } else {
         noItemMessage.classList.add("visually-hidden");
+        changeFormVisibility(true);
     };
 };

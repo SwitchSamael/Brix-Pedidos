@@ -204,21 +204,21 @@
             const rowElement = document.createElement("tr");
             const idElement = document.createElement("td");
             const descriptionElement = document.createElement("td");
-            const amountElement = document.createElement("td");
+            const quantityElement = document.createElement("td");
             const unitPriceElement = document.createElement("td");
             const servicePriceElement = document.createElement("td");
             const totalPriceElement = document.createElement("td");
 
             idElement.innerText = itemData.id;
             descriptionElement.innerText = itemData.description;
-            amountElement.innerText = itemData.amount;
+            quantityElement.innerText = itemData.quantity;
             unitPriceElement.innerText = itemData.unitPrice + " R$";
             servicePriceElement.innerText = itemData.servicePrice + " R$";
             totalPriceElement.innerText = itemData.totalPrice + " R$";
 
             rowElement.appendChild(idElement);
             rowElement.appendChild(descriptionElement);
-            rowElement.appendChild(amountElement);
+            rowElement.appendChild(quantityElement);
             rowElement.appendChild(unitPriceElement);
             rowElement.appendChild(servicePriceElement);
             rowElement.appendChild(totalPriceElement);

@@ -218,9 +218,9 @@ function writeTable(rows, tableId, defaultTable = true) {
     };
 };
 
-function changeItemAmount(rowId, amount) {
+function changeItemQuantity(rowId, quantity) {
     const inputElement = document.getElementById(rowId).children[2].children[0];
-    inputElement.value = Number(inputElement.value) + amount;
+    inputElement.value = Number(inputElement.value) + quantity;
     inputListener(null, inputElement);
 };
 
@@ -234,10 +234,10 @@ function changeItemService(rowId, isService) {
 
 function deleteItem(rowId) {
     const manuelServiceInputElement = document.getElementById(rowId).children[2].children[0];
-    const amountInputElement = document.getElementById(rowId).children[3].children[0];
+    const quantityInputElement = document.getElementById(rowId).children[3].children[0];
     manuelServiceInputElement.value = "";
-    amountInputElement.value = 0;
-    inputListener(null, amountInputElement);
+    quantityInputElement.value = 0;
+    inputListener(null, quantityInputElement);
 };
 
 function inputListener(e, element) {
@@ -255,10 +255,10 @@ function inputListener(e, element) {
     const rowId = row.id;
     const checkbox = row.children[0].children[0];
     const automaticServiceCheckbox = row.children[1].children[0];
-    const amount = Number(input.value);
+    const quantity = Number(input.value);
     const id = row.children[4].innerText;
 
-    if (amount === 0 || amount === "") {
+    if (quantity === 0 || quantity === "") {
         let selectedItemObject;
 
         if (selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId)) {
@@ -279,9 +279,9 @@ function inputListener(e, element) {
 
         let selectedItemObject;
         if (selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId)) {
-            selectedItemObject.amount = amount;
+            selectedItemObject.quantity = quantity;
         } else {
-            selectedItemsModel.addItem(id, rowId, amount, description, false, null, originalPrice);
+            selectedItemsModel.addItem(id, rowId, quantity, description, false, null, originalPrice);
         };
     };
 
@@ -300,7 +300,7 @@ function updateSelectedItemsContainer() {
 
     selectedItemsModel.items.forEach(selectedItemModel => {
         selectedItemsContainer.innerHTML += createSelectedItemElement(
-            selectedItemModel.amount,
+            selectedItemModel.quantity,
             selectedItemModel.description,
             selectedItemModel.getTotalPrice(),
             selectedItemModel.rowId,
@@ -309,16 +309,16 @@ function updateSelectedItemsContainer() {
     });
 };
 
-function createSelectedItemElement(amount, description, totalPrice, rowId, service) {
+function createSelectedItemElement(quantity, description, totalPrice, rowId, service) {
     return `
         <tr class="text-center" data-rowId="${rowId}">
-        <td class="selected-item-amount align-middle">${amount} x</td>
+        <td class="selected-item-quantity align-middle">${quantity} x</td>
         <td class="selected-item-description align-middle">${description}</td>
         <td class="selected-item-total-price align-middle">${totalPrice} R$</td>
         <td class="arrows-container position-relative align-middle">
             <div class="d-flex arrows">
-                <div class="arrow arrow_left" data-rowId="${rowId}" onclick="changeItemAmount(this.getAttribute('data-rowId'), -1)"></div>
-                <div class="arrow arrow_right" data-rowId="${rowId}" onclick="changeItemAmount(this.getAttribute('data-rowId'), 1)"></div>
+                <div class="arrow arrow_left" data-rowId="${rowId}" onclick="changeItemQuantity(this.getAttribute('data-rowId'), -1)"></div>
+                <div class="arrow arrow_right" data-rowId="${rowId}" onclick="changeItemQuantity(this.getAttribute('data-rowId'), 1)"></div>
             </div>
         </td>
         <td class="align-middle">

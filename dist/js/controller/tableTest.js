@@ -71,8 +71,8 @@ function writeTable(rows, tableId) {
                     input = createInputText(rowIndex, manualServiceInputListener, cell.disabled);
                     cellElement.appendChild(input);
 
-                } else if (cell.name === "amount") {
-                    input = createInputText(rowIndex, amountInputListener, cell.disabled);
+                } else if (cell.name === "quantity") {
+                    input = createInputText(rowIndex, quantityInputListener, cell.disabled);
                     cellElement.appendChild(input);
                 };
             } break;
@@ -151,7 +151,7 @@ function writeTable(rows, tableId) {
 function clearRow(row) {
     const automaticServiceCheckbox = row.children[0].children[0];
     const manualServiceInput = row.children[1].children[0];
-    const amountInput = row.children[2].children[0];
+    const quantityInput = row.children[2].children[0];
 
     automaticServiceCheckbox.checked = false;
     automaticServiceCheckbox.disabled = true;
@@ -159,7 +159,7 @@ function clearRow(row) {
     manualServiceInput.disabled = true;
     manualServiceInput.value = "";
 
-    amountInput.value = "";
+    quantityInput.value = "";
 
     row.style.backgroundColor = "initial";
 };
@@ -202,7 +202,7 @@ function manualServiceInputListener(e) {
     updateSelectedItemsContainer();
 };
 
-function amountInputListener(e, element) {
+function quantityInputListener(e, element) {
     let input;
     let row;
 
@@ -217,10 +217,10 @@ function amountInputListener(e, element) {
     const rowId = row.id;
     const automaticServiceCheckbox = row.children[0].children[0];
     const manualServiceInput = row.children[1].children[0];
-    const amount = Number(input.value);
+    const quantity = Number(input.value);
     const id = row.children[3].innerText;
 
-    if (amount === 0 || amount === "") {
+    if (quantity === 0 || quantity === "") {
         clearRow(row);
 
         let selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
@@ -239,13 +239,33 @@ function amountInputListener(e, element) {
 
         let selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
         if (selectedItemObject) {
-            selectedItemObject.amount = amount;
+            selectedItemObject.quantity = quantity;
         } else {
-            selectedItemsModel.addItem(id, rowId, amount, description, null, originalPrice);
+            selectedItemsModel.addItem(id, rowId, quantity, description, null, originalPrice);
         };
     };
 
     updateSelectedItemsContainer();
+};
+
+function setFinalPrice(finalPrice){
+    selectedItemsModel.finalPrice = finalPrice;
+};
+
+function setFees(fees) {
+    selectedItemsModel.fees = fees;
+};
+
+function setFeesRate(feesRate) {
+    selectedItemsModel.feesRate = feesRate;
+};
+
+function getFees() {
+    return selectedItemsModel.fees;
+};
+
+function getFeesRate() {
+    return selectedItemsModel.feesRate;
 };
 
 function getSelectedItensObject() {
@@ -253,11 +273,10 @@ function getSelectedItensObject() {
 };
 
 function getTotalPrice() {
-    return selectedItemsModel.getTotalPrice().toFixed(2);
+    return selectedItemsModel.getCapitalPrice().toFixed(2);
 };
 
 function getFinalPrice() {
-    console.log(selectedItemsModel.getFinalPrice())
     return selectedItemsModel.getFinalPrice().toFixed(2);
 };
 

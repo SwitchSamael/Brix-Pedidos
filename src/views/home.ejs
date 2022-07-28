@@ -43,7 +43,7 @@
             <div id="noSelectedItem">Nenhum Item Selecionado.</div>
         </div>
 
-        <form class="w-50">
+        <form class="w-50 visually-hidden" id="form">
             <table class="table table-borderless">
 
                 <tr>
@@ -88,7 +88,7 @@
 
                 <tr>
                     <td><label> Observação </label></td>
-                    <td><textarea class="w-100" id="generalObservation" oninput="autoGrowGeneralObservation(this)"></textarea></td>
+                    <td><textarea class="w-100" id="observation" oninput="autoGrowObservationField(this)"></textarea></td>
                 </tr>
 
                 <tr>
@@ -119,19 +119,29 @@
                     </td>
                 </tr>
 
-                <tr class="visually-hidden" id="rowInstallmentPrice">
-                    <td><label> Valor Parcelado: </label></td>
-                    <td><input class="w-100" type="text" id="formInstallmentPrice" value="0.00 R$" disabled></td>
-                </tr>
-
                 <tr>
                     <td><label> Valor Total: </label></td>
                     <td><input class="w-100" type="text" id="formTotalPrice" value="0.00 R$" disabled></td>
                 </tr>
 
+                <tr class="visually-hidden" id="rowInstallmentPrice">
+                    <td><label> Valor Parcelado: </label></td>
+                    <td><input class="w-100" type="text" id="formInstallmentPrice" value="0.00 R$" disabled></td>
+                </tr>
+
+                <tr class="visually-hidden" id="rowFees">
+                    <td><label> Juros: </label></td>
+                    <td><input class="w-100" type="text" id="formFees" value="0.00 R$" disabled></td>
+                </tr>
+
+                <tr class="visually-hidden" id="rowFeesRate">
+                    <td><label> Taxa de Juros: </label></td>
+                    <td><input class="w-100" type="text" id="formFeesRate" value="0.00 %" disabled></td>
+                </tr>
+
                 <tr>
                     <td><label> Valor Final (R$): </label></td>
-                    <td><input class="w-100" type="number" min="0" id="formFinalPrice" value="0.00"></td>
+                    <td><input class="w-100" type="number" step=".01" min="0" id="formFinalPrice" value="0.00" oninput="formFinalPriceListener(Number(this.value))"></td>
                 </tr>
 
                 <tr class="d-flex mt-5">
@@ -147,9 +157,7 @@
                 </tr>
             </table>
         </form>
-
     </div>
-
 
     <div class="modal fade" id="selectItemModal" tabindex="-1">
         <div class="modal-dialog">
@@ -215,7 +223,7 @@
                         .then(() => {
                             // Add event listener in each checkbox of automatic service column (First column)
                             document.getElementById("tableContainer").style.height = "30rem";
-                            [...document.querySelectorAll("[data-cell='0'] input")].forEach(checkbox=>{
+                            [...document.querySelectorAll("[data-cell='0'] input")].forEach(checkbox => {
                                 checkbox.addEventListener("click", automaticServiceInputListener);
                             });
                         });
@@ -240,15 +248,25 @@
             tryGenerateDocument();
         });
 
-        function autoGrowGeneralObservation(textarea) {
+        function autoGrowObservationField(textarea) {
             textarea.style.height = "1px";
             textarea.style.height = textarea.scrollHeight + "px";
+        };
+
+        function changeFormVisibility(show) {
+            const form = document.querySelector("#form");
+
+            if (show) {
+                form.classList.remove("visually-hidden");
+            } else {
+                form.classList.add("visually-hidden");
+            };
         };
 
         function updateInstallmentPayment(text) {
             document.querySelector("#installmentPaymentDropdownToggle").innerText = text;
 
-            const installments = text.slice(-2, -1);
+            const installments = text.toLowerCase().split("x")[0];
             changeRadioInstallments(installments);
             changeItemsDiscount(false, installments);
 
@@ -262,10 +280,14 @@
                 changeItemsDiscount(false, installments);
                 dropdownToggleButton.classList.remove("visually-hidden");
                 setInstallmentPriceVisibility(true);
+                setFeesVisibility(true);
+                setFeesRateVisibility(true);
             } else {
                 changeItemsDiscount(true);
                 dropdownToggleButton.classList.add("visually-hidden");
                 setInstallmentPriceVisibility(false);
+                setFeesVisibility(false);
+                setFeesRateVisibility(false);
             };
 
             updateFormPayment();
@@ -273,12 +295,39 @@
 
         function updateFormPayment() {
             document.querySelector("#formTotalPrice").value = getTotalPrice() + " R$";
-            setFormInstallmentPrice();
+            updateFormInstallmentPrice();
             updateFormFinalPrice();
         };
 
         function updateFormFinalPrice() {
             document.querySelector("#formFinalPrice").value = getFinalPrice();
+        };
+
+        function formFinalPriceListener(formFinalPrice) {
+            document.querySelector("#formFinalPrice").setAttribute("min", formFinalPrice);
+            
+            const feesRate = (formFinalPrice - getTotalPrice()) / getTotalPrice();
+            const fees = formFinalPrice * feesRate;
+
+            setFinalPrice(formFinalPrice);
+            setFees(fees);
+            setFeesRate(feesRate);
+
+            updateFormInstallmentPrice();
+            updateFormFees();
+            updateFormFeesRate();
+        };
+
+        function updateFormInstallmentPrice() {
+            document.querySelector("#formInstallmentPrice").value = `${getInstallments()} x ${getInstallmentPrice().toFixed(2)} R$`;
+        };
+
+        function updateFormFees(fees) {
+            document.querySelector("#formFees").value = getFees().toFixed(3) + " R$";
+        };
+
+        function updateFormFeesRate(feesRate) {
+            document.querySelector("#formFeesRate").value = (getFeesRate() * 100).toFixed(3) + " %";
         };
 
         function changeRadioInstallments(installments) {
@@ -291,22 +340,49 @@
             radio.setAttribute("data-newTotalPrice", newTotalPrice)
         };
 
+        function setFeesVisibility(visibility) {
+            const feesContainer = document.querySelector("#rowFees");
+            const feesElement = document.querySelector("#formFees");
+
+            if (visibility) {
+                feesContainer.classList.remove("visually-hidden");
+                feesContainer.removeAttribute("disabled");
+                feesElement.value = "0.000 R$";
+                setFees(feesElement.value);
+            } else {
+                setFees(0);
+                feesContainer.classList.add("visually-hidden");
+                feesContainer.setAttribute("disabled", true);
+            };
+        };
+
+        function setFeesRateVisibility(visibility) {
+            const feesRateContainer = document.querySelector("#rowFeesRate");
+            const feesRateElement = document.querySelector("#formFeesRate");
+
+            if (visibility) {
+                feesRateContainer.classList.remove("visually-hidden");
+                feesRateContainer.removeAttribute("disabled");
+                feesRateElement.value = "0.000 %";
+                setFeesRate(feesRateElement.value);
+            } else {
+                setFeesRate(0);
+                feesRateContainer.classList.add("visually-hidden");
+                feesRateContainer.setAttribute("disabled", true);
+            };
+        };
+
         function setInstallmentPriceVisibility(visibility) {
             const installmentPriceContainer = document.querySelector("#rowInstallmentPrice");
-            const installmentPriceElement = document.querySelector("#formInstallmentPrice");
 
             if (visibility) {
                 installmentPriceContainer.classList.remove("visually-hidden");
                 installmentPriceContainer.removeAttribute("disabled");
-                setFormInstallmentPrice();
+                updateFormInstallmentPrice();
             } else {
                 installmentPriceContainer.classList.add("visually-hidden");
                 installmentPriceContainer.setAttribute("disabled", true);
             };
-        };
-
-        function setFormInstallmentPrice() {
-            document.querySelector("#formInstallmentPrice").value = `${getInstallments()} x ${getInstallmentPrice().toFixed(2)} R$`;
         };
 
         function tryGenerateDocument() {
@@ -332,39 +408,33 @@
                 const district = document.getElementById("district").value;
                 const tel = document.getElementById("tel").value;
                 const email = document.getElementById("email").value;
+                const observation = document.getElementById("observation").value;
                 const paymentMethod = checkedRadio.value;
-                const fees = 0;
+                const totalPrice = document.getElementById("formTotalPrice").value;
+                const finalPrice = document.getElementById("formFinalPrice").value;
+                let installmentPrice = 0;
+                let fees = 0;
+                let feesRate = 0;
 
-                const client = new Client(name, houseNumber, address, city, cep, district, tel, email, paymentMethod, hasDiscount,
-                    fees);
+                // const client = new Client(name, houseNumber, address, city, cep, district, tel, email, paymentMethod, hasDiscount,
+                //     fees);
 
                 switch (checkedRadio.id) {
                     case "radioCashPayment": {
-                        changeItemsDiscount(true);
-                        // const totalPrice = getTotalPriceFromSelectedItemsTable();
-                        // clientData.newTotalPrice = totalPrice + totalPrice * 0.5; // Must get the discount in table properties
-                        // Actually clientData.newTotalPrice will be equal to the value in form field.
+                        console.log("cash payment");
                     } break;
-
+                    
                     case "radioInstallmentPayment": {
-                        changeItemsDiscount(false);
-                        clientData.installments = checkedRadio.getAttribute("data-installments");
-
-                        if (clientData.installments === 5) {
-                            // clientData.fees = checkedRadio.getAttribute("data-fees");
-                            clientData.newTotalPrice = checkedRadio.getAttribute("data-newTotalPrice");
-                        };
-                        clientData.newTotalPrice = checkedRadio.getAttribute("data-newTotalPrice");
-
+                        console.log("installment payment");
+                        installmentPrice = getInstallmentPrice();
+                        fees = getFees();
+                        feesRate = getFeesRate();
                     } break;
                     default: { throw new Error };
                 };
 
-                clientData.description = document.getElementById("generalObservation").value;
-
-
-                const data = { itemsData: getSelectedItensObject(), clientData, date: getCurrentDate() }
-                generateDocument(JSON.stringify(data));
+                // const data = { itemsData: getSelectedItensObject(), clientData, date: getCurrentDate() }
+                // generateDocument(JSON.stringify(data));
             };
         };
 

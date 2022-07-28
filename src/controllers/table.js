@@ -97,8 +97,8 @@ export class Table {
     //                     input = createInputText(rowIndex, manualServiceInputListener, cell.disabled);
     //                     cellElement.appendChild(input);
 
-    //                 } else if (cell.name === "amount") {
-    //                     input = createInputText(rowIndex, amountInputListener, cell.disabled);
+    //                 } else if (cell.name === "quantity") {
+    //                     input = createInputText(rowIndex, quantityInputListener, cell.disabled);
     //                     cellElement.appendChild(input);
     //                 };
     //             } break;
@@ -175,7 +175,7 @@ export class Table {
     // clearRow(row) {
     //     const automaticServiceCheckbox = row.children[0].children[0];
     //     const manualServiceInput = row.children[1].children[0];
-    //     const amountInput = row.children[2].children[0];
+    //     const quantityInput = row.children[2].children[0];
 
     //     automaticServiceCheckbox.checked = false;
     //     automaticServiceCheckbox.disabled = true;
@@ -183,7 +183,7 @@ export class Table {
     //     manualServiceInput.disabled = true;
     //     manualServiceInput.value = "";
 
-    //     amountInput.value = "";
+    //     quantityInput.value = "";
 
     //     row.style.backgroundColor = "initial";
     // };
@@ -208,10 +208,10 @@ export class Table {
     //     // const checkbox = row.children[0].children[0];
     //     // const automaticServiceCheckbox = row.children[1].children[0];
     //     // const manualServiceInput = row.children[2].children[0];
-    //     // const amount = Number(input.value);
+    //     // const quantity = Number(input.value);
     //     // const id = row.children[4].innerText;
 
-    //     // if (amount === 0 || amount === "") {
+    //     // if (quantity === 0 || quantity === "") {
     //     //     clearRow(rowId);
 
     //     //     let selectedItemObject = selectedItemsModel.getSelectedItemByRowId(id);
@@ -230,16 +230,16 @@ export class Table {
 
     //     //     let selectedItemObject;
     //     //     if (selectedItemObject = selectedItemsModel.getSelectedItemByRowId(id)) {
-    //     //         selectedItemObject.amount = amount;
+    //     //         selectedItemObject.quantity = quantity;
     //     //     } else {
-    //     //         selectedItemsModel.addItem(id, rowId, amount, description, false, null, originalPrice);
+    //     //         selectedItemsModel.addItem(id, rowId, quantity, description, false, null, originalPrice);
     //     //     };
     //     // };
 
     //     // updateSelectedItemsContainer();
     // };
 
-    // amountInputListener(e, element) {
+    // quantityInputListener(e, element) {
     //     let input;
     //     let row;
 
@@ -254,10 +254,10 @@ export class Table {
     //     const rowId = row.id;
     //     const automaticServiceCheckbox = row.children[0].children[0];
     //     const manualServiceInput = row.children[1].children[0];
-    //     const amount = Number(input.value);
+    //     const quantity = Number(input.value);
     //     const id = row.children[3].innerText;
 
-    //     if (amount === 0 || amount === "") {
+    //     if (quantity === 0 || quantity === "") {
     //         clearRow(row);
 
     //         let selectedItemObject = this.selectedItemsModel.getSelectedItemByRowId(id);
@@ -277,9 +277,9 @@ export class Table {
 
     //         let selectedItemObject = this.selectedItemsModel.getSelectedItemByRowId(id);
     //         if (selectedItemObject) {
-    //             selectedItemObject.amount = amount;
+    //             selectedItemObject.quantity = quantity;
     //         } else {
-    //             this.selectedItemsModel.addItem(id, rowId, amount, description, false, null, originalPrice);
+    //             this.selectedItemsModel.addItem(id, rowId, quantity, description, false, null, originalPrice);
     //         };
     //     };
 

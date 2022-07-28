@@ -5,8 +5,8 @@ export class SelectedItems {
     hasDiscount = true;
     discountValue = .05;
 
-    addItem(id, rowId, amount, description, automaticService, manualService, originalPrice, unitPrice) {
-        this.items.push(new SelectedItem(id, rowId, amount, description, automaticService, manualService, originalPrice, unitPrice));
+    addItem(id, rowId, quantity, description, automaticService, manualService, originalPrice, unitPrice) {
+        this.items.push(new SelectedItem(id, rowId, quantity, description, automaticService, manualService, originalPrice, unitPrice));
     };
 
     deleteItem(item) {

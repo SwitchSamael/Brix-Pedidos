@@ -57,7 +57,7 @@ function generateNewTable(json) {
             rows[rowIndex] = ["Serviço (Automático)", "Serviço (Manual)", "Quantidade", "Código Produto", "NCM", "EAN", "Descrição do Produto", "Unidade", "Segmento", "CE", "Novo Preço"];
         };
 
-        row.unshift(createCell(INPUT, "amount", "th"));
+        row.unshift(createCell(INPUT, "quantity", "th"));
         row.unshift(createCell(INPUT, "manualService", "th", true));
         row.unshift(createCell(CHECKBOX, "automaticService", "th", true));
         row.push(createCell(TEXT, "newPrice"));

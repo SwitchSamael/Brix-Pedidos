@@ -216,8 +216,8 @@
         function updateInstallmentPayment(text) {
             document.querySelector("#installmentPaymentDropdownToggle").innerText = text;
 
-            const installmentAmount = text.slice(-2, -1);
-            changeRadioInstallments(installmentAmount);
+            const installmentQuantity = text.slice(-2, -1);
+            changeRadioInstallments(installmentQuantity);
             changeFiveOrMoreInstallmentPriceVisibility();
         };
 

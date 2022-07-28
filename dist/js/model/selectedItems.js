@@ -1,12 +1,31 @@
 class SelectedItems {
     items = [];
     hasDiscount = true;
-    discountValue = 5 / 100;
-    installments = 0;
+    discount = 5 / 100;
+
+    // Value of a product in cash payment without fees (quantity * present value)
+    capital;
+
+    // The addition Price;
+    service;
+
+    // loan price (Addition in capital)
     fees;
 
-    addItem(id, rowId, amount, description, service, originalPrice) {
-        this.items.push(new SelectedItem(id, rowId, amount, description, service, originalPrice));
+    // Percentage
+    feesRate = 1;
+
+    // Time in month to pay
+    installments = 0;
+
+    // Final(amount) value per month
+    installmentPrice;
+
+    // Amount price (Total to pay for with fees; Value with discount (case cash payment), or with fees (case installment payment))
+    finalPrice;
+
+    addItem(id, rowId, quantity, description, service, originalPrice) {
+        this.items.push(new SelectedItem(id, rowId, quantity, description, service, originalPrice));
     };
 
     deleteItem(item) {
@@ -21,48 +40,33 @@ class SelectedItems {
         return false;
     };
 
-    // getTotalPrice() {
-    //     let total = 0;
-
-    //     this.items.forEach(item => {
-    //         total += item.getFinalPrice();
-    //     });
-
-    //     return total;
-    // };
-
-    getTotalPrice() {
-        let total = 0;
-        this.items.forEach(item => {
-            total += item.getTotalPrice();
-        });
-
-        return total;
-    };
-
-    getItemsFinalPrice() {
+    getCapitalPrice() {
         let total = 0;
         this.items.forEach(item => {
             total += item.getFinalPrice();
-            console.log(item.getFinalPrice());
         });
-        
+
+        this.capital = total;
+
         return total;
     };
 
-    getFinalPrice() {
+    getFinalPrice(posPrice) {
         if (this.hasDiscount) {
-            return this.getItemsFinalPrice() * this.discountValue;
+            const finalPrice = this.getCapitalPrice() - this.getCapitalPrice() * this.discount;
+            this.finalPrice = finalPrice;
+
+            return this.finalPrice
         };
 
-        return getItemsFinalPrice();
+        if (posPrice) {
+            return posPrice + posPrice * this.feesRate;
+        };
+
+        return this.getCapitalPrice();
     };
 
     getInstallmentPrice() {
         return this.getFinalPrice() / this.installments;
-    };
-
-    getFinalPriceWithoutDiscount() {
-
     };
 };
