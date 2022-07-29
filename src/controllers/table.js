@@ -286,7 +286,7 @@ export class Table {
     //     updateSelectedItemsContainer();
     // };
 
-    // getSelectedItensObject() {
+    // getAllSelectedItemsObject() {
     //     return this.selectedItemsModel.items;
     // };
 

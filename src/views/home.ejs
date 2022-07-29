@@ -14,14 +14,14 @@
     <!-- Jquery CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/indexStyle.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/indexStyle.css">
     <title>Pedidos</title>
 </head>
 
 <body>
     <div class="container-fluid p-5" id="mainContainer">
-        <a type="button" class="btn btn-primary mb-5" href="/test/editTable">Adicionar Nova Tabela</a>
+        <a type="button" class="btn btn-primary mb-5" href="/editTable">Adicionar Nova Tabela</a>
 
         <div class="overflow-auto mb-5" id="tableContainer">
             <table class="table table-striped-columns table-hover table-bordered" id="customTable"> </table>
@@ -185,14 +185,16 @@
     </div>
 
 
-    <!-- <script src="../js/model/client.js"></script> -->
-    <script src="../js/model/selectedItem.js"></script>
-    <script src="../js/model/selectedItems.js"></script>
-    <script src="../js/controller/index.js"></script>
-    <script src="../js/controller/selectedItems.js"></script>
-    <script src="../js/controller/tableTest.js"></script>
-    <script src="../js/communicateWithServer.js"></script>
-    <script src="../js/getDate.js"></script>
+    <!-- <script src="./js/model/client.js"></script> -->
+    <script src="./js/model/selectedItem.js"></script>
+    <script src="./js/model/selectedItems.js"></script>
+    <script src="./js/controller/index.js"></script>
+    <script src="./js/controller/selectedItems.js"></script>
+    <script src="./js/controller/selectedItems.js"></script>
+    <script src="./js/controller/tableTest.js"></script>
+    <script src="./js/controller/manualItems.js"></script>
+    <script src="./js/communicateWithServer.js"></script>
+    <script src="./js/getDate.js"></script>
 
     <script>
         // const intelbrasTable = localStorage.getItem("intelbrasTable");
@@ -266,7 +268,8 @@
         function updateInstallmentPayment(text) {
             document.querySelector("#installmentPaymentDropdownToggle").innerText = text;
 
-            const installments = text.toLowerCase().split("x")[0];
+            const installments = parseInt(text);
+
             changeRadioInstallments(installments);
             changeItemsDiscount(false, installments);
 
@@ -305,7 +308,7 @@
 
         function formFinalPriceListener(formFinalPrice) {
             document.querySelector("#formFinalPrice").setAttribute("min", formFinalPrice);
-            
+
             const feesRate = (formFinalPrice - getTotalPrice()) / getTotalPrice();
             const fees = formFinalPrice * feesRate;
 
@@ -400,47 +403,29 @@
                 const checkedRadio = document.querySelector("#paymentMethods input[name=radioPayment]:checked");
 
                 const clientData = {};
-                const name = document.getElementById("name").value;
-                const houseNumber = Number(document.getElementById("houseNumber").value);
-                const address = document.getElementById("address").value;
-                const city = document.getElementById("city").value;
-                const cep = document.getElementById("cep").value;
-                const district = document.getElementById("district").value;
-                const tel = document.getElementById("tel").value;
-                const email = document.getElementById("email").value;
-                const observation = document.getElementById("observation").value;
-                const paymentMethod = checkedRadio.value;
-                const totalPrice = document.getElementById("formTotalPrice").value;
-                const finalPrice = document.getElementById("formFinalPrice").value;
-                let installmentPrice = 0;
-                let fees = 0;
-                let feesRate = 0;
+                clientData.name = document.getElementById("name").value;
+                clientData.houseNumber = Number(document.getElementById("houseNumber").value);
+                clientData.address = document.getElementById("address").value;
+                clientData.city = document.getElementById("city").value;
+                clientData.cep = document.getElementById("cep").value;
+                clientData.district = document.getElementById("district").value;
+                clientData.tel = document.getElementById("tel").value;
+                clientData.email = document.getElementById("email").value;
+                clientData.observation = document.getElementById("observation").value;
+                clientData.paymentMethod = checkedRadio.value;
+                clientData.totalPrice = parseFloat(document.getElementById("formTotalPrice").value);
+                clientData.finalPrice = parseFloat(document.getElementById("formFinalPrice").value);
 
-                // const client = new Client(name, houseNumber, address, city, cep, district, tel, email, paymentMethod, hasDiscount,
-                //     fees);
+                clientData.products = getSelectedItemsObject();
 
-                switch (checkedRadio.id) {
-                    case "radioCashPayment": {
-                        console.log("cash payment");
-                    } break;
-                    
-                    case "radioInstallmentPayment": {
-                        console.log("installment payment");
-                        installmentPrice = getInstallmentPrice();
-                        fees = getFees();
-                        feesRate = getFeesRate();
-                    } break;
-                    default: { throw new Error };
-                };
-
-                // const data = { itemsData: getSelectedItensObject(), clientData, date: getCurrentDate() }
-                // generateDocument(JSON.stringify(data));
+                const data = {clientData, date: getCurrentDate() }
+                generateDocument(JSON.stringify(data));
             };
         };
 
         function generateDocument(data) {
             sessionStorage.setItem("data", data);
-            window.location.href = "test/generateDocument";
+            window.location.href = "/generateContract";
         };
     </script>
 

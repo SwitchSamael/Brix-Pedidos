@@ -58,13 +58,12 @@
     </div>
 
     <div class="container">
-        <table class="table table-bordered" id="itemsTable">
+        <table class="table table-bordered" id="productsTable">
             <thead>
                 <th>Código</th>
                 <th>Descrição</th>
                 <th>Quantidade</th>
                 <th>Preço Un.</th>
-                <th>Serviço</th>
                 <th>Preço Total</th>
             </thead>
             <tbody></tbody>
@@ -72,8 +71,8 @@
     </div>
 
     <div class="pt-3 pb-5">
-        <div><b>FORMA DE PAGAMENTO: </b></div>
-        <div><b>VALIDADE DA PROPOSTA: </b></div>
+        <div><b class="pe-3">FORMA DE PAGAMENTO:</b> <span id="paymentMethod"></span> </div>
+        <div><b class="pe-3">VALIDADE DA PROPOSTA:</b> Até 15 dias úteis</div>
     </div>
 
     <div>
@@ -110,7 +109,7 @@
         </div>
 
         <div class="danger-message p-3">
-            ATENDIMENTO DE VISITA TÉCNICA com custo adicional <u>após 90 dias</u> da instalação. ATEDIMENTO REMOTO
+            ATENDIMENTO DE VISITA TÉCNICA com custo adicional <u>após 90 dias</u> da instalação. ATENDIMENTO REMOTO
             OU
             TELEFÔNICO
             sem custo adicional, podendo o mesmo ser agendado.
@@ -135,8 +134,8 @@
         </div>
 
         <div class="p-4">
-            <div> <b>J V T REINALDO AUTOMACAO E INTEGRACAO TECNOLOGICA – CNPJ 23.441.210/0001-10</b></div>
-            AV Ailton Gomes de Alencar, 1087, Bairro Franciscanos - CEP: 63.020-005, Juazeiro do Norte-CE /
+            <div> <b>J V T REINALDO AUTOMAÇÃO E INTEGRAÇÃO TECNOLÓGICA – CNPJ 23.441.210/0001-10</b></div>
+            AV AÍlton Gomes de Alencar, 1087, Bairro Franciscanos - CEP: 63.020-005, Juazeiro do Norte-CE /
             Contatos:
             (88) 9 8829-8387 / (85) 9 9739-2442.
         </div>
@@ -151,13 +150,15 @@
     <script>
         const sessionData = JSON.parse(sessionStorage.getItem("data"));
         const clientData = sessionData.clientData;
-        const itemsData = sessionData.itemsData;
+        const products = clientData.products;
 
-        (function fillDocument() {
-            fillClientFields();
-            fillItemsTable();
-            fillDateFields();
-        })();
+        console.log(products);
+            (function fillDocument() {
+                fillClientFields();
+                fillProductsTable();
+                fillAfterTableFields();
+                fillDateFields();
+            })();
 
         function fillClientFields() {
             const nameElement = document.querySelector("#clientDataTable #name");
@@ -179,11 +180,40 @@
             emailElement.innerText = clientData.email;
         };
 
-        function fillItemsTable() {
-            const itemsTable = document.querySelector("#itemsTable tbody");
-            itemsData.forEach(itemData => {
-                itemsTable.appendChild(createItemElement(itemData));
+        function fillProductsTable() {
+            const productsTable = document.querySelector("#productsTable tbody");
+            products.items.forEach(product => {
+                productsTable.appendChild(createItemElement(product));
             });
+
+            const globalPriceRow = document.createElement("tr");
+            const globalPriceTitle = document.createElement("th");
+            const globalPriceValue = document.createElement("th");
+
+            globalPriceTitle.setAttribute("colspan", "3");
+            globalPriceTitle.textContent = "Preço Global:";
+
+            globalPriceValue.setAttribute("colspan", "3");
+            globalPriceValue.textContent = products.finalPrice.toFixed(2) + " R$";
+
+            globalPriceRow.appendChild(globalPriceTitle);
+            globalPriceRow.appendChild(globalPriceValue);
+            productsTable.appendChild(globalPriceRow);
+
+            insertInstallmentRow()
+
+            function insertInstallmentRow() {
+                if (products.paymentMethod === "installment") {
+                    const installmentRow = document.createElement("tr");
+                    const installmentElement = document.createElement("th");
+                    installmentElement.setAttribute("colspan", "5");
+                    installmentElement.textContent = `Parcelado em ${products.installments} X de ${products.installmentPrice.toFixed(2)} R$`;
+                    installmentRow.appendChild(installmentElement)
+                    productsTable.appendChild(installmentRow);
+
+                };
+            };
+
         };
 
         function fillDateFields() {
@@ -200,35 +230,43 @@
             yearElement.textContent += year;
         };
 
+        function fillAfterTableFields() {
+            let paymentMethod;
+
+            switch(products.paymentMethod){
+                case "cash": paymentMethod = "A vista";
+                case "installment": paymentMethod = "Parcelado";
+            };
+
+            document.getElementById("paymentMethod").textContent = paymentMethod;
+        };
+
         function createItemElement(itemData) {
             const rowElement = document.createElement("tr");
             const idElement = document.createElement("td");
             const descriptionElement = document.createElement("td");
             const quantityElement = document.createElement("td");
             const unitPriceElement = document.createElement("td");
-            const servicePriceElement = document.createElement("td");
             const totalPriceElement = document.createElement("td");
 
             idElement.innerText = itemData.id;
             descriptionElement.innerText = itemData.description;
             quantityElement.innerText = itemData.quantity;
-            unitPriceElement.innerText = itemData.unitPrice + " R$";
-            servicePriceElement.innerText = itemData.servicePrice + " R$";
-            totalPriceElement.innerText = itemData.totalPrice + " R$";
+            unitPriceElement.innerText = itemData.presentPrice.toFixed(2) + " R$";
+            totalPriceElement.innerText = itemData.finalPrice.toFixed(2) + " R$";
 
             rowElement.appendChild(idElement);
             rowElement.appendChild(descriptionElement);
             rowElement.appendChild(quantityElement);
             rowElement.appendChild(unitPriceElement);
-            rowElement.appendChild(servicePriceElement);
             rowElement.appendChild(totalPriceElement);
 
             return rowElement;
         };
 
         function saveDocument() {
-            document.querySelector("#printButton").style.display = "none";
-            sendTransactionToServer(sessionStorage.getItem("data"));
+            // document.querySelector("#printButton").style.display = "none";
+            // sendTransactionToServer(sessionStorage.getItem("data"));
             // window.print();
         };
     </script>

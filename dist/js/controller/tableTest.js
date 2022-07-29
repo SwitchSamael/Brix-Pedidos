@@ -268,8 +268,12 @@ function getFeesRate() {
     return selectedItemsModel.feesRate;
 };
 
-function getSelectedItensObject() {
+function getAllSelectedItemsObject() {
     return selectedItemsModel.items;
+};
+
+function getSelectedItemsObject() {
+    return selectedItemsModel;
 };
 
 function getTotalPrice() {
@@ -282,7 +286,7 @@ function getFinalPrice() {
 
 function changeItemsDiscount(hasDiscount, installments = 0) {
     selectedItemsModel.hasDiscount = hasDiscount;
-    selectedItemsModel.installments = installments;
+    selectedItemsModel.installments = parseInt(installments);
 };
 
 function getInstallments() {

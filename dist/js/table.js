@@ -331,7 +331,7 @@ function createSelectedItemElement(quantity, description, totalPrice, rowId, ser
         `;
 };
 
-function getSelectedItensObject() {
+function getAllSelectedItemsObject() {
     return selectedItemsModel.items;
 };
 

@@ -10,16 +10,16 @@ class SelectedItem {
     };
 
     // Price that comes from the provider
-    originalPrice;
+    originalPrice = 0;
 
     // New price generated with the provider price
-    presentPrice;
+    presentPrice = 0;
 
     // Price of all items
-    capital;
+    capital = 0;
 
     // Price with service
-    final;
+    finalPrice = 0;
 
     automaticServicePrice = 0;
     manualServicePrice = 0;
@@ -41,6 +41,7 @@ class SelectedItem {
     getAutomaticServicePrice() {
         const plus40percent = (this.originalPrice + this.originalPrice * 0.4);
         const total = (plus40percent + (plus40percent * 0.6)) * this.quantity;
+        this.finalPrice = total;
 
         this.automaticServicePrice = total - this.getCapitalPrice();
 
@@ -48,7 +49,10 @@ class SelectedItem {
     };
 
     getManualServicePrice() {
-        return this.getCapitalPrice() + this.manualServicePrice;
+        const total = this.getCapitalPrice() + this.manualServicePrice;
+        this.finalPrice = total;
+
+        return total;
     };
 
     getCapitalPrice() {
@@ -66,7 +70,10 @@ class SelectedItem {
                 return this.getAutomaticServicePrice();
             };
 
-            default: return this.getCapitalPrice();
+            default: {
+                this.finalPrice = this.getCapitalPrice();
+                return this.getCapitalPrice();
+            }
         };
     };
 };

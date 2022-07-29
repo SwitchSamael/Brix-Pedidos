@@ -4,25 +4,28 @@ class SelectedItems {
     discount = 5 / 100;
 
     // Value of a product in cash payment without fees (quantity * present value)
-    capital;
+    capital = 0;
 
     // The addition Price;
-    service;
+    service = "";
 
     // loan price (Addition in capital)
-    fees;
+    fees = 0;
 
     // Percentage
-    feesRate = 1;
+    feesRate = 0;
 
     // Time in month to pay
     installments = 0;
 
     // Final(amount) value per month
-    installmentPrice;
+    installmentPrice = 0;
 
     // Amount price (Total to pay for with fees; Value with discount (case cash payment), or with fees (case installment payment))
-    finalPrice;
+    finalPrice = 0;
+
+    paymentMethod = "cash";
+
 
     addItem(id, rowId, quantity, description, service, originalPrice) {
         this.items.push(new SelectedItem(id, rowId, quantity, description, service, originalPrice));
@@ -51,22 +54,29 @@ class SelectedItems {
         return total;
     };
 
-    getFinalPrice(posPrice) {
+    getFinalPrice() {
         if (this.hasDiscount) {
+            this.paymentMethod = "cash";
+
             const finalPrice = this.getCapitalPrice() - this.getCapitalPrice() * this.discount;
             this.finalPrice = finalPrice;
+
+            this.fees = 0;
+            this.feesRate = 0;
+            this.installments = 0;
+            this.installmentPrice = 0;
 
             return this.finalPrice
         };
 
-        if (posPrice) {
-            return posPrice + posPrice * this.feesRate;
-        };
-
+        this.paymentMethod = "installment";
+        this.finalPrice = this.getCapitalPrice();
         return this.getCapitalPrice();
     };
 
     getInstallmentPrice() {
-        return this.getFinalPrice() / this.installments;
+        const installmentPrice = this.getFinalPrice() / this.installments;
+        this.installmentPrice = installmentPrice;
+        return installmentPrice;
     };
 };

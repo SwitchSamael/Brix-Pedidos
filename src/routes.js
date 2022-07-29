@@ -55,16 +55,16 @@ router.post("/file/process", fileController.process);
 
 router.post("/document/post", documentController.post);
 
-router.get("/test", (_, res) => {
+router.get("/", (_, res) => {
     res.render("home");
 });
 
-router.get("/test/editTable", (_, res) => {
+router.get("/editTable", (_, res) => {
     res.render("editTable");
 });
 
-router.get("/test/generateDocument", (_, res) => {
-    res.render("generateDocument");
+router.get("/generateContract", (_, res) => {
+    res.render("generateContract");
 });
 
 export {router};
