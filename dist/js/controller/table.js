@@ -1,12 +1,15 @@
 "use strict";
 
+import selectedItemsController  from "./selectedItems.js";
+import {SelectedItems as SelectedItemsModel} from "../model/selectedItems.js";
+
 let table;
 let tableHead;
 let tableBody;
 let checkboxList;
 
-const selectedItemsModel = new SelectedItems();
 const selectedItemsContainer = document.querySelector("#selectedItems tbody");
+const selectedItemsModel = new SelectedItemsModel();
 
 function initialConfig(tableId) {
     table = document.getElementById(tableId);
@@ -108,7 +111,7 @@ function writeTable(rows, tableId) {
 
                         const selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
                         selectedItemObject["automaticService"] = selectedItemCheckbox.checked;
-                        updateSelectedItemsContainer();
+                        selectedItemsController.updateSelectedItemsContainer();
                     };
                 });
 
@@ -178,7 +181,7 @@ function automaticServiceInputListener(e) {
         selectedItemObject.service = "";
     };
 
-    updateSelectedItemsContainer();
+    selectedItemsController.updateSelectedItemsContainer();
 };
 
 function manualServiceInputListener(e) {
@@ -199,7 +202,7 @@ function manualServiceInputListener(e) {
         selectedItemObject.manualServicePrice = manualServicePrice;
     };
 
-    updateSelectedItemsContainer();
+    selectedItemsController.updateSelectedItemsContainer();
 };
 
 function quantityInputListener(e, element) {
@@ -245,19 +248,19 @@ function quantityInputListener(e, element) {
         };
     };
 
-    updateSelectedItemsContainer();
+    selectedItemsController.updateSelectedItemsContainer();
 };
 
 function setFinalPrice(finalPrice){
-    selectedItemsModel.finalPrice = finalPrice;
+    selectedItemsModel.finalPrice = parseFloat(finalPrice);
 };
 
 function setFees(fees) {
-    selectedItemsModel.fees = fees;
+    selectedItemsModel.fees = parseFloat(fees);
 };
 
 function setFeesRate(feesRate) {
-    selectedItemsModel.feesRate = feesRate;
+    selectedItemsModel.feesRate = parseFloat(feesRate);
 };
 
 function getFees() {
@@ -295,4 +298,22 @@ function getInstallments() {
 
 function getInstallmentPrice() {
     return selectedItemsModel.getInstallmentPrice();
+};
+
+export {writeTable, 
+    selectedItemsContainer,
+    selectedItemsModel,
+    automaticServiceInputListener,
+    setFinalPrice,
+    setFees,
+    setFeesRate,
+    getFees,
+    getFeesRate,
+    getAllSelectedItemsObject,
+    getSelectedItemsObject,
+    getTotalPrice,
+    getFinalPrice,
+    changeItemsDiscount,
+    getInstallments,
+    getInstallmentPrice,
 };

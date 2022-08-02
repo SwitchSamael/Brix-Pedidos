@@ -1,5 +1,5 @@
 import { Table } from "../controllers/table.js";
-import intelbrasTable from "../../dist/files/tableTest.json" assert {type: "json"};
+import intelbrasTable from "../files/table.json" assert {type: "json"};
 
 const table = new Table();
 

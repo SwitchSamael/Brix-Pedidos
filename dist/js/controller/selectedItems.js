@@ -1,3 +1,6 @@
+import { changeFormVisibility, updateFormPayment } from "./home.js"
+import { selectedItemsContainer, selectedItemsModel } from "./table.js"
+
 function createSelectedItemElement(quantity, description, totalPrice, priceWithService, rowId) {
     return `
         <tr class="text-center" data-rowId="${rowId}">
@@ -40,7 +43,7 @@ function changeItemService(rowId, isService) {
 };
 
 function updateSelectedItemsContainer() {
-    showHideNoItemMessage();
+    changeNoItemMessageVisibility();
 
     selectedItemsModel.items.forEach(selectedItemModel => {
         let priceWithService;
@@ -56,22 +59,34 @@ function updateSelectedItemsContainer() {
             selectedItemModel.description,
             selectedItemModel.getCapitalPrice().toFixed(2),
             priceWithService.toFixed(2),
-            selectedItemModel.rowId 
+            selectedItemModel.rowId
         );
     });
 
     updateFormPayment();
 };
 
-function showHideNoItemMessage() {
+function changeNoItemMessageVisibility() {
     const noItemMessage = document.querySelector("#noSelectedItem");
+    const selectedItemsTable = document.querySelector("#selectedItems");
     selectedItemsContainer.innerHTML = "";
 
     if (selectedItemsModel.items.length === 0) {
         noItemMessage.classList.remove("visually-hidden");
+        selectedItemsTable.classList.add("visually-hidden");
         changeFormVisibility(false);
     } else {
         noItemMessage.classList.add("visually-hidden");
+        selectedItemsTable.classList.remove("visually-hidden");
         changeFormVisibility(true);
     };
+};
+
+export default {
+    createSelectedItemElement,
+    deleteItem,
+    changeItemQuantity,
+    changeItemService,
+    updateSelectedItemsContainer,
+    changeNoItemMessageVisibility
 };

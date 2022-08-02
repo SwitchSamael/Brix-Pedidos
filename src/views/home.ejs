@@ -29,7 +29,7 @@
 
         <div class="mb-5">
             <h5>Itens selecionados</h5>
-            <table class="table table-bordered" id="selectedItems">
+            <table class="table table-bordered visually-hidden" id="selectedItems">
                 <thead>
                     <th>Quantidade</th>
                     <th>Alterar Quant.</th>
@@ -41,6 +41,14 @@
                 <tbody></tbody>
             </table>
             <div id="noSelectedItem">Nenhum Item Selecionado.</div>
+        </div>
+
+        <div class="text-center">
+            <div class="pb-3">
+                <div class="text-start" id="searchForClientName"> Pesquisar Por Cliente </div>
+                <input type="text" class="form-control" placeholder="Nome"></input>
+            </div>
+            <div class="btn btn-primary"> Adicionar Novo Cliente</div>
         </div>
 
         <form class="w-50 visually-hidden" id="form">
@@ -95,25 +103,25 @@
                     <td> <label> Forma de Pagamento: </label></td>
 
                     <td id="paymentMethods">
-                        <input type="radio" id="radioCashPayment" name="radioPayment" checked value="A vista" onchange="setDropdownVisibility(false)">
+                        <input type="radio" id="radioCashPayment" name="radioPayment" checked value="A vista">
                         <label>A vista</label>
 
                         <div class="dropdown d-flex">
-                            <input type="radio" id="radioInstallmentPayment" name="radioPayment" value="Parcelado" data-installments="2" data-newTotalPrice="" onchange="setDropdownVisibility(true, this.getAttribute('data-installments'))">
+                            <input type="radio" id="radioInstallmentPayment" name="radioPayment" value="Parcelado" data-installments="2" data-newTotalPrice="">
                             <label class="ps-1 pe-2">Parcelado</label>
                             <button class="btn btn-outline-primary dropdown-toggle visually-hidden" type="button" id="installmentPaymentDropdownToggle" data-bs-toggle="dropdown">2x</button>
                             <ul class="dropdown-menu text-center">
-                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">2x</li>
-                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">3x</li>
-                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">4x</li>
-                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">5x</li>
-                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">6x</li>
-                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">7x</li>
-                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">8x</li>
-                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">9x</li>
-                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">10x</li>
-                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">11x</li>
-                                <li class="dropdown-item" onclick="updateInstallmentPayment(this.innerText)">12x</li>
+                                <li class="dropdown-item installment_dropdown_item">2x</li>
+                                <li class="dropdown-item installment_dropdown_item">3x</li>
+                                <li class="dropdown-item installment_dropdown_item">4x</li>
+                                <li class="dropdown-item installment_dropdown_item">5x</li>
+                                <li class="dropdown-item installment_dropdown_item">6x</li>
+                                <li class="dropdown-item installment_dropdown_item">7x</li>
+                                <li class="dropdown-item installment_dropdown_item">8x</li>
+                                <li class="dropdown-item installment_dropdown_item">9x</li>
+                                <li class="dropdown-item installment_dropdown_item">10x</li>
+                                <li class="dropdown-item installment_dropdown_item">11x</li>
+                                <li class="dropdown-item installment_dropdown_item">12x</li>
                             </ul>
                         </div>
                     </td>
@@ -141,7 +149,7 @@
 
                 <tr>
                     <td><label> Valor Final (R$): </label></td>
-                    <td><input class="w-100" type="number" step=".01" min="0" id="formFinalPrice" value="0.00" oninput="formFinalPriceListener(Number(this.value))"></td>
+                    <td><input class="w-100" type="number" step=".01" min="0" id="formFinalPrice" value="0.00"></td>
                 </tr>
 
                 <tr class="d-flex mt-5">
@@ -185,250 +193,49 @@
     </div>
 
 
-    <!-- <script src="./js/model/client.js"></script> -->
-    <script src="./js/model/selectedItem.js"></script>
-    <script src="./js/model/selectedItems.js"></script>
-    <script src="./js/controller/index.js"></script>
-    <script src="./js/controller/selectedItems.js"></script>
-    <script src="./js/controller/selectedItems.js"></script>
-    <script src="./js/controller/tableTest.js"></script>
-    <script src="./js/controller/manualItems.js"></script>
-    <script src="./js/communicateWithServer.js"></script>
-    <script src="./js/getDate.js"></script>
+    <script type="module" src="./js/controller/home.js"></script>
+    <script type="module" src="./js/model/selectedItem.js"></script>
+    <script type="module" src="./js/model/selectedItems.js"></script>
+    <script type="module" src="./js/controller/selectedItems.js"></script>
+    <script type="module" src="./js/controller/table.js"></script>
+    <script type="module" src="./js/controller/manualItems.js"></script>
+    <script type="module" src="./js/communicateWithServer.js"></script>
+    <script type="module" src="./js/getDate.js"></script>
+    <script type="module">
+        import { setDropdownVisibility, updateInstallmentPayment, formFinalPriceListener } from "./js/controller/home.js";
 
-    <script>
-        // const intelbrasTable = localStorage.getItem("intelbrasTable");
+        insertEventListenerInRadioPayment();
+        insertEventListenerInDropdownItem();
+        insertEventListenerInFormFinalPrice();
 
-        // if (intelbrasTable) {
-        //     showLoaderScreen();
-        //     disableScroll();
-        //     writeTable(Object.values(JSON.parse(intelbrasTable)), "productsTable", false)
-        //         .then(() => {
-        //             hideLoaderScreen();
-        //             enableScroll();
+        function insertEventListenerInRadioPayment() {
+            const radioCashPayment = document.getElementById("radioCashPayment");
+            const radioInstallmentPayment = document.getElementById("radioInstallmentPayment");
 
-        //         });
-        // } else {
-
-        showLoaderScreen();
-        disableScroll();
-
-        getTableTestFromServer()
-            .then(tableJson => {
-
-                hideLoaderScreen();
-                enableScroll();
-
-                if (tableJson) {
-                    // localStorage.setItem("intelbrasTable", JSON.stringify(tableJson));
-                    writeTable(Object.values(tableJson), "customTable", false)
-                        .then(() => {
-                            // Add event listener in each checkbox of automatic service column (First column)
-                            document.getElementById("tableContainer").style.height = "30rem";
-                            [...document.querySelectorAll("[data-cell='0'] input")].forEach(checkbox => {
-                                checkbox.addEventListener("click", automaticServiceInputListener);
-                            });
-                        });
-                } else {
-                    document.querySelector("table").innerText = "Nenhuma tabela selecionada";
-                };
+            radioCashPayment.addEventListener("change", () => {
+                setDropdownVisibility(false);
             });
-        // }
-
-        // showLoaderScreen();
-        // disableScroll();
-        // getIntelbrasHTMLTable().then(tableHTML => {
-        //     document.getElementById("customTable").innerHTML = tableHTML;
-        //     document.getElementById("tableContainer").style.height = "30rem";
-        //     hideLoaderScreen();
-        //     enableScroll();
-        // })
-
-
-        document.querySelector("form").addEventListener("submit", e => {
-            e.preventDefault();
-            tryGenerateDocument();
-        });
-
-        function autoGrowObservationField(textarea) {
-            textarea.style.height = "1px";
-            textarea.style.height = textarea.scrollHeight + "px";
+            radioInstallmentPayment.addEventListener("change", e => {
+                setDropdownVisibility(e.target.getAttribute('data-installments'))
+            });
         };
 
-        function changeFormVisibility(show) {
-            const form = document.querySelector("#form");
-
-            if (show) {
-                form.classList.remove("visually-hidden");
-            } else {
-                form.classList.add("visually-hidden");
-            };
+        function insertEventListenerInDropdownItem() {
+            [...document.getElementsByClassName("installment_dropdown_item")].
+                forEach(dropdownItem => {
+                    dropdownItem.addEventListener("click", e => {
+                        updateInstallmentPayment(e.target.innerText);
+                    });
+                });
         };
 
-        function updateInstallmentPayment(text) {
-            document.querySelector("#installmentPaymentDropdownToggle").innerText = text;
-
-            const installments = parseInt(text);
-
-            changeRadioInstallments(installments);
-            changeItemsDiscount(false, installments);
-
-            setInstallmentPriceVisibility(true);
-        };
-
-        function setDropdownVisibility(show, installments = null) {
-            const dropdownToggleButton = document.querySelector("#installmentPaymentDropdownToggle");
-
-            if (show) {
-                changeItemsDiscount(false, installments);
-                dropdownToggleButton.classList.remove("visually-hidden");
-                setInstallmentPriceVisibility(true);
-                setFeesVisibility(true);
-                setFeesRateVisibility(true);
-            } else {
-                changeItemsDiscount(true);
-                dropdownToggleButton.classList.add("visually-hidden");
-                setInstallmentPriceVisibility(false);
-                setFeesVisibility(false);
-                setFeesRateVisibility(false);
-            };
-
-            updateFormPayment();
-        };
-
-        function updateFormPayment() {
-            document.querySelector("#formTotalPrice").value = getTotalPrice() + " R$";
-            updateFormInstallmentPrice();
-            updateFormFinalPrice();
-        };
-
-        function updateFormFinalPrice() {
-            document.querySelector("#formFinalPrice").value = getFinalPrice();
-        };
-
-        function formFinalPriceListener(formFinalPrice) {
-            document.querySelector("#formFinalPrice").setAttribute("min", formFinalPrice);
-
-            const feesRate = (formFinalPrice - getTotalPrice()) / getTotalPrice();
-            const fees = formFinalPrice * feesRate;
-
-            setFinalPrice(formFinalPrice);
-            setFees(fees);
-            setFeesRate(feesRate);
-
-            updateFormInstallmentPrice();
-            updateFormFees();
-            updateFormFeesRate();
-        };
-
-        function updateFormInstallmentPrice() {
-            document.querySelector("#formInstallmentPrice").value = `${getInstallments()} x ${getInstallmentPrice().toFixed(2)} R$`;
-        };
-
-        function updateFormFees(fees) {
-            document.querySelector("#formFees").value = getFees().toFixed(3) + " R$";
-        };
-
-        function updateFormFeesRate(feesRate) {
-            document.querySelector("#formFeesRate").value = (getFeesRate() * 100).toFixed(3) + " %";
-        };
-
-        function changeRadioInstallments(installments) {
-            const radio = document.querySelector("#radioInstallmentPayment");
-            radio.setAttribute("data-installments", installments)
-        };
-
-        function changeRadioNewTotalPrice(newTotalPrice) {
-            const radio = document.querySelector("#radioInstallmentPayment");
-            radio.setAttribute("data-newTotalPrice", newTotalPrice)
-        };
-
-        function setFeesVisibility(visibility) {
-            const feesContainer = document.querySelector("#rowFees");
-            const feesElement = document.querySelector("#formFees");
-
-            if (visibility) {
-                feesContainer.classList.remove("visually-hidden");
-                feesContainer.removeAttribute("disabled");
-                feesElement.value = "0.000 R$";
-                setFees(feesElement.value);
-            } else {
-                setFees(0);
-                feesContainer.classList.add("visually-hidden");
-                feesContainer.setAttribute("disabled", true);
-            };
-        };
-
-        function setFeesRateVisibility(visibility) {
-            const feesRateContainer = document.querySelector("#rowFeesRate");
-            const feesRateElement = document.querySelector("#formFeesRate");
-
-            if (visibility) {
-                feesRateContainer.classList.remove("visually-hidden");
-                feesRateContainer.removeAttribute("disabled");
-                feesRateElement.value = "0.000 %";
-                setFeesRate(feesRateElement.value);
-            } else {
-                setFeesRate(0);
-                feesRateContainer.classList.add("visually-hidden");
-                feesRateContainer.setAttribute("disabled", true);
-            };
-        };
-
-        function setInstallmentPriceVisibility(visibility) {
-            const installmentPriceContainer = document.querySelector("#rowInstallmentPrice");
-
-            if (visibility) {
-                installmentPriceContainer.classList.remove("visually-hidden");
-                installmentPriceContainer.removeAttribute("disabled");
-                updateFormInstallmentPrice();
-            } else {
-                installmentPriceContainer.classList.add("visually-hidden");
-                installmentPriceContainer.setAttribute("disabled", true);
-            };
-        };
-
-        function tryGenerateDocument() {
-            let canGenerate = true;
-
-            const selectItemModal = new bootstrap.Modal(document.getElementById("selectItemModal"));
-            if (!document.querySelector("#noSelectedItem").classList.contains("visually-hidden")) {
-                canGenerate = false;
-                // selectItemModal.show();
-                alert("Você precisa selecionar pelo menos um item para prosseguir.")
-            };
-
-            // if (canGenerate) {
-            if (true) {
-                const checkedRadio = document.querySelector("#paymentMethods input[name=radioPayment]:checked");
-
-                const clientData = {};
-                clientData.name = document.getElementById("name").value;
-                clientData.houseNumber = Number(document.getElementById("houseNumber").value);
-                clientData.address = document.getElementById("address").value;
-                clientData.city = document.getElementById("city").value;
-                clientData.cep = document.getElementById("cep").value;
-                clientData.district = document.getElementById("district").value;
-                clientData.tel = document.getElementById("tel").value;
-                clientData.email = document.getElementById("email").value;
-                clientData.observation = document.getElementById("observation").value;
-                clientData.paymentMethod = checkedRadio.value;
-                clientData.totalPrice = parseFloat(document.getElementById("formTotalPrice").value);
-                clientData.finalPrice = parseFloat(document.getElementById("formFinalPrice").value);
-
-                clientData.products = getSelectedItemsObject();
-
-                const data = {clientData, date: getCurrentDate() }
-                generateDocument(JSON.stringify(data));
-            };
-        };
-
-        function generateDocument(data) {
-            sessionStorage.setItem("data", data);
-            window.location.href = "/generateContract";
+        function insertEventListenerInFormFinalPrice() {
+            const formFinalPrice = document.getElementById("formFinalPrice");
+            formFinalPrice.addEventListener("input", e => {
+                formFinalPriceListener(Number(e.target.value));
+            });
         };
     </script>
-
 </body>
 
 </html>

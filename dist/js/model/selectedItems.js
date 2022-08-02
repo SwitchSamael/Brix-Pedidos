@@ -1,4 +1,6 @@
-class SelectedItems {
+import { SelectedItem } from "./selectedItem.js";
+
+export class SelectedItems {
     items = [];
     hasDiscount = true;
     discount = 5 / 100;
@@ -16,7 +18,7 @@ class SelectedItems {
     feesRate = 0;
 
     // Time in month to pay
-    installments = 0;
+    installments = 2;
 
     // Final(amount) value per month
     installmentPrice = 0;
@@ -59,6 +61,7 @@ class SelectedItems {
             this.paymentMethod = "cash";
 
             const finalPrice = this.getCapitalPrice() - this.getCapitalPrice() * this.discount;
+ 
             this.finalPrice = finalPrice;
 
             this.fees = 0;
@@ -71,11 +74,12 @@ class SelectedItems {
 
         this.paymentMethod = "installment";
         this.finalPrice = this.getCapitalPrice();
+        
         return this.getCapitalPrice();
     };
 
     getInstallmentPrice() {
-        const installmentPrice = this.getFinalPrice() / this.installments;
+        const installmentPrice = this.finalPrice / this.installments;
         this.installmentPrice = installmentPrice;
         return installmentPrice;
     };

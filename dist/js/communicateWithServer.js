@@ -1,5 +1,5 @@
 
-async function getTableFromServer() {
+export async function getTableFromServer() {
     return await fetch("http://192.168.100.20:9999/file/get", {
         method: "get",
         headers: { "Content-Type": "text/plain" }
@@ -18,21 +18,14 @@ async function getTableFromServer() {
         });
 };
 
-async function getIntelbrasHTMLTable() {
-    return await fetch("http://192.168.100.20:9999/table/get/intelbrasHTML", {
-        method: "get",
-    })
-        .then(async (response) => await response.text())
-};
-
-async function getTableTestFromServer() {
-    return await fetch("http://192.168.100.20:9999/file/getTest", {
+export async function getIntelbrasTableFromServer() {
+    return await fetch("http://192.168.100.20:9999/table/intelbras/get", {
         method: "get",
         headers: { "Content-Type": "text/plain" }
     })
         .then(async (response) => {
             const json = await response.json();
-            return ([response.status, json])
+            return ([response.status, json]);
         })
         .then(data => {
             const errorCode = data[0];
@@ -45,8 +38,8 @@ async function getTableTestFromServer() {
 };
 
 
-function sendTableToServer(jsonString) {
-    fetch("http://192.168.100.20:9999/file/post", {
+export function sendIntelbrasTableToServer(jsonString) {
+    fetch("http://192.168.100.20:9999/table/intelbras/post", {
         method: "post",
         headers: {
             "Accept": "application/json",
@@ -56,8 +49,8 @@ function sendTableToServer(jsonString) {
     });
 };
 
-async function processTable(jsonString) {
-    return await fetch("http://192.168.100.20:9999/file/process", {
+export async function processEditTable(jsonString) {
+    return await fetch("http://192.168.100.20:9999/table/editTable/process", {
         method: "post",
         headers: {
             "Accept": "application/json",
@@ -67,8 +60,18 @@ async function processTable(jsonString) {
     }).then(response => response.json());
 };
 
-function sendTransactionToServer(jsonString) {
-    fetch("http://192.168.100.20:9999/document/post", {
+export function getNextSerialNumber() {
+    return new Promise(resolve => {
+        fetch("http://192.168.100.20:9999/contract/nextSerialNumber",
+            { method: "get" })
+            .then(response => {
+                resolve(response.json());
+            });
+    });
+};
+
+export function sendContractToServer(jsonString) {
+    fetch("http://192.168.100.20:9999/contract/post", {
         method: "post",
         headers: {
             "Accept": "application/json",

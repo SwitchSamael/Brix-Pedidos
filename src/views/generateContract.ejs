@@ -5,19 +5,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="shortcut icon" href="./images/Brix_logo.jpeg" type="image/x-icon">
+    <title>Contrato</title>
 
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="/css/generateDocument.css">
-
 </head>
 
 <body>
     <div class="container">
-        <div class=" pt-5 pb-5 ps-4">
+        <div class="pb-5 ps-4">
+            <div class="pt-3 pb-5"> <b>NÚMERO SÉRIE: <span id="serialNumber">
+                        <%=serialNumber%>
+                    </span></b></div>
+
             <div class=" text-center">
                 <div class="">
                     <h5 class="text-primary"> PROPOSTA DE COMPRA E VENDA </h5>
@@ -141,24 +145,44 @@
         </div>
 
         <div class="text-center">
-            <button class="btn btn-primary center" id="printButton" onclick="saveDocument()">Imprimir</button>
+            <button class="btn btn-primary center" id="printButton">Imprimir</button>
         </div>
     </div>
 
-    <script src="../js/getDate.js"></script>
-    <script src="../js/communicateWithServer.js"></script>
-    <script>
+    <script type="module">
+        import getCurrentDate from "../js/getDate.js";
+        import { sendContractToServer, getNextSerialNumber } from "../js/communicateWithServer.js";
+
+        document.getElementById("printButton").addEventListener("click", () => {
+            saveDocument();
+        });
+
         const sessionData = JSON.parse(sessionStorage.getItem("data"));
         const clientData = sessionData.clientData;
+        const document = sessionData.clientData;
         const products = clientData.products;
 
+        getNextSerialNumber().then(serialNumber => {
+
+            clientData.contracts = [
+                {
+                    generateDate: getCurrentDate(),
+                    payDate: "",
+                    cancelDate: "",
+                    status: "pending",
+                    serialNumber: serialNumber,
+                }
+            ];
+            console.log(clientData);
+        });
+
         console.log(products);
-            (function fillDocument() {
-                fillClientFields();
-                fillProductsTable();
-                fillAfterTableFields();
-                fillDateFields();
-            })();
+        (function fillDocument() {
+            fillClientFields();
+            fillProductsTable();
+            fillAfterTableFields();
+            fillDateFields();
+        })();
 
         function fillClientFields() {
             const nameElement = document.querySelector("#clientDataTable #name");
@@ -213,7 +237,6 @@
 
                 };
             };
-
         };
 
         function fillDateFields() {
@@ -233,7 +256,7 @@
         function fillAfterTableFields() {
             let paymentMethod;
 
-            switch(products.paymentMethod){
+            switch (products.paymentMethod) {
                 case "cash": paymentMethod = "A vista";
                 case "installment": paymentMethod = "Parcelado";
             };
@@ -266,7 +289,7 @@
 
         function saveDocument() {
             // document.querySelector("#printButton").style.display = "none";
-            // sendTransactionToServer(sessionStorage.getItem("data"));
+            sendContractToServer(sessionStorage.getItem("data"));
             // window.print();
         };
     </script>

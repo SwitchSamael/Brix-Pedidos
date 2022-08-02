@@ -13,7 +13,7 @@ const monthNames = {
     11: "Dezembro"
 };
 
-function getCurrentDate() {
+export default function getCurrentDate() {
     const date = new Date();
     const year = date.getFullYear();
     const month = monthNames[date.getMonth()];

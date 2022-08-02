@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 import fs from "fs";
 
 // const filePath = path.join("dist", "files", "table.json");
-const filePath = path.join("dist", "files", "tableTest.json");
+const filePath = path.join("src", "files", "table.json");
 
 const CHECKBOX = "checkbox";
 const INPUT = "input";
@@ -18,18 +18,7 @@ function createCell(element, name, type = "td", disabled = false, content = null
 };
 
 function get(_, res) {
-    const jsonTablePath = path.join(__dirname, "..", "..", "dist", "files", "table.json");
-
-    res.type("json");
-    if (fs.existsSync(jsonTablePath)) {
-        res.sendFile(jsonTablePath);
-    } else res.status(204).send({ "Error 204": "Table not created!" });
-
-    return;
-};
-
-function getTest(_, res) {
-    const jsonTablePath = path.join(__dirname, "..", "..", "dist", "files", "tableTest.json");
+    const jsonTablePath = path.join(__dirname, "..", "files", "table.json");
 
     res.type("json");
     if (fs.existsSync(jsonTablePath)) {
@@ -106,7 +95,7 @@ function saveJson(jsonString) {
 };
 
 
-function process(req, res) {
+function processEditTable(req, res) {
     generateNewEditTable(req.body);
     res.json(req.body);
     return;
@@ -171,9 +160,8 @@ function getAlphaOrder() {
 
 const fileController = {
     get: get,
-    getTest: getTest,
     post: post,
-    process: process
+    processEditTable: processEditTable
 };
 
 export { fileController };

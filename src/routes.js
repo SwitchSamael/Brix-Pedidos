@@ -7,53 +7,20 @@ const router = express.Router();
 import {getIntelbrasHTML} from "./controllers/tableController.js";
 
 import {fileController} from "./controllers/fileController.js";
-import {documentController} from "./controllers/documentController.js";
+import {contractsController} from "./controllers/contractsController.js";
 
-// const xlsx = require("xlsx");
-
-// let workbook = xlsx.readFile(path.join(filesPath, "Table.xlsx"), { cellDates: true });
-// let worksheet = workbook.Sheets[workbook.SheetNames[0]];
-// let data = xlsx.utils.sheet_to_json(worksheet);
-
-// let formattedTableJson = {};
-
-// let initialRowIndex = 4;
-
-// data.map((rowObject, rowIndex) => {
-//     if (rowIndex >= initialRowIndex && rowIndex <= 6) {
-//         formattedTableJson[`row${rowIndex - initialRowIndex}`] = [];
-//         Object.entries(rowObject).map((cellArray, cellIndex) => {
-//             const cell = cellArray[1];
-//             if (cellIndex <= 5 || cellIndex === 11) {
-//                 formattedTableJson[`row${rowIndex - initialRowIndex}`].push(cell);
-//             };
-//         });
-
-//     };
-// }); 
-
-// console.log(formattedTableJson);
-
-// try {
-//     const formattedTableJsonString = JSON.stringify(formattedTableJson)
-//     fs.writeFile(path.join(filesPath, "formattedTable.json"), formattedTableJsonString, { encoding: "utf-8", "flag": "w" }, (error) => {
-//         if (error) throw error;
-//     })
-// } catch (error) {
-//     console.log("Error on writing json file!");
-//     console.error(error);
-// }
+import contractsJson from "./files/contracts.json" assert {type: "json"};
 
 router.get("/table/get/intelbrasHTML", getIntelbrasHTML);
 
-router.get("/file/get", fileController.get);
-router.get("/file/getTest", fileController.getTest);
+router.get("/table/intelbras/get", fileController.get);
+router.post("/table/intelbras/post", fileController.post);
 
-router.post("/file/post", fileController.post);
+router.post("/table/editTable/process", fileController.processEditTable);
 
-router.post("/file/process", fileController.process);
+router.get("/contract/nextSerialNumber", contractsController.getNextSerialNumber);
+router.post("/contract/post", contractsController.post);
 
-router.post("/document/post", documentController.post);
 
 router.get("/", (_, res) => {
     res.render("home");
@@ -64,7 +31,8 @@ router.get("/editTable", (_, res) => {
 });
 
 router.get("/generateContract", (_, res) => {
-    res.render("generateContract");
+    const serialNumber = contractsJson.serialNumber;
+    res.render("generateContract", {"serialNumber": serialNumber + 1});
 });
 
 export {router};

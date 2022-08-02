@@ -59,7 +59,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
-                        <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="saveFile()">Confirmar</button>
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="saveTable()">Confirmar</button>
                     </div>
                 </div>
 
@@ -70,21 +70,17 @@
             <table class="table table-striped-columns table-hover table-bordered" id="editTable">
             </table>
         </div>
-
     </div>
 
-    <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden " id="loader-container">
-        <div class="spinner-border text-primary fs-1" id="loader"></div>
-        <div class="text-light pt-5 fs-2">Carregando Documento</div>
-    </div>
+    <script type="module" src="/js/model/selectedItem.js"></script>
+    <script type="module" src="/js/model/selectedItems.js"></script>
+    <script type="module" src="../js/controller/table.js"></script>
+    <script type="module" src="../js/communicateWithServer.js"></script>
+    <script src="../js/controller/loaderScreen.js"></script>
 
-    <script src="/js/model/selectedItem.js"></script>
-    <script src="/js/model/selectedItems.js"></script>
-    <script src="../js/controller/index.js"></script>
-    <script src="../js/controller/tableTest.js"></script>
-    <script src="../js/communicateWithServer.js"></script>
+    <script type="module">
+        import { getIntelbrasTableFromServer, processEditTable, sendIntelbrasTableToServer } from ".js/communicateWithServer.js";
 
-    <script>
         // Allow use tooltip
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
@@ -101,33 +97,30 @@
             const acceptExtensions = fileElement.getAttribute("accept").split(",");
 
             if (acceptExtensions.includes(fileExtension.toLowerCase())) {
-                showTableOnPage();
+                loader(showTableOnPage);
             } else if (fileExtension !== "") {
                 fileElement.value = "";
                 alert(`O arquivo de extensão ${fileExtension} não é válido.\nPor favor, selecione um arquivo com um dos seguintes formatos:\n\n${acceptExtensions}`)
-            }
+            };
         };
 
         async function showTableOnPage() {
-            showLoaderScreen();
-            disableScroll();
 
             await readXlsxFile(inputFile.files[0])
                 .then(async rows => {
-                    let table = await processTable(JSON.stringify(rows));
+                    let table = await processEditTable(JSON.stringify(rows));
                     writeTable(table, "editTable");
                 });
 
             document.querySelector("#settingsButtons").classList.remove("visually-hidden");
-            hideLoaderScreen();
-            enableScroll();
         };
 
-        function saveFile() {
+        function saveTable() {
             const json = tableToJson();
-            sendTableToServer(JSON.stringify(json));
-            window.location.href = "/test";
+            sendIntelbrasTableToServer(JSON.stringify(json));
+            window.location.href = "/";
         };
+
 
         function tableToJson() {
             const jsonObject = {};
