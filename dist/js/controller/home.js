@@ -16,9 +16,11 @@ import {
     getFinalPrice
 } from "./table.js";
 
+import getCurrentDate from "../getDate.js";
+import UUID from "../uuid.js";
+
 loader(server.getIntelbrasTableFromServer).then((tableJson) => {
     if (tableJson) {
-        // localStorage.setItem("intelbrasTable", JSON.stringify(tableJson));
         writeTable(Object.values(tableJson), "customTable", false)
             .then(() => {
                 // Add event listener in each checkbox of automatic service column (First column)
@@ -51,6 +53,13 @@ export function changeFormVisibility(show) {
         form.classList.add("visually-hidden");
     };
 };
+
+fetch("http://192.168.100.20:9999/pdf", {
+    method: "get"
+}).then(data => data.)
+.then(pdf=>{
+    console.log(pdf)
+});
 
 function updateInstallmentPayment(text) {
     document.querySelector("#installmentPaymentDropdownToggle").innerText = text;
@@ -164,12 +173,6 @@ function setInstallmentPriceVisibility(visibility) {
     };
 };
 
-function UUID() {
-    return ([1e7] + -1e3 + -4e3).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
-};
-
 function tryGenerateDocument() {
     let canGenerate = true;
 
@@ -180,8 +183,7 @@ function tryGenerateDocument() {
         alert("Você precisa selecionar pelo menos um item para prosseguir.")
     };
 
-    // if (canGenerate) {
-    if (true) {
+    if (canGenerate) {
         const checkedRadio = document.querySelector("#paymentMethods input[name=radioPayment]:checked");
 
         const client = {};
@@ -199,14 +201,29 @@ function tryGenerateDocument() {
         client.totalPrice = parseFloat(document.getElementById("formTotalPrice").value);
         client.finalPrice = parseFloat(document.getElementById("formFinalPrice").value);
         client.products = getSelectedItemsObject();
+        client.contracts = [{
+            id: UUID(),
+            generateDate: getCurrentDate(),
+            payDate: "",
+            cancelDate: "",
+            serviceStartDate: "",
+            serviceFinishDate: "",
+            status: "pending",
+        }];
 
         generateDocument(JSON.stringify(client));
     };
 };
 
+
+
 function generateDocument(data) {
-    sessionStorage.setItem("data", data);
-    window.location.href = "/generateContract";
+    // Novo contrato adicionado a sua lista de contratos.
+    document.getElementById("contract").src = "./generateContract";
+
+    // sessionStorage.setItem("data", data);
+    // window.location.href = "/generateContract";
+    // document.querySelector("form").reset();
 };
 
 export {

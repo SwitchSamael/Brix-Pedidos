@@ -1,4 +1,5 @@
 
+
 async function getTableFromServer() {
     return await fetch("http://192.168.100.20:9999/file/get", {
         method: "get",
@@ -70,16 +71,17 @@ function getNextSerialNumber() {
     });
 };
 
-function sendContractToServer(jsonString) {
-    fetch("http://192.168.100.20:9999/contract/post", {
+function createClient(clientJsonString) {
+    fetch("http://192.168.100.20:9999/client/create", {
         method: "post",
         headers: {
             "Accept": "application/json",
             "Content-Type": "application/json"
         },
-        body: jsonString
+        body: clientJsonString
     });
 };
+
 
 const server = {
     getTableFromServer,
@@ -87,7 +89,7 @@ const server = {
     sendIntelbrasTableToServer,
     processEditTable,
     getNextSerialNumber,
-    sendContractToServer
+    createClient
 };
 
 export default server;

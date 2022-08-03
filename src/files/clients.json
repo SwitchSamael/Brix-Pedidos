@@ -1,0 +1,66 @@
+{
+    "clients": [
+        {
+            "name": "Samuel",
+            "houseNumber": 1296,
+            "address": "Poeta José Bernado Da Silva.",
+            "city": "JUAZEIRO DO NORTE",
+            "cep": "63040795",
+            "district": "",
+            "phoneNumber": "+5588988224372",
+            "email": "",
+            "observation": "",
+            "paymentMethod": "A vista",
+            "totalPrice": 83.06,
+            "finalPrice": 78.91,
+            "products": {
+                "items": [
+                    {
+                        "originalPrice": 49.15,
+                        "presentPrice": 83.06349999999999,
+                        "capital": 83.06349999999999,
+                        "finalPrice": 83.06349999999999,
+                        "automaticServicePrice": 0,
+                        "manualServicePrice": 0,
+                        "id": "4013409",
+                        "rowId": "row_6",
+                        "quantity": 1,
+                        "description": "ADP 10 - Adaptador de pinagem",
+                        "service": null
+                    }
+                ],
+                "hasDiscount": true,
+                "discount": 0.05,
+                "capital": 83.06349999999999,
+                "service": "",
+                "fees": 0,
+                "feesRate": 0,
+                "installments": 0,
+                "installmentPrice": 0,
+                "finalPrice": 78.91032499999999,
+                "paymentMethod": "cash"
+            },
+            "contracts": [
+                {
+                    "generateDate": {
+                        "year": 2022,
+                        "month": "Agosto",
+                        "day": 3,
+                        "hours": 15,
+                        "minutes": 16,
+                        "seconds": 25
+                    },
+                    "payDate": "",
+                    "cancelDate": "",
+                    "serviceStartDate": "",
+                    "serviceFinishDate": "",
+                    "status": "pending",
+                    "nextSerialNumber": {
+                        "nextSerialNumber": 1
+                    }
+                }
+            ]
+        }
+    ],
+    "nextSerialNumber": 2
+}

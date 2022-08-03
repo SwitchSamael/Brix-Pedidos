@@ -187,12 +187,34 @@
         </div>
     </div>
 
+    <div class="modal fade" id="generatedContractModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Atenção</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Depois de salvo os dados selecionados serão permanentemente excluídos e uma nova tabela será
+                    gerada. Deseja prosseguir?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ok</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="goToPrintPage()">Imprimir</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <div class="bg-dark w-100 h-100 position-absolute top-0 bg-opacity-50 d-flex justify-content-center align-items-center flex-column visually-hidden" id="loader-container">
         <div class="spinner-border text-primary fs-1" id="loader"></div>
         <div class="text-light pt-5 fs-2">Carregando Documento</div>
     </div>
 
-
+    <iframe class="d-none" id="contract"></iframe>
     <script type="module" src="./js/controller/home.js"></script>
     <script type="module" src="./js/model/selectedItem.js"></script>
     <script type="module" src="./js/model/selectedItems.js"></script>

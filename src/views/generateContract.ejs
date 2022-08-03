@@ -18,8 +18,8 @@
 <body>
     <div class="container">
         <div class="pb-5 ps-4">
-            <div class="pt-3 pb-5"> <b>NÚMERO SÉRIE: <span id="serialNumber">
-                        <%=serialNumber%>
+            <div class="pt-3 pb-5"> <b>NÚMERO SÉRIE: <span id="nextSerialNumber">
+                        <%=nextSerialNumber%>
                     </span></b></div>
 
             <div class=" text-center">
@@ -144,35 +144,32 @@
             (88) 9 8829-8387 / (85) 9 9739-2442.
         </div>
 
-        <div class="text-center">
-            <button class="btn btn-primary center" id="printButton">Imprimir</button>
-        </div>
+        <!-- <div class="text-center">
+            <button class="btn btn-success center" id="saveContractButton">Salvar</button>
+            <button class="btn btn-primary center" id="printButton" disabled>Imprimir</button>
+        </div> -->
     </div>
 
     <script type="module">
         import getCurrentDate from "../js/getDate.js";
         import server from "./js/communicateWithServer.js"; "../communicateWithServer.js";
+        import UUID from "./js/uuid.js";
 
-        document.getElementById("printButton").addEventListener("click", () => {
-            saveDocument();
-        });
+        // document.getElementById("saveContractButton").addEventListener("click", () => {
+        //     saveContract();
+        // });
+        
+        // document.getElementById("printButton").addEventListener("click", () => {
+        //     print();
+        // });
 
+        
         const clientData = JSON.parse(sessionStorage.getItem("data"));
         const clientDocuments = clientData.clientData;
         const products = clientData.products;
-
-        server.getNextSerialNumber().then(serialNumber => {
-            clientData.contracts = [
-                {
-                    generateDate: getCurrentDate(),
-                    payDate: "",
-                    cancelDate: "",
-                    serviceStartDate: "",
-                    serviceFinishDate: "",
-                    status: "pending",
-                    serialNumber: serialNumber,
-                }
-            ];
+        
+        server.getNextSerialNumber().then(json => {
+            clientData.contracts[0][nextSerialNumber] = json.nextSerialNumber;
             sessionStorage.setItem("data", JSON.stringify(clientData));
         });
 
@@ -286,10 +283,15 @@
             return rowElement;
         };
 
-        function saveDocument() {
-            // document.querySelector("#printButton").style.display = "none";
-            server.sendContractToServer(sessionStorage.getItem("data"));
-            // window.print();
+        function saveContract() {
+            // server.createClient(sessionStorage.getItem("data"));
+            // console.log(clientData.contracts)
+            // localStorage.setItem()
+        };
+        
+        function print(){
+            document.querySelector("#printButton").style.display = "none";
+            window.print();
         };
     </script>
 </body>
