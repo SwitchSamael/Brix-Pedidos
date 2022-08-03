@@ -5,7 +5,7 @@ import contractsJson from "../files/contracts.json" assert {type: "json"};
 const filePath = path.join("src", "files", "contracts.json");
 
 function getNextSerialNumber(_, res) {
-    res.send({serialNumber: contractsJson.serialNumber + 1});
+    res.send({serialNumber: contractsJson.serialNumber});
 };
 
 function post(req, res) {
@@ -16,6 +16,8 @@ function post(req, res) {
 
 function saveContract(client) {
     console.log(client)
+    console.log(contractsJson)
+    console.log(contractsJson.contracts)
 
     // contractsJson.push(client);
 
@@ -28,10 +30,10 @@ function saveContract(client) {
     // };
 };
 
-const contractsController = {
+const contractController = {
     getNextSerialNumber: getNextSerialNumber,
     post: post
 };
 
-export { contractsController };
+export { contractController };
 

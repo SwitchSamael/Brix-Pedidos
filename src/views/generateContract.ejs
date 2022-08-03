@@ -51,7 +51,7 @@
 
                     <tr>
                         <td>TELEFONE:</td>
-                        <td id="tel"></td>
+                        <td id="phoneNumber"></td>
                         <td> E-MAIL:</td>
                         <td id="email"></td>
                     </tr>
@@ -151,32 +151,31 @@
 
     <script type="module">
         import getCurrentDate from "../js/getDate.js";
-        import { sendContractToServer, getNextSerialNumber } from "../js/communicateWithServer.js";
+        import server from "./js/communicateWithServer.js"; "../communicateWithServer.js";
 
         document.getElementById("printButton").addEventListener("click", () => {
             saveDocument();
         });
 
-        const sessionData = JSON.parse(sessionStorage.getItem("data"));
-        const clientData = sessionData.clientData;
-        const document = sessionData.clientData;
+        const clientData = JSON.parse(sessionStorage.getItem("data"));
+        const clientDocuments = clientData.clientData;
         const products = clientData.products;
 
-        getNextSerialNumber().then(serialNumber => {
-
+        server.getNextSerialNumber().then(serialNumber => {
             clientData.contracts = [
                 {
                     generateDate: getCurrentDate(),
                     payDate: "",
                     cancelDate: "",
+                    serviceStartDate: "",
+                    serviceFinishDate: "",
                     status: "pending",
                     serialNumber: serialNumber,
                 }
             ];
-            console.log(clientData);
+            sessionStorage.setItem("data", JSON.stringify(clientData));
         });
 
-        console.log(products);
         (function fillDocument() {
             fillClientFields();
             fillProductsTable();
@@ -191,7 +190,7 @@
             const cepElement = document.querySelector("#clientDataTable #cep");
             const cityElement = document.querySelector("#clientDataTable #city");
             const districtElement = document.querySelector("#clientDataTable #district");
-            const telElement = document.querySelector("#clientDataTable #tel");
+            const telElement = document.querySelector("#clientDataTable #phoneNumber");
             const emailElement = document.querySelector("#clientDataTable #email");
 
             nameElement.innerText = clientData.name;
@@ -200,7 +199,7 @@
             cepElement.innerText = clientData.cep;
             cityElement.innerText = clientData.city;
             districtElement.innerText = clientData.district;
-            telElement.innerText = clientData.tel;
+            telElement.innerText = clientData.phoneNumber;
             emailElement.innerText = clientData.email;
         };
 
@@ -289,7 +288,7 @@
 
         function saveDocument() {
             // document.querySelector("#printButton").style.display = "none";
-            sendContractToServer(sessionStorage.getItem("data"));
+            server.sendContractToServer(sessionStorage.getItem("data"));
             // window.print();
         };
     </script>

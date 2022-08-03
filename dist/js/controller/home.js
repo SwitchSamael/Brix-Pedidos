@@ -1,4 +1,4 @@
-import { getIntelbrasTableFromServer } from "../communicateWithServer.js";
+import server from "../communicateWithServer.js";
 import loader from "./loaderScreen.js";
 import {
     writeTable,
@@ -16,9 +16,7 @@ import {
     getFinalPrice
 } from "./table.js";
 
-import getCurrentDate from "../getDate.js"
-
-loader(getIntelbrasTableFromServer).then((tableJson) => {
+loader(server.getIntelbrasTableFromServer).then((tableJson) => {
     if (tableJson) {
         // localStorage.setItem("intelbrasTable", JSON.stringify(tableJson));
         writeTable(Object.values(tableJson), "customTable", false)
@@ -166,6 +164,12 @@ function setInstallmentPriceVisibility(visibility) {
     };
 };
 
+function UUID() {
+    return ([1e7] + -1e3 + -4e3).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+};
+
 function tryGenerateDocument() {
     let canGenerate = true;
 
@@ -180,21 +184,21 @@ function tryGenerateDocument() {
     if (true) {
         const checkedRadio = document.querySelector("#paymentMethods input[name=radioPayment]:checked");
 
-        const clientData = {};
-        clientData.name = document.getElementById("name").value;
-        clientData.houseNumber = Number(document.getElementById("houseNumber").value);
-        clientData.address = document.getElementById("address").value;
-        clientData.city = document.getElementById("city").value;
-        clientData.cep = document.getElementById("cep").value;
-        clientData.district = document.getElementById("district").value;
-        clientData.tel = document.getElementById("tel").value;
-        clientData.email = document.getElementById("email").value;
-        clientData.observation = document.getElementById("observation").value;
-        clientData.paymentMethod = checkedRadio.value;
-        clientData.totalPrice = parseFloat(document.getElementById("formTotalPrice").value);
-        clientData.finalPrice = parseFloat(document.getElementById("formFinalPrice").value);
-
-        clientData.products = getSelectedItemsObject();
+        const client = {};
+        client.id = UUID();
+        client.name = document.getElementById("name").value;
+        client.houseNumber = Number(document.getElementById("houseNumber").value);
+        client.address = document.getElementById("address").value;
+        client.city = document.getElementById("city").value;
+        client.cep = document.getElementById("cep").value;
+        client.district = document.getElementById("district").value;
+        client.phoneNumber = document.getElementById("tel").value;
+        client.email = document.getElementById("email").value;
+        client.observation = document.getElementById("observation").value;
+        client.paymentMethod = checkedRadio.value;
+        client.totalPrice = parseFloat(document.getElementById("formTotalPrice").value);
+        client.finalPrice = parseFloat(document.getElementById("formFinalPrice").value);
+        client.products = getSelectedItemsObject();
 
         generateDocument(JSON.stringify(client));
     };

@@ -7,7 +7,7 @@ const router = express.Router();
 import {getIntelbrasHTML} from "./controllers/tableController.js";
 
 import {fileController} from "./controllers/fileController.js";
-import {contractsController} from "./controllers/contractsController.js";
+import {contractController} from "./controllers/contractController.js";
 
 import contractsJson from "./files/contracts.json" assert {type: "json"};
 
@@ -18,8 +18,8 @@ router.post("/table/intelbras/post", fileController.post);
 
 router.post("/table/editTable/process", fileController.processEditTable);
 
-router.get("/contract/nextSerialNumber", contractsController.getNextSerialNumber);
-router.post("/contract/post", contractsController.post);
+router.get("/contract/nextSerialNumber", contractController.getNextSerialNumber);
+router.post("/contract/post", contractController.post);
 
 
 router.get("/", (_, res) => {
@@ -32,7 +32,7 @@ router.get("/editTable", (_, res) => {
 
 router.get("/generateContract", (_, res) => {
     const serialNumber = contractsJson.serialNumber;
-    res.render("generateContract", {"serialNumber": serialNumber + 1});
+    res.render("generateContract", {"serialNumber": serialNumber});
 });
 
 export {router};

@@ -9,6 +9,8 @@ export class SelectedItem {
         this.setPresentPrice();
     };
 
+    servicePerformer = "";
+
     // Price that comes from the provider
     originalPrice = 0;
 

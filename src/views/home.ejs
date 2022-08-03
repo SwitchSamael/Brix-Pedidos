@@ -27,7 +27,7 @@
             <table class="table table-striped-columns table-hover table-bordered" id="customTable"> </table>
         </div>
 
-        <div class="mb-5">
+        <div>
             <h5>Itens selecionados</h5>
             <table class="table table-bordered visually-hidden" id="selectedItems">
                 <thead>
@@ -43,16 +43,16 @@
             <div id="noSelectedItem">Nenhum Item Selecionado.</div>
         </div>
 
-        <div class="text-center">
-            <div class="pb-3">
-                <div class="text-start" id="searchForClientName"> Pesquisar Por Cliente </div>
-                <input type="text" class="form-control" placeholder="Nome"></input>
-            </div>
-            <div class="btn btn-primary"> Adicionar Novo Cliente</div>
-        </div>
-
         <form class="w-50 visually-hidden" id="form">
-            <table class="table table-borderless">
+            <div class="mt-5 mb-5">
+                <div class="pb-3" id="searchForClientNameContainer">
+                    <div class="text-start"> Pesquisar Por Cliente </div>
+                    <input type="text" class="form-control" id="searchForClient" autocomplete="new-password"></input>
+                </div>
+                <div class="btn btn-primary" onclick="document.getElementById('formContent').classList.remove('d-none')"> Adicionar Novo Cliente</div>
+            </div>
+
+            <table class="table table-borderless d-none" id="formContent">
 
                 <tr>
                     <td> <label> Cliente: <span class="text-danger">*</span> </label></td>
@@ -154,7 +154,7 @@
 
                 <tr class="d-flex mt-5">
                     <td>
-                        <button type="submit" class="btn btn-success">Gerar Documento</button>
+                        <button type="submit" class="btn btn-success">Gerar Contrato</button>
                     </td>
                     <td>
                         <button type="reset" class="btn btn-danger" onclick="{

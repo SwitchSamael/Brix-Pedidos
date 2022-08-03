@@ -1,5 +1,5 @@
 
-export async function getTableFromServer() {
+async function getTableFromServer() {
     return await fetch("http://192.168.100.20:9999/file/get", {
         method: "get",
         headers: { "Content-Type": "text/plain" }
@@ -18,7 +18,7 @@ export async function getTableFromServer() {
         });
 };
 
-export async function getIntelbrasTableFromServer() {
+async function getIntelbrasTableFromServer() {
     return await fetch("http://192.168.100.20:9999/table/intelbras/get", {
         method: "get",
         headers: { "Content-Type": "text/plain" }
@@ -38,7 +38,7 @@ export async function getIntelbrasTableFromServer() {
 };
 
 
-export function sendIntelbrasTableToServer(jsonString) {
+function sendIntelbrasTableToServer(jsonString) {
     fetch("http://192.168.100.20:9999/table/intelbras/post", {
         method: "post",
         headers: {
@@ -49,7 +49,7 @@ export function sendIntelbrasTableToServer(jsonString) {
     });
 };
 
-export async function processEditTable(jsonString) {
+async function processEditTable(jsonString) {
     return await fetch("http://192.168.100.20:9999/table/editTable/process", {
         method: "post",
         headers: {
@@ -60,7 +60,7 @@ export async function processEditTable(jsonString) {
     }).then(response => response.json());
 };
 
-export function getNextSerialNumber() {
+function getNextSerialNumber() {
     return new Promise(resolve => {
         fetch("http://192.168.100.20:9999/contract/nextSerialNumber",
             { method: "get" })
@@ -70,7 +70,7 @@ export function getNextSerialNumber() {
     });
 };
 
-export function sendContractToServer(jsonString) {
+function sendContractToServer(jsonString) {
     fetch("http://192.168.100.20:9999/contract/post", {
         method: "post",
         headers: {
@@ -80,3 +80,14 @@ export function sendContractToServer(jsonString) {
         body: jsonString
     });
 };
+
+const server = {
+    getTableFromServer,
+    getIntelbrasTableFromServer,
+    sendIntelbrasTableToServer,
+    processEditTable,
+    getNextSerialNumber,
+    sendContractToServer
+};
+
+export default server;

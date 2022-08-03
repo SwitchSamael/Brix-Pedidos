@@ -42,8 +42,8 @@
     border-bottom: 1px;
 }
 
-#searchForClientName{
-    width: 5rem
+#searchForClientNameContainer{
+    width: 20rem
 };
 
 #installmentPaymentDropdownToggle{
