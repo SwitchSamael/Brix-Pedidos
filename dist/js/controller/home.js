@@ -28,6 +28,9 @@ loader(server.getIntelbrasTableFromServer).then((tableJson) => {
                 [...document.querySelectorAll("[data-cell='0'] input")].forEach(checkbox => {
                     checkbox.addEventListener("click", automaticServiceInputListener);
                 });
+
+                // const iframe = document.getElementById("iframe");
+                // html2pdf(iframe)
             });
     } else {
         document.querySelector("table").innerText = "Nenhuma tabela selecionada";
@@ -56,10 +59,15 @@ export function changeFormVisibility(show) {
 
 fetch("http://192.168.100.20:9999/pdf", {
     method: "get"
-}).then(data => data.)
-.then(pdf=>{
-    console.log(pdf)
+}).then(res => res.arrayBuffer())
+.then(data=>{
+    console.log(data);
+    document.getElementById("iframe").innerText = data;
+
+    document.getElementById("contract").setAttribute("href",
+    URL.createObjectURL(new Blob([data], {type: "application/pdf"})));
 });
+
 
 function updateInstallmentPayment(text) {
     document.querySelector("#installmentPaymentDropdownToggle").innerText = text;

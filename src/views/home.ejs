@@ -14,6 +14,8 @@
     <!-- Jquery CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.8.1/html2pdf.bundle.min.js" integrity="sha512-vDKWohFHe2vkVWXHp3tKvIxxXg0pJxeid5eo+UjdjME3DBFBn2F8yWOE0XmiFcFbXxrEOR1JriWEno5Ckpn15A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/indexStyle.css">
     <title>Pedidos</title>
@@ -214,7 +216,9 @@
         <div class="text-light pt-5 fs-2">Carregando Documento</div>
     </div>
 
-    <iframe class="d-none" id="contract"></iframe>
+
+    <iframe id="iframe" width="100%" height="100%"></iframe>
+    <a id="contract" download="arquivo">baixar</a>
     <script type="module" src="./js/controller/home.js"></script>
     <script type="module" src="./js/model/selectedItem.js"></script>
     <script type="module" src="./js/model/selectedItems.js"></script>
@@ -229,6 +233,7 @@
         insertEventListenerInRadioPayment();
         insertEventListenerInDropdownItem();
         insertEventListenerInFormFinalPrice();
+
 
         function insertEventListenerInRadioPayment() {
             const radioCashPayment = document.getElementById("radioCashPayment");

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./images/Brix_logo.jpeg" type="image/x-icon">
+    <title>Contrato</title>
+
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="/css/generateDocument.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="pb-5 ps-4">
+            <div class="pt-3 pb-5"> <b>NÚMERO SÉRIE: <span id="nextSerialNumber">
+                        <%=nextSerialNumber%>
+                    </span></b></div>
+
+            <div class=" text-center">
+                <div class="">
+                    <h5 class="text-primary"> PROPOSTA DE COMPRA E VENDA </h5>
+                </div>
+
+                <table class="table text-start" id="clientDataTable">
+                    <tr>
+                        <td>CLIENTE:</td>
+                        <td id="name"></td>
+                        <td>N°:</td>
+                        <td id="houseNumber"></td>
+                    </tr>
+
+                    <tr>
+                        <td>ENDEREÇO:</td>
+                        <td id="address"></td>
+                        <td>CEP:</td>
+                        <td id="cep"></td>
+                    </tr>
+
+                    <tr>
+                        <td>CIDADE:</td>
+                        <td id="city"></td>
+                        <td>BAIRRO:</td>
+                        <td id="district"></td>
+                    </tr>
+
+                    <tr>
+                        <td>TELEFONE:</td>
+                        <td id="phoneNumber"></td>
+                        <td> E-MAIL:</td>
+                        <td id="email"></td>
+                    </tr>
+            </div>
+        </div>
+
+        <div class="position-absolute end-0 top-0"><img src="../images/Brix_logo.jpeg" id="logoImg"></div>
+    </div>
+
+    <div class="container">
+        <table class="table table-bordered" id="productsTable">
+            <thead>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>Preço Un.</th>
+                <th>Preço Total</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="pt-3 pb-5">
+        <div><b class="pe-3">FORMA DE PAGAMENTO:</b> <span id="paymentMethod"></span> </div>
+        <div><b class="pe-3">VALIDADE DA PROPOSTA:</b> Até 15 dias úteis</div>
+    </div>
+
+    <div>
+        <h5 class="text-center text-primary pb-3">CONDIÇÕES COMERCIAIS:</h5>
+        <ol class="ps-3">
+            <li>Formas de Pagamento: A vista 5% de desconto ou 4x no cartão de crédito;</li>
+            <li>Prazo de Entrega: 10 (Dez) Dias úteis a contar do aceite da proposta;</li>
+            <li>Frete: Entregue no cliente</li>
+            <li>Garantia do produto: 12 (doze) meses</li>
+        </ol>
+
+        <div class="danger-message">Equipamento entregue em nosso balcão.</d>
+        </div>
+
+        <div class="p-4">
+            As garantias seguem as especificações do fabricante, desde que observadas às condições de trabalho e
+            operação
+            constantes nos manuais dos mesmos.
+        </div>
+
+        <div>
+            <h5 class="text-primary text-center pb-4">
+                INSTALAÇÃO, CONFIGURAÇÃO E TREINAMENTO:
+            </h5>
+
+            <ul>
+                <li>Instalação e configuração bem como todas as despesas de deslocamento e alimentação fica por
+                    conta da contratada.</li>
+                <li>Treinamentos e configuração no celular do cliente.</li>
+                <li>A estabilidade elétrica de extrema importância para um bom funcionamento dos equipamentos e
+                    sistema é total responsabilidade do cliente, portanto indicamos o uso de aterramento e
+                    equipamentos auxiliares como: no-break, estabilizadores ou módulos isoladores.</li>
+            </ul>
+        </div>
+
+        <div class="danger-message p-3">
+            ATENDIMENTO DE VISITA TÉCNICA com custo adicional <u>após 90 dias</u> da instalação. ATENDIMENTO REMOTO
+            OU
+            TELEFÔNICO
+            sem custo adicional, podendo o mesmo ser agendado.
+        </div>
+
+        <div class="pt-3">Estando justo e acerto, firmo em presente via.</div>
+
+        <div class="text-end pt-4"> <b> Juazeiro do Norte, <span class="date-element" id="day"></span> de <span class="date-element" id="month"></span> de <span class="date-element" id="year"></span></div></b>
+        <div class="pt-3">Atenciosamente,</div>
+
+        <div class="d-flex pt-5 justify-content-evenly">
+            <div>
+                <div class="pt-3">_______________________________________</div>
+                <div class="pt-3 ps-5"> <b> Consultor Comercial </b></div>
+            </div>
+
+            <div class="pt-3 pb-5 text-end">
+                <div>___________________________________</div>
+                <div><b> Assinatura e carimbo do cliente;</div></b>
+                <div><b> Aceito tal proposta de venda!</div></b>
+            </div>
+        </div>
+
+        <div class="p-4">
+            <div> <b>J V T REINALDO AUTOMAÇÃO E INTEGRAÇÃO TECNOLÓGICA – CNPJ 23.441.210/0001-10</b></div>
+            AV AÍlton Gomes de Alencar, 1087, Bairro Franciscanos - CEP: 63.020-005, Juazeiro do Norte-CE /
+            Contatos:
+            (88) 9 8829-8387 / (85) 9 9739-2442.
+        </div>
+
+        <!-- <div class="text-center">
+            <button class="btn btn-success center" id="saveContractButton">Salvar</button>
+            <button class="btn btn-primary center" id="printButton" disabled>Imprimir</button>
+        </div> -->
+    </div>
+
+    <script type="module">
+        import getCurrentDate from "../js/getDate.js";
+        import server from "./js/communicateWithServer.js"; "../communicateWithServer.js";
+        import UUID from "./js/uuid.js";
+
+        // document.getElementById("saveContractButton").addEventListener("click", () => {
+        //     saveContract();
+        // });
+        
+        // document.getElementById("printButton").addEventListener("click", () => {
+        //     print();
+        // });
+
+        
+        // const clientData = JSON.parse(sessionStorage.getItem("data"));
+        // const clientDocuments = clientData.clientData;
+        // const products = clientData.products;
+        
+        // server.getNextSerialNumber().then(json => {
+        //     clientData.contracts[0][nextSerialNumber] = json.nextSerialNumber;
+        //     sessionStorage.setItem("data", JSON.stringify(clientData));
+        // });
+
+        (function fillDocument() {
+            // fillClientFields();
+            // fillProductsTable();
+            // fillAfterTableFields();
+            // fillDateFields();
+        })();
+
+        function fillClientFields() {
+            const nameElement = document.querySelector("#clientDataTable #name");
+            const houseNumberElement = document.querySelector("#clientDataTable #houseNumber");
+            const addressElement = document.querySelector("#clientDataTable #address");
+            const cepElement = document.querySelector("#clientDataTable #cep");
+            const cityElement = document.querySelector("#clientDataTable #city");
+            const districtElement = document.querySelector("#clientDataTable #district");
+            const telElement = document.querySelector("#clientDataTable #phoneNumber");
+            const emailElement = document.querySelector("#clientDataTable #email");
+
+            nameElement.innerText = clientData.name;
+            houseNumberElement.innerText = clientData.houseNumber;
+            addressElement.innerText = clientData.address;
+            cepElement.innerText = clientData.cep;
+            cityElement.innerText = clientData.city;
+            districtElement.innerText = clientData.district;
+            telElement.innerText = clientData.phoneNumber;
+            emailElement.innerText = clientData.email;
+        };
+
+        function fillProductsTable() {
+            const productsTable = document.querySelector("#productsTable tbody");
+            products.items.forEach(product => {
+                productsTable.appendChild(createItemElement(product));
+            });
+
+            const globalPriceRow = document.createElement("tr");
+            const globalPriceTitle = document.createElement("th");
+            const globalPriceValue = document.createElement("th");
+
+            globalPriceTitle.setAttribute("colspan", "3");
+            globalPriceTitle.textContent = "Preço Global:";
+
+            globalPriceValue.setAttribute("colspan", "3");
+            globalPriceValue.textContent = products.finalPrice.toFixed(2) + " R$";
+
+            globalPriceRow.appendChild(globalPriceTitle);
+            globalPriceRow.appendChild(globalPriceValue);
+            productsTable.appendChild(globalPriceRow);
+
+            insertInstallmentRow()
+
+            function insertInstallmentRow() {
+                if (products.paymentMethod === "installment") {
+                    const installmentRow = document.createElement("tr");
+                    const installmentElement = document.createElement("th");
+                    installmentElement.setAttribute("colspan", "5");
+                    installmentElement.textContent = `Parcelado em ${products.installments} X de ${products.installmentPrice.toFixed(2)} R$`;
+                    installmentRow.appendChild(installmentElement)
+                    productsTable.appendChild(installmentRow);
+
+                };
+            };
+        };
+
+        function fillDateFields() {
+            const day = getCurrentDate().day;
+            const month = getCurrentDate().month;
+            const year = getCurrentDate().year;
+
+            const dayElement = document.querySelector("#day");
+            const monthElement = document.querySelector("#month");
+            const yearElement = document.querySelector("#year");
+
+            dayElement.textContent += day;
+            monthElement.textContent += month;
+            yearElement.textContent += year;
+        };
+
+        function fillAfterTableFields() {
+            let paymentMethod;
+
+            switch (products.paymentMethod) {
+                case "cash": paymentMethod = "A vista";
+                case "installment": paymentMethod = "Parcelado";
+            };
+
+            document.getElementById("paymentMethod").textContent = paymentMethod;
+        };
+
+        function createItemElement(itemData) {
+            const rowElement = document.createElement("tr");
+            const idElement = document.createElement("td");
+            const descriptionElement = document.createElement("td");
+            const quantityElement = document.createElement("td");
+            const unitPriceElement = document.createElement("td");
+            const totalPriceElement = document.createElement("td");
+
+            idElement.innerText = itemData.id;
+            descriptionElement.innerText = itemData.description;
+            quantityElement.innerText = itemData.quantity;
+            unitPriceElement.innerText = itemData.presentPrice.toFixed(2) + " R$";
+            totalPriceElement.innerText = itemData.finalPrice.toFixed(2) + " R$";
+
+            rowElement.appendChild(idElement);
+            rowElement.appendChild(descriptionElement);
+            rowElement.appendChild(quantityElement);
+            rowElement.appendChild(unitPriceElement);
+            rowElement.appendChild(totalPriceElement);
+
+            return rowElement;
+        };
+
+        function saveContract() {
+            // server.createClient(sessionStorage.getItem("data"));
+            // console.log(clientData.contracts)
+            // localStorage.setItem()
+        };
+        
+        function print(){
+            document.querySelector("#printButton").style.display = "none";
+            window.print();
+        };
+    </script>
+</body>
+
+</html>

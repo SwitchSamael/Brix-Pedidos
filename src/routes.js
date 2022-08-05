@@ -3,8 +3,9 @@ import express from "express";
 import pdf from "html-pdf";
 import fs from "fs";
 import path from "path";
+import ejs from "ejs";
 
-import {fileURLToPath} from "url";
+import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -28,15 +29,24 @@ router.post("/table/editTable/process", fileController.processEditTable);
 router.get("/contract/nextSerialNumber", clientsController.getNextSerialNumber);
 router.post("/client/create", clientsController.createClient);
 
-router.get("/pdf", (_, res) => {
-    const htmlPath = path.join(__dirname, "views", "generateContract.ejs")
+router.get("/pdf", async (_, res) => {
+    // const ejsFile = fs.readFileSync(path.join(__dirname, "..", "dist", "generateContract.html"), "utf8");
+    // const html = await ejs.render(ejsFile, { "nextSerialNumber": 30 });
+    //  return;
+    // });
+    // router.get("/pdf", async (_, res) => {
+    //     const ejsFile = fs.readFileSync(path.join(__dirname, "..", "dist", "generateContract.html"), "utf8");
+    //     const html = await ejs.render(ejsFile, { "nextSerialNumber": 30 });
+    //     // const html = compiled({ "nextSerialNumber": 30 });
 
-    const html = fs.readFileSync(htmlPath).toString();
-    console.log(html);
+    const htmlPath = path.join(__dirname, "..", "dist", "generateContract.html")
+
+    const html = fs.readFileSync(htmlPath, "utf8").toString();
+    //     // // console.log(html);
     const options = {
-        type: "pdf",
+        //         type: "pdf",
         format: "A4",
-        orientation: "portrait"
+        //         orientation: "portrait"
     };
 
     pdf.create(html, options).toBuffer((error, buffer) => {
@@ -44,6 +54,8 @@ router.get("/pdf", (_, res) => {
 
         res.end(buffer);
     });
+
+    //  return;
 });
 
 router.get("/", (_, res) => {
