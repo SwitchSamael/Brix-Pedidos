@@ -6,15 +6,15 @@ function createSelectedItemElement(quantity, description, totalPrice, rowId, ser
         <td class="selected-item-total-price align-middle">${totalPrice} R$</td>
         <td class="arrows-container position-relative align-middle">
             <div class="d-flex arrows">
-                <div class="arrow arrow_left" data-rowId="${rowId}" onclick="changeItemQuantity(this.getAttribute('data-rowId'), -1)"></div>
-                <div class="arrow arrow_right" data-rowId="${rowId}" onclick="changeItemQuantity(this.getAttribute('data-rowId'), 1)"></div>
+                <div class="arrow arrow_left" data-rowId="${rowId}" onclick="selectedItems.changeItemQuantity(this.getAttribute('data-rowId'), -1)"></div>
+                <div class="arrow arrow_right" data-rowId="${rowId}" onclick="selectedItems.changeItemQuantity(this.getAttribute('data-rowId'), 1)"></div>
             </div>
         </td>
         <td class="align-middle">
-            <div class="btn btn-close text-bg-danger" data-rowId="${rowId}" onclick="deleteItem(this.getAttribute('data-rowId'))"></div>
+            <div class="btn btn-close text-bg-danger" data-rowId="${rowId}" onclick="selectedItems.deleteItem(this.getAttribute('data-rowId'))"></div>
         </td>
         <td class="align-middle">
-            <input class="form-check-input" type="checkbox" ${service === true ? "checked" : ""} data-rowId="${rowId}" onclick="changeItemService(this.getAttribute('data-rowId'), this.checked)"></input>
+            <input class="form-check-input" type="checkbox" ${service === true ? "checked" : ""} data-rowId="${rowId}" onclick="selectedItems.changeItemService(this.getAttribute('data-rowId'), this.checked)"></input>
         </td>
     </tr>        
         `;
@@ -23,10 +23,11 @@ function createSelectedItemElement(quantity, description, totalPrice, rowId, ser
 function deleteItem(rowId) {
     const quantityInputElement = document.getElementById(rowId).children[2].children[0];
     quantityInputElement.value = 0;
-    quantityInputListener(null, quantityInputElement);    
+    quantityInputListener(null, quantityInputElement);
 };
 
 function changeItemQuantity(rowId, quantity) {
+    console.log(123)
     const quantityInputElement = document.getElementById(rowId).children[2].children[0];
     quantityInputElement.value = Number(quantityInputElement.value) + quantity;
     quantityInputListener(null, quantityInputElement);
@@ -58,3 +59,12 @@ function showHideNoItemMessage() {
         noItemMessage.classList.add("visually-hidden");
     };
 };
+
+const selectedItems = {
+    createSelectedItemElement,
+    deleteItem,
+    changeItemQuantity,
+    changeItemService
+};
+
+export default selectedItems

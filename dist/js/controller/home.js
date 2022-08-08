@@ -1,53 +1,37 @@
 import server from "../communicateWithServer.js";
 import loader from "./loaderScreen.js";
-import {
-    writeTable,
-    automaticServiceInputListener,
-    setFees,
-    setFeesRate,
-    setFinalPrice,
-    changeItemsDiscount,
-    getFees,
-    getFeesRate,
-    getSelectedItemsObject,
-    getInstallments,
-    getInstallmentPrice,
-    getTotalPrice,
-    getFinalPrice
-} from "./table.js";
-
+import table  from "./table.js";
 import getCurrentDate from "../getDate.js";
 import UUID from "../uuid.js";
 
 loader(server.getIntelbrasTableFromServer).then((tableJson) => {
+    console.log(123556)
     if (tableJson) {
-        writeTable(Object.values(tableJson), "customTable", false)
+        table.writeTable(Object.values(tableJson), "customTable", false)
             .then(() => {
                 // Add event listener in each checkbox of automatic service column (First column)
                 document.getElementById("tableContainer").style.height = "30rem";
                 [...document.querySelectorAll("[data-cell='0'] input")].forEach(checkbox => {
-                    checkbox.addEventListener("click", automaticServiceInputListener);
+                    checkbox.addEventListener("click", table.automaticServiceInputListener);
                 });
 
-                // const iframe = document.getElementById("iframe");
-                // html2pdf(iframe)
             });
     } else {
         document.querySelector("table").innerText = "Nenhuma tabela selecionada";
     };
 });
 
-document.querySelector("form").addEventListener("submit", e => {
-    e.preventDefault();
-    tryGenerateDocument();
-});
+// document.querySelector("form").addEventListener("submit", e => {
+//     e.preventDefault();
+//     tryGenerateDocument();
+// });
 
 function autoGrowObservationField(textarea) {
     textarea.style.height = "1px";
     textarea.style.height = textarea.scrollHeight + "px";
 };
 
-export function changeFormVisibility(show) {
+function changeFormVisibility(show) {
     const form = document.querySelector("#form");
 
     if (show) {
@@ -61,11 +45,8 @@ fetch("http://192.168.100.20:9999/pdf", {
     method: "get"
 }).then(res => res.arrayBuffer())
 .then(data=>{
-    console.log(data);
-    document.getElementById("iframe").innerText = data;
-
-    document.getElementById("contract").setAttribute("href",
-    URL.createObjectURL(new Blob([data], {type: "application/pdf"})));
+    // document.getElementById("contract").setAttribute("href",
+    // URL.createObjectURL(new Blob([data], {type: "application/pdf"})));
 });
 
 
@@ -74,7 +55,7 @@ function updateInstallmentPayment(text) {
 
     const installments = parseInt(text);
 
-    changeItemsDiscount(false, installments);
+    table.changeItemsDiscount(false, installments);
     setInstallmentPriceVisibility(true);
 };
 
@@ -82,13 +63,13 @@ function setDropdownVisibility(show, installments = 2) {
     const dropdownToggleButton = document.querySelector("#installmentPaymentDropdownToggle");
 
     if (show) {
-        changeItemsDiscount(false, installments);
+        table.changeItemsDiscount(false, installments);
         dropdownToggleButton.classList.remove("visually-hidden");
         setInstallmentPriceVisibility(true);
         setFeesVisibility(true);
         setFeesRateVisibility(true);
     } else {
-        changeItemsDiscount(true);
+        table.changeItemsDiscount(true);
         dropdownToggleButton.classList.add("visually-hidden");
         setInstallmentPriceVisibility(false);
         setFeesVisibility(false);
@@ -99,25 +80,25 @@ function setDropdownVisibility(show, installments = 2) {
 };
 
 function updateFormPayment() {
-    document.querySelector("#formTotalPrice").value = getTotalPrice() + " R$";
+    document.querySelector("#formTotalPrice").value = table.getTotalPrice() + " R$";
     updateFormInstallmentPrice();
     updateFormFinalPrice();
 };
 
 function updateFormFinalPrice() {
-    document.querySelector("#formFinalPrice").value = getFinalPrice();
+    document.querySelector("#formFinalPrice").value = table.getFinalPrice();
 };
 
 function formFinalPriceListener(formFinalPrice) {
-    document.querySelector("#formFinalPrice").setAttribute("min", getTotalPrice());
+    document.querySelector("#formFinalPrice").setAttribute("min", table.getTotalPrice());
 
-    const feesRate = (formFinalPrice - getTotalPrice()) / getTotalPrice();
+    const feesRate = (formFinalPrice - table.getTotalPrice()) / table.getTotalPrice();
     const fees = formFinalPrice * feesRate;
 
-    setFinalPrice(formFinalPrice);
+    table.setFinalPrice(formFinalPrice);
 
-    setFees(fees);
-    setFeesRate(feesRate);
+    table.setFees(fees);
+    table.setFeesRate(feesRate);
 
     updateFormInstallmentPrice();
     updateFormFees();
@@ -125,15 +106,15 @@ function formFinalPriceListener(formFinalPrice) {
 };
 
 function updateFormInstallmentPrice() {
-    document.querySelector("#formInstallmentPrice").value = `${getInstallments()} x ${getInstallmentPrice().toFixed(2)} R$`;
+    document.querySelector("#formInstallmentPrice").value = `${table.getInstallments()} x ${table.getInstallmentPrice().toFixed(2)} R$`;
 };
 
 function updateFormFees() {
-    document.querySelector("#formFees").value = getFees().toFixed(3) + " R$";
+    document.querySelector("#formFees").value = table.getFees().toFixed(3) + " R$";
 };
 
 function updateFormFeesRate() {
-    document.querySelector("#formFeesRate").value = (getFeesRate() * 100).toFixed(3) + " %";
+    document.querySelector("#formFeesRate").value = (table.getFeesRate() * 100).toFixed(3) + " %";
 };
 
 function setFeesVisibility(visibility) {
@@ -144,9 +125,9 @@ function setFeesVisibility(visibility) {
         feesContainer.classList.remove("visually-hidden");
         feesContainer.removeAttribute("disabled");
         feesElement.value = "0.000 R$";
-        setFees(feesElement.value);
+        table.setFees(feesElement.value);
     } else {
-        setFees(0);
+        table.setFees(0);
         feesContainer.classList.add("visually-hidden");
         feesContainer.setAttribute("disabled", true);
     };
@@ -160,9 +141,9 @@ function setFeesRateVisibility(visibility) {
         feesRateContainer.classList.remove("visually-hidden");
         feesRateContainer.removeAttribute("disabled");
         feesRateElement.value = "0.000 %";
-        setFeesRate(feesRateElement.value);
+        table.setFeesRate(feesRateElement.value);
     } else {
-        setFeesRate(0);
+        table.setFeesRate(0);
         feesRateContainer.classList.add("visually-hidden");
         feesRateContainer.setAttribute("disabled", true);
     };
@@ -208,7 +189,7 @@ function tryGenerateDocument() {
         client.paymentMethod = checkedRadio.value;
         client.totalPrice = parseFloat(document.getElementById("formTotalPrice").value);
         client.finalPrice = parseFloat(document.getElementById("formFinalPrice").value);
-        client.products = getSelectedItemsObject();
+        client.products = table.getSelectedItemsObject();
         client.contracts = [{
             id: UUID(),
             generateDate: getCurrentDate(),
@@ -234,10 +215,14 @@ function generateDocument(data) {
     // document.querySelector("form").reset();
 };
 
-export {
+const home = {
     autoGrowObservationField,
     updateFormPayment,
     updateInstallmentPayment,
     setDropdownVisibility,
     formFinalPriceListener,
+    changeFormVisibility,
+    tryGenerateDocument,
 };
+
+export default home;

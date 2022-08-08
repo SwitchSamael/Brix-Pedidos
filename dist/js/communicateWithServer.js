@@ -1,5 +1,3 @@
-
-
 async function getTableFromServer() {
     return await fetch("http://192.168.100.20:9999/file/get", {
         method: "get",

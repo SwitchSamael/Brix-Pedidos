@@ -1,10 +1,3 @@
-<!-- I must:
-    bootstrap button effects
-    colors
-    select column and start point line
-    background animations (balls moving)
--->
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -72,14 +65,16 @@
         </div>
     </div>
 
-    <script type="module" src="/js/model/selectedItem.js"></script>
-    <script type="module" src="/js/model/selectedItems.js"></script>
-    <script type="module" src="../js/controller/table.js"></script>
-    <script type="module" src="../js/communicateWithServer.js"></script>
-    <script src="../js/controller/loaderScreen.js"></script>
+    <!-- <script type="module" src="/js/model/selectedItem.js"></script> -->
+    <!-- <script type="module" src="/js/model/selectedItems.js"></script> -->
+    <script type="module" src="/js/controller/table.js"></script>
+    <!-- <script type="module" src="/js/communicateWithServer.js"></script> -->
+    <!-- <script type="module" src="/js/controller/loaderScreen.js"></script> -->
 
     <script type="module">
-        import server from ".js/communicateWithServer.js";
+        import loader from "/js/controller/loaderScreen.js";
+        import server from "./js/communicateWithServer.js";
+        import table from "./js/controller/table.js";
 
         // Allow use tooltip
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -91,6 +86,7 @@
         inputFile.addEventListener("change", () => tryShowTableOnPage());
 
         function tryShowTableOnPage() {
+
             let fileElement = document.getElementById("file");
             const extensionPosition = fileElement.value.lastIndexOf(".");
             const fileExtension = fileElement.value.substring(extensionPosition);
@@ -107,9 +103,10 @@
         async function showTableOnPage() {
 
             await readXlsxFile(inputFile.files[0])
+
                 .then(async rows => {
-                    let table = await server.processEditTable(JSON.stringify(rows));
-                    writeTable(table, "editTable");
+                    let editedTable = await server.processEditTable(JSON.stringify(rows));
+                    table.writeTable(editedTable, "editTable");
                 });
 
             document.querySelector("#settingsButtons").classList.remove("visually-hidden");

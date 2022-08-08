@@ -1,9 +1,9 @@
 "use strict";
 
-import selectedItemsController  from "./selectedItems.js";
-import {SelectedItems as SelectedItemsModel} from "../model/selectedItems.js";
+import selectedItemsController from "./selectedItems.js";
+import { SelectedItems as SelectedItemsModel } from "../model/selectedItems.js";
 
-let table;
+let tableElement;
 let tableHead;
 let tableBody;
 let checkboxList;
@@ -12,19 +12,21 @@ const selectedItemsContainer = document.querySelector("#selectedItems tbody");
 const selectedItemsModel = new SelectedItemsModel();
 
 function initialConfig(tableId) {
-    table = document.getElementById(tableId);
-    table.innerHTML = "";
+    tableElement = document.getElementById(tableId);
+    console.log(tableId)
+    tableElement.innerHTML = "";
 
     tableHead = document.createElement("thead");
     tableBody = document.createElement("tbody");
 
     checkboxList = { "row": [], "column": [] };
 
-    table.appendChild(tableHead);
-    table.appendChild(tableBody);
+    tableElement.appendChild(tableHead);
+    tableElement.appendChild(tableBody);
 };
 
 function writeTable(rows, tableId) {
+    console.log(tableId)
     initialConfig(tableId);
 
     return new Promise(async resolve => {
@@ -251,7 +253,7 @@ function quantityInputListener(e, element) {
     selectedItemsController.updateSelectedItemsContainer();
 };
 
-function setFinalPrice(finalPrice){
+function setFinalPrice(finalPrice) {
     selectedItemsModel.finalPrice = parseFloat(finalPrice);
 };
 
@@ -300,9 +302,11 @@ function getInstallmentPrice() {
     return selectedItemsModel.getInstallmentPrice();
 };
 
-export {writeTable, 
+const table = {
+    writeTable,
     selectedItemsContainer,
     selectedItemsModel,
+    quantityInputListener,
     automaticServiceInputListener,
     setFinalPrice,
     setFees,
@@ -317,3 +321,5 @@ export {writeTable,
     getInstallments,
     getInstallmentPrice,
 };
+
+export default table;

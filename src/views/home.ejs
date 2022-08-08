@@ -14,8 +14,6 @@
     <!-- Jquery CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.8.1/html2pdf.bundle.min.js" integrity="sha512-vDKWohFHe2vkVWXHp3tKvIxxXg0pJxeid5eo+UjdjME3DBFBn2F8yWOE0XmiFcFbXxrEOR1JriWEno5Ckpn15A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/indexStyle.css">
     <title>Pedidos</title>
@@ -160,7 +158,7 @@
                     </td>
                     <td>
                         <button type="reset" class="btn btn-danger" onclick="{
-                            setDropdownVisibility(false);
+                            home.setDropdownVisibility(false);
                             setInstallmentPriceVisibility(false);
                             }">Apagar Campos </button>
                     </td>
@@ -228,7 +226,8 @@
     <script type="module" src="./js/communicateWithServer.js"></script>
     <script type="module" src="./js/getDate.js"></script>
     <script type="module">
-        import { setDropdownVisibility, updateInstallmentPayment, formFinalPriceListener } from "./js/controller/home.js";
+        import home  from "./js/controller/home.js";
+        import selectedItems  from "./js/controller/selectedItems.js";
 
         insertEventListenerInRadioPayment();
         insertEventListenerInDropdownItem();
@@ -240,10 +239,10 @@
             const radioInstallmentPayment = document.getElementById("radioInstallmentPayment");
 
             radioCashPayment.addEventListener("change", () => {
-                setDropdownVisibility(false);
+                home.setDropdownVisibility(false);
             });
             radioInstallmentPayment.addEventListener("change", e => {
-                setDropdownVisibility(e.target.getAttribute('data-installments'))
+                home.setDropdownVisibility(e.target.getAttribute('data-installments'))
             });
         };
 
@@ -251,7 +250,7 @@
             [...document.getElementsByClassName("installment_dropdown_item")].
                 forEach(dropdownItem => {
                     dropdownItem.addEventListener("click", e => {
-                        updateInstallmentPayment(e.target.innerText);
+                        home.updateInstallmentPayment(e.target.innerText);
                     });
                 });
         };
@@ -259,9 +258,15 @@
         function insertEventListenerInFormFinalPrice() {
             const formFinalPrice = document.getElementById("formFinalPrice");
             formFinalPrice.addEventListener("input", e => {
-                formFinalPriceListener(Number(e.target.value));
+                home.formFinalPriceListener(Number(e.target.value));
             });
         };
+    </script>
+
+    <script type="module">
+        function abc(){
+            console.log(123)
+        }
     </script>
 </body>
 
