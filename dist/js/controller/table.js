@@ -6,14 +6,13 @@ import { SelectedItems as SelectedItemsModel } from "../model/selectedItems.js";
 let tableElement;
 let tableHead;
 let tableBody;
-let checkboxList;
+var checkboxList;
 
 const selectedItemsContainer = document.querySelector("#selectedItems tbody");
 const selectedItemsModel = new SelectedItemsModel();
 
 function initialConfig(tableId) {
     tableElement = document.getElementById(tableId);
-    console.log(tableId)
     tableElement.innerHTML = "";
 
     tableHead = document.createElement("thead");
@@ -26,7 +25,6 @@ function initialConfig(tableId) {
 };
 
 function writeTable(rows, tableId) {
-    console.log(tableId)
     initialConfig(tableId);
 
     return new Promise(async resolve => {
@@ -320,6 +318,7 @@ const table = {
     changeItemsDiscount,
     getInstallments,
     getInstallmentPrice,
+    checkboxList
 };
 
 export default table;

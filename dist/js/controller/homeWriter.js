@@ -4,7 +4,9 @@ import Table from "./tableWriter.js";
 import getCurrentDate from "../getDate.js";
 import UUID from "../uuid.js";
 
-const table = new Table("customTable");
+export default class Home {
+    table = new Table("customTable");
+};
 
 function writeTable() {
     loader(server.getIntelbrasTableFromServer).then((tableJson) => {
@@ -219,7 +221,6 @@ function generateDocument(data) {
 };
 
 export {
-    table,
     writeTable,
     autoGrowObservationField,
     updateFormPayment,

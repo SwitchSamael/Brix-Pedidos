@@ -29,7 +29,7 @@
 
         <div class="d-flex flex-column align-items-center visually-hidden" id="settingsButtons">
             <p>Selecione as colunas e linhas que deseja excluir</p>
-            <button class="btn btn-primary mb-2" onclick="autoSelectCheckbox()" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Serão selecionados a coluna G em diante com exceção da coluna L (estado CE), até a linha 6
+            <button class="btn btn-primary mb-2" id="autoSelectCheckboxButton" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Serão selecionados a coluna G em diante com exceção da coluna L (estado CE), até a linha 6
             (Se essas opções não estiverem de acordo com os dados da tabela, opte por selecionar os elementos manualmente)">
                 Selecionar automaticamente </button>
 
@@ -52,7 +52,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
-                        <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="saveTable()">Confirmar</button>
+                        <button type="button" class="btn btn-success" id="modalSaveTableButton" data-bs-dismiss="modal">Confirmar</button>
                     </div>
                 </div>
 
@@ -65,25 +65,31 @@
         </div>
     </div>
 
-    <!-- <script type="module" src="/js/model/selectedItem.js"></script> -->
-    <!-- <script type="module" src="/js/model/selectedItems.js"></script> -->
-    <script type="module" src="/js/controller/table.js"></script>
-    <!-- <script type="module" src="/js/communicateWithServer.js"></script> -->
-    <!-- <script type="module" src="/js/controller/loaderScreen.js"></script> -->
+    <script type="module" src="/js/model/selectedItem.js"></script>
+    <script type="module" src="/js/model/selectedItems.js"></script>
+    <script type="module" src="/js/controller/tableWriter.js"></script>
+    <!-- <script type="module" src="/js/communicateWithServer.js"></script>
+    <script type="module" src="/js/controller/loaderScreen.js"></script>
 
     <script type="module">
         import loader from "/js/controller/loaderScreen.js";
         import server from "./js/communicateWithServer.js";
-        import table from "./js/controller/table.js";
+        // import table from "./js/controller/table.js";
+        import Table from "./js/controller/tableWriter.js";
+
+        const table = new Table("editTable");
 
         // Allow use tooltip
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+        document.getElementById("autoSelectCheckboxButton").addEventListener("click", () => { autoSelectCheckbox() });
+        document.getElementById("modalSaveTableButton").addEventListener("click", () => { saveTable() });
 
         const inputFile = document.querySelector("#file");
         const file = inputFile.files[0];
 
-        inputFile.addEventListener("change", () => tryShowTableOnPage());
+        inputFile.addEventListener("change", () => { tryShowTableOnPage() });
 
         function tryShowTableOnPage() {
 
@@ -106,7 +112,7 @@
 
                 .then(async rows => {
                     let editedTable = await server.processEditTable(JSON.stringify(rows));
-                    table.writeTable(editedTable, "editTable");
+                    table.write(editedTable);
                 });
 
             document.querySelector("#settingsButtons").classList.remove("visually-hidden");
@@ -117,7 +123,6 @@
             server.sendIntelbrasTableToServer(JSON.stringify(json));
             window.location.href = "/";
         };
-
 
         function tableToJson() {
             const jsonObject = {};
@@ -164,19 +169,19 @@
         };
 
         function autoSelectCheckbox() {
-            checkboxList.column.forEach((checkbox, index) => {
+            table.checkboxList.column.forEach((checkbox, index) => {
                 if (index >= 6 && index !== 11) {
                     checkbox.checked = true;
                 } else checkbox.checked = false;
             });
 
-            checkboxList.row.forEach((checkbox, index) => {
+            table.checkboxList.row.forEach((checkbox, index) => {
                 if (index <= 5) {
                     checkbox.checked = true;
                 } else checkbox.checked = false;
             });
         };
-    </script>
+    </script> -->
 
 </body>
 

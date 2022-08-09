@@ -226,9 +226,10 @@
     <script type="module" src="./js/communicateWithServer.js"></script>
     <script type="module" src="./js/getDate.js"></script>
     <script type="module">
-        import home  from "./js/controller/home.js";
+        import * as home  from "./js/controller/home.js";
         import selectedItems  from "./js/controller/selectedItems.js";
 
+        home.writeTable();
         insertEventListenerInRadioPayment();
         insertEventListenerInDropdownItem();
         insertEventListenerInFormFinalPrice();
@@ -261,12 +262,6 @@
                 home.formFinalPriceListener(Number(e.target.value));
             });
         };
-    </script>
-
-    <script type="module">
-        function abc(){
-            console.log(123)
-        }
     </script>
 </body>
 
