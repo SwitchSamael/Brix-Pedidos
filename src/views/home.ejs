@@ -217,19 +217,20 @@
 
     <iframe id="iframe" width="100%" height="100%"></iframe>
     <a id="contract" download="arquivo">baixar</a>
-    <script type="module" src="./js/controller/home.js"></script>
+    <!-- <script type="module" src="./js/controller/home.js"></script>
     <script type="module" src="./js/model/selectedItem.js"></script>
     <script type="module" src="./js/model/selectedItems.js"></script>
     <script type="module" src="./js/controller/selectedItems.js"></script>
     <script type="module" src="./js/controller/table.js"></script>
     <script type="module" src="./js/controller/manualItems.js"></script>
     <script type="module" src="./js/communicateWithServer.js"></script>
-    <script type="module" src="./js/getDate.js"></script>
+    <script type="module" src="./js/getDate.js"></script> -->
     <script type="module">
-        import * as home  from "./js/controller/home.js";
-        import selectedItems  from "./js/controller/selectedItems.js";
-
+        import Home  from "./js/controller/home.js";
+        const home = new Home();
+        
         home.writeTable();
+
         insertEventListenerInRadioPayment();
         insertEventListenerInDropdownItem();
         insertEventListenerInFormFinalPrice();

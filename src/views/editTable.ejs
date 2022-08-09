@@ -65,19 +65,12 @@
         </div>
     </div>
 
-    <script type="module" src="/js/model/selectedItem.js"></script>
-    <script type="module" src="/js/model/selectedItems.js"></script>
-    <script type="module" src="/js/controller/tableWriter.js"></script>
-    <!-- <script type="module" src="/js/communicateWithServer.js"></script>
-    <script type="module" src="/js/controller/loaderScreen.js"></script>
-
     <script type="module">
         import loader from "/js/controller/loaderScreen.js";
         import server from "./js/communicateWithServer.js";
-        // import table from "./js/controller/table.js";
-        import Table from "./js/controller/tableWriter.js";
+        import Table from "./js/controller/table.js";
 
-        const table = new Table("editTable");
+        const table = new Table("editTable", null);
 
         // Allow use tooltip
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -181,7 +174,7 @@
                 } else checkbox.checked = false;
             });
         };
-    </script> -->
+    </script>
 
 </body>
 

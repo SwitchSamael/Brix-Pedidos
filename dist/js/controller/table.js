@@ -1,55 +1,51 @@
 "use strict";
 
-import selectedItemsController from "./selectedItems.js";
-import { SelectedItems as SelectedItemsModel } from "../model/selectedItems.js";
+import SelectedItemsController from "./selectedItems.js";
+import { SelectedItems as selectedItemsModel } from "../model/selectedItems.js";
 
-let tableElement;
-let tableHead;
-let tableBody;
-var checkboxList;
+export default class Table {
+    constructor(tableId, home) {
+        this.tableElement = document.getElementById(tableId);
+        this.tableElement.innerHTML = "";
 
-const selectedItemsContainer = document.querySelector("#selectedItems tbody");
-const selectedItemsModel = new SelectedItemsModel();
+        this.tableHead = document.createElement("thead");
+        this.tableBody = document.createElement("tbody");
 
-function initialConfig(tableId) {
-    tableElement = document.getElementById(tableId);
-    tableElement.innerHTML = "";
+        this.checkboxList = { "row": [], "column": [] };
 
-    tableHead = document.createElement("thead");
-    tableBody = document.createElement("tbody");
+        this.tableElement.appendChild(this.tableHead);
+        this.tableElement.appendChild(this.tableBody);
 
-    checkboxList = { "row": [], "column": [] };
+        this.selectedItemsContainer = document.querySelector("#selectedItems tbody");
 
-    tableElement.appendChild(tableHead);
-    tableElement.appendChild(tableBody);
-};
+        this.selectedItemsModel = new selectedItemsModel();
+        this.selectedItemsController = new SelectedItemsController(home, this);
+    };
 
-function writeTable(rows, tableId) {
-    initialConfig(tableId);
+    write(rows) {
+        return new Promise(async resolve => {
+            await rows.forEach((row, rowIndex) => {
+                const rowElementBody = document.createElement("tr");
+                rowElementBody.id = "row_" + rowIndex;
 
-    return new Promise(async resolve => {
-        await rows.forEach((row, rowIndex) => {
-            const rowElementBody = document.createElement("tr");
-            rowElementBody.id = "row_" + rowIndex;
+                if (rowIndex < 1) {
+                    let rowElementHead = document.createElement("tr");
 
-            if (rowIndex < 1) {
-                let rowElementHead = document.createElement("tr");
+                    row.forEach(cell => {
+                        this.insertCell(cell, null, rowElementHead, rowIndex);
+                    });
+                } else {
+                    row.forEach((cell, cellIndex) => {
+                        this.insertCell(cell, cellIndex, rowElementBody, rowIndex);
+                    });
+                };
+            });
 
-                row.forEach(cell => {
-                    insertCell(cell, null, rowElementHead, rowIndex);
-                });
-            } else {
-                row.forEach((cell, cellIndex) => {
-                    insertCell(cell, cellIndex, rowElementBody, rowIndex);
-                });
-            };
+            resolve();
         });
+    };
 
-        resolve();
-    });
-
-
-    function insertCell(cell, cellIndex, rowElement, rowIndex) {
+    insertCell(cell, cellIndex, rowElement, rowIndex) {
         rowElement.classList.add("text-center");
 
         let cellElement;
@@ -61,21 +57,27 @@ function writeTable(rows, tableId) {
 
         cellElement.setAttribute("data-cell", cellIndex);
 
-
         switch (cell.element) {
             case "checkbox": {
-                const checkbox = createCheckbox(rowIndex, null, cell.disabled);
+                let checkbox;
+
+                if (cell.name === "automaticService") {
+                    checkbox = this.createCheckbox(rowIndex, this.automaticServiceInputListener, cell.disabled);
+                } else {
+                    checkbox = this.createCheckbox(rowIndex, null, cell.disabled);
+                };
+
                 cellElement.appendChild(checkbox);
             } break;
 
             case "input": {
                 let input;
                 if (cell.name === "manualService") {
-                    input = createInputText(rowIndex, manualServiceInputListener, cell.disabled);
+                    input = this.createInputText(rowIndex, this.manualServiceInputListener, cell.disabled);
                     cellElement.appendChild(input);
 
                 } else if (cell.name === "quantity") {
-                    input = createInputText(rowIndex, quantityInputListener, cell.disabled);
+                    input = this.createInputText(rowIndex, this.quantityInputListener, cell.disabled);
                     cellElement.appendChild(input);
                 };
             } break;
@@ -90,31 +92,15 @@ function writeTable(rows, tableId) {
         };
 
         rowElement.appendChild(cellElement);
-        tableBody.appendChild(rowElement);
+        this.tableBody.appendChild(rowElement);
     };
 
-    function createCheckbox(rowIndex, listener = null, disabled) {
+    createCheckbox(rowIndex, listener = null, disabled) {
         const checkbox = document.createElement("input");
 
         if (listener) {
-            checkbox.addEventListener("click", e => {
-                e.preventDefault();
-                const automaticServiceCheckbox = e.target;
-                const rowId = automaticServiceCheckbox.parentElement.parentElement.id
-
-                // Change the checked attribute of the checkbox of the selected items container to the same checkbox of the main table
-                Array.from(selectedItemsContainer.children).forEach(selectedItemElement => {
-                    const selectedItemCheckbox = selectedItemElement.children[5].children[0];
-
-                    if (selectedItemElement.getAttribute("data-rowId") === rowId) {
-                        selectedItemCheckbox.checked = automaticServiceCheckbox.checked;
-
-                        const selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
-                        selectedItemObject["automaticService"] = selectedItemCheckbox.checked;
-                        selectedItemsController.updateSelectedItemsContainer();
-                    };
-                });
-
+            checkbox.addEventListener("click", () => {
+                listener(checkbox, this);
             });
         };
 
@@ -125,13 +111,13 @@ function writeTable(rows, tableId) {
             checkbox.setAttribute("disabled", true);
         };
 
-        if (rowIndex === 0) checkboxList.column.push(checkbox);
-        else checkboxList.row.push(checkbox);
+        if (rowIndex === 0) this.checkboxList.column.push(checkbox);
+        else this.checkboxList.row.push(checkbox);
 
         return checkbox;
     };
 
-    function createInputText(rowIndex, listener, disabled) {
+    createInputText(rowIndex, listener, disabled) {
         const input = document.createElement("input");
         input.id = "inputRow" + rowIndex;
         input.type = "number";
@@ -140,185 +126,151 @@ function writeTable(rows, tableId) {
         input.style.width = "4rem";
         input.style.padding = "5px";
 
-
         if (disabled) {
             input.setAttribute("disabled", true);
         };
 
-        input.addEventListener("input", listener);
+        input.addEventListener("input", () => { listener(input, this) });
 
         return input;
     };
-};
 
-function clearRow(row) {
-    const automaticServiceCheckbox = row.children[0].children[0];
-    const manualServiceInput = row.children[1].children[0];
-    const quantityInput = row.children[2].children[0];
+    clearRow(row) {
+        const automaticServiceCheckbox = row.children[0].children[0];
+        const manualServiceInput = row.children[1].children[0];
+        const quantityInput = row.children[2].children[0];
 
-    automaticServiceCheckbox.checked = false;
-    automaticServiceCheckbox.disabled = true;
-
-    manualServiceInput.disabled = true;
-    manualServiceInput.value = "";
-
-    quantityInput.value = "";
-
-    row.style.backgroundColor = "initial";
-};
-
-function automaticServiceInputListener(e) {
-    const row = e.target.parentElement.parentElement;
-    const rowId = row.id;
-    const automaticServiceCheckbox = row.children[0].children[0];
-    const manualServiceInput = row.children[1].children[0];
-    const selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
-
-    if (automaticServiceCheckbox.checked) {
-        manualServiceInput.value = "";
-        selectedItemObject.service = "automatic";
-    } else {
-        selectedItemObject.service = "";
-    };
-
-    selectedItemsController.updateSelectedItemsContainer();
-};
-
-function manualServiceInputListener(e) {
-    const input = e.target;
-    const row = e.target.parentElement.parentElement;
-    const rowId = row.id;
-    const automaticServiceCheckbox = row.children[0].children[0];
-    const manualServiceInput = row.children[1].children[0];
-    const manualServicePrice = Number(input.value);
-    const selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
-
-    if (manualServicePrice === 0 || manualServicePrice === "") {
-        manualServiceInput.value = "";
-        selectedItemObject.service = null;
-    } else {
         automaticServiceCheckbox.checked = false;
-        selectedItemObject.service = "manual";
-        selectedItemObject.manualServicePrice = manualServicePrice;
+        automaticServiceCheckbox.disabled = true;
+
+        manualServiceInput.disabled = true;
+        manualServiceInput.value = "";
+
+        quantityInput.value = "";
+
+        row.style.backgroundColor = "initial";
     };
 
-    selectedItemsController.updateSelectedItemsContainer();
-};
+    automaticServiceInputListener(checkbox, table) {
+        const row = checkbox.parentElement.parentElement;
+        const rowId = row.id;
+        const automaticServiceCheckbox = row.children[0].children[0];
+        const manualServiceInput = row.children[1].children[0];
+        const selectedItemObject = table.selectedItemsModel.getSelectedItemByRowId(rowId);
 
-function quantityInputListener(e, element) {
-    let input;
-    let row;
-
-    if (element) {
-        input = element;
-        row = element.parentElement.parentElement;
-    } else {
-        input = e.target;
-        row = e.target.parentElement.parentElement;
-    };
-
-    const rowId = row.id;
-    const automaticServiceCheckbox = row.children[0].children[0];
-    const manualServiceInput = row.children[1].children[0];
-    const quantity = Number(input.value);
-    const id = row.children[3].innerText;
-
-    if (quantity === 0 || quantity === "") {
-        clearRow(row);
-
-        let selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
-
-        if (selectedItemObject) {
-            selectedItemsModel.deleteItem(selectedItemObject);
-        };
-    } else {
-        row.style.backgroundColor = "#ccc";
-
-        automaticServiceCheckbox.disabled = false;
-        manualServiceInput.disabled = false;
-
-        const description = row.children[6].innerText;
-        const originalPrice = Number(row.children[9].innerText.split(" ")[0]);
-
-        let selectedItemObject = selectedItemsModel.getSelectedItemByRowId(rowId);
-        if (selectedItemObject) {
-            selectedItemObject.quantity = quantity;
+        if (automaticServiceCheckbox.checked) {
+            manualServiceInput.value = "";
+            selectedItemObject.service = "automatic";
         } else {
-            selectedItemsModel.addItem(id, rowId, quantity, description, null, originalPrice);
+            selectedItemObject.service = "";
         };
+
+        table.selectedItemsController.updateSelectedItemsContainer();
     };
 
-    selectedItemsController.updateSelectedItemsContainer();
-};
+    manualServiceInputListener(input, table) {
+        const row = input.parentElement.parentElement;
+        const rowId = row.id;
+        const automaticServiceCheckbox = row.children[0].children[0];
+        const manualServiceInput = row.children[1].children[0];
+        const manualServicePrice = Number(input.value);
+        const selectedItemObject = table.selectedItemsModel.getSelectedItemByRowId(rowId);
 
-function setFinalPrice(finalPrice) {
-    selectedItemsModel.finalPrice = parseFloat(finalPrice);
-};
+        if (manualServicePrice === 0 || manualServicePrice === "") {
+            manualServiceInput.value = "";
+            selectedItemObject.service = null;
+        } else {
+            automaticServiceCheckbox.checked = false;
+            selectedItemObject.service = "manual";
+            selectedItemObject.manualServicePrice = manualServicePrice;
+        };
 
-function setFees(fees) {
-    selectedItemsModel.fees = parseFloat(fees);
-};
+        table.selectedItemsController.updateSelectedItemsContainer();
+    };
 
-function setFeesRate(feesRate) {
-    selectedItemsModel.feesRate = parseFloat(feesRate);
-};
+    quantityInputListener(input, table) {
+        let row = input.parentElement.parentElement;
 
-function getFees() {
-    return selectedItemsModel.fees;
-};
+        const rowId = row.id;
+        const automaticServiceCheckbox = row.children[0].children[0];
+        const manualServiceInput = row.children[1].children[0];
+        const quantity = Number(input.value);
+        const id = row.children[3].innerText;
 
-function getFeesRate() {
-    return selectedItemsModel.feesRate;
-};
+        if (quantity === 0 || quantity === "") {
+            table.clearRow(row);
 
-function getAllSelectedItemsObject() {
-    return selectedItemsModel.items;
-};
+            let selectedItemObject = table.selectedItemsModel.getSelectedItemByRowId(rowId);
 
-function getSelectedItemsObject() {
-    return selectedItemsModel;
-};
+            if (selectedItemObject) {
+                table.selectedItemsModel.deleteItem(selectedItemObject);
+            };
+        } else {
+            row.style.backgroundColor = "#ccc";
 
-function getTotalPrice() {
-    return selectedItemsModel.getCapitalPrice().toFixed(2);
-};
+            automaticServiceCheckbox.disabled = false;
+            manualServiceInput.disabled = false;
 
-function getFinalPrice() {
-    return selectedItemsModel.getFinalPrice().toFixed(2);
-};
+            const description = row.children[6].innerText;
+            const originalPrice = Number(row.children[9].innerText.split(" ")[0]);
 
-function changeItemsDiscount(hasDiscount, installments = 0) {
-    selectedItemsModel.hasDiscount = hasDiscount;
-    selectedItemsModel.installments = parseInt(installments);
-};
+            let selectedItemObject = table.selectedItemsModel.getSelectedItemByRowId(rowId);
+            if (selectedItemObject) {
+                selectedItemObject.quantity = quantity;
+            } else {
+                table.selectedItemsModel.addItem(id, rowId, quantity, description, null, originalPrice);
+            };
+        };
 
-function getInstallments() {
-    return selectedItemsModel.installments;
-};
+        table.selectedItemsController.updateSelectedItemsContainer();
+    };
 
-function getInstallmentPrice() {
-    return selectedItemsModel.getInstallmentPrice();
-};
+    setFinalPrice(finalPrice) {
+        this.selectedItemsModel.finalPrice = parseFloat(finalPrice);
+    };
 
-const table = {
-    writeTable,
-    selectedItemsContainer,
-    selectedItemsModel,
-    quantityInputListener,
-    automaticServiceInputListener,
-    setFinalPrice,
-    setFees,
-    setFeesRate,
-    getFees,
-    getFeesRate,
-    getAllSelectedItemsObject,
-    getSelectedItemsObject,
-    getTotalPrice,
-    getFinalPrice,
-    changeItemsDiscount,
-    getInstallments,
-    getInstallmentPrice,
-    checkboxList
-};
+    setFees(fees) {
+        this.selectedItemsModel.fees = parseFloat(fees);
+    };
 
-export default table;
+    setFeesRate(feesRate) {
+        this.selectedItemsModel.feesRate = parseFloat(feesRate);
+    };
+
+    getFees() {
+        return this.selectedItemsModel.fees;
+    };
+
+    getFeesRate() {
+        return this.selectedItemsModel.feesRate;
+    };
+
+    getAllSelectedItemsObject() {
+        return this.selectedItemsModel.items;
+    };
+
+    getSelectedItemsObject() {
+        return this.selectedItemsModel;
+    };
+
+    getTotalPrice() {
+        return this.selectedItemsModel.getCapitalPrice().toFixed(2);
+    };
+
+    getFinalPrice() {
+        return this.selectedItemsModel.getFinalPrice().toFixed(2);
+    };
+
+    changeItemsDiscount(hasDiscount, installments = 0) {
+        this.selectedItemsModel.hasDiscount = hasDiscount;
+        this.selectedItemsModel.installments = parseInt(installments);
+    };
+
+    getInstallments() {
+        return this.selectedItemsModel.installments;
+    };
+
+    getInstallmentPrice() {
+        return this.selectedItemsModel.getInstallmentPrice();
+    };
+};
