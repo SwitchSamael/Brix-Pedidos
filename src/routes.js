@@ -17,6 +17,7 @@ import { getIntelbrasHTML } from "./controllers/tableController.js";
 
 import { fileController } from "./controllers/fileController.js";
 import { clientsController } from "./controllers/clientsController.js";
+import contractsController from "./controllers/contractsController.js";
 
 import clientsJson from "./files/clients.json" assert {type: "json"};
 
@@ -28,28 +29,30 @@ router.post("/table/intelbras/post", fileController.post);
 router.post("/table/editTable/process", fileController.processEditTable);
 
 router.get("/contract/nextSerialNumber", clientsController.getNextSerialNumber);
-router.post("/client/create", clientsController.createClient);
+router.get("/contract/pdf", contractsController.pdf);
+
+router.post("/client/create", clientsController.create);
 
 // router.get("/pdf", async (_, res) => {
 // const ejsFile = fs.readFileSync(path.join(__dirname, "..", "dist", "generateContract.html"), "utf8");
 // const html = await ejs.render(ejsFile, { "nextSerialNumber": 30 });
 //  return;
 // });
+
 router.get("/pdf", async (_, res) => {
     try {
 
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
-        page.screenshot()
-        await page.screenshot({path: "../dist/images/Brix_logo.jpeg"});
-        const ejsFile = fs.readFileSync(path.join(__dirname, "..", "dist", "generateContract.html"), "utf8");
+        await page.screenshot({ path: path.join(__dirname, "..", "dist", "images", "Brix_logo.jpeg") });
+        const ejsFile = fs.readFileSync(path.join(__dirname, "views", "contract.html"), "utf8");
         const pdfConfiguration = {
-            "path": "src/files/contractPuppeteer.pdf",
+            "path": "src/files/contract.pdf",
             "format": "A4",
-            "printBackground": true,
+            printBackground: true,
         };
 
-        await page.setContent(ejsFile, {waitUntil: "networkidle2"});
+        await page.setContent(ejsFile, { waitUntil: "networkidle0" });
         await page.emulateMediaType("screen");
         await page.pdf(pdfConfiguration);
 
@@ -89,11 +92,6 @@ router.get("/", (_, res) => {
 
 router.get("/editTable", (_, res) => {
     res.render("editTable");
-});
-
-router.get("/generateContract", (_, res) => {
-    const nextSerialNumber = clientsJson.nextSerialNumber;
-    res.render("generateContract", { "nextSerialNumber": nextSerialNumber });
 });
 
 export { router };

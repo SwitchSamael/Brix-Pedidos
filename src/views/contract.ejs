@@ -12,14 +12,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="/css/generateDocument.css">
+    <link rel="stylesheet" href="../../dist/css/contract.css">
 </head>
 
 <body>
     <div class="container">
         <div class="pb-5 ps-4">
             <div class="pt-3 pb-5"> <b>NÚMERO SÉRIE: <span id="nextSerialNumber">
-                        <%=nextSerialNumber%>
+                        <%=serialNumber%>
                     </span></b></div>
 
             <div class=" text-center">
@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <div class="position-absolute end-0 top-0"><img src="../images/Brix_logo.jpeg" id="logoImg"></div>
+        <div class="position-absolute end-0 top-0"><img src="../../dist/images/Brix_logo.jpeg" id="logoImg"></div>
     </div>
 
     <div class="container">
@@ -164,7 +164,7 @@
         // });
 
         
-        const clientData = JSON.parse(sessionStorage.getItem("data"));
+        const clientData = {name: "nome", houseNumber: "123"}
         const clientDocuments = clientData.clientData;
         const products = clientData.products;
         

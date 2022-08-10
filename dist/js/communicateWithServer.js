@@ -80,14 +80,20 @@ function createClient(clientJsonString) {
     });
 };
 
+// I must get by client id in query field (method get)
+function downloadPDFFromClient(clientId) {
+    fetch(`http://192.168.100.20:9999/contract/pdf?clientId=${clientId}`, {
+        method: "get"
+    });
+};
 
-const server = {
+export default {
     getTableFromServer,
     getIntelbrasTableFromServer,
     sendIntelbrasTableToServer,
     processEditTable,
     getNextSerialNumber,
-    createClient
+    createClient,
+    downloadPDFFromClient
 };
 
-export default server;

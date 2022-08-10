@@ -5,6 +5,8 @@ import UUID from "../uuid.js";
 import Table from "./table.js";
 
 export default class Home {
+    currentClient;
+
     constructor() {
         this.table = new Table("customTable", this);
     };
@@ -21,11 +23,6 @@ export default class Home {
             };
         });
     };
-
-    // document.querySelector("form").addEventListener("submit", e => {
-    //     e.preventDefault();
-    //     tryGenerateDocument();
-    // });
 
     autoGrowObservationField(textarea) {
         textarea.style.height = "1px";
@@ -82,9 +79,9 @@ export default class Home {
     };
 
     formFinalPriceListener(formFinalPrice) {
-        document.querySelector("#formFinalPrice").setAttribute("min",  this.table.getTotalPrice());
+        document.querySelector("#formFinalPrice").setAttribute("min", this.table.getTotalPrice());
 
-        const feesRate = (formFinalPrice -  this.table.getTotalPrice()) /  this.table.getTotalPrice();
+        const feesRate = (formFinalPrice - this.table.getTotalPrice()) / this.table.getTotalPrice();
         const fees = formFinalPrice * feesRate;
 
         this.table.setFinalPrice(formFinalPrice);
@@ -102,7 +99,7 @@ export default class Home {
     };
 
     updateFormFees() {
-        document.querySelector("#formFees").value =  this.table.getFees().toFixed(3) + " R$";
+        document.querySelector("#formFees").value = this.table.getFees().toFixed(3) + " R$";
     };
 
     updateFormFeesRate() {
@@ -154,54 +151,53 @@ export default class Home {
         };
     };
 
-    tryGenerateDocument() {
-        let canGenerate = true;
 
-        const selectItemModal = new bootstrap.Modal(document.getElementById("selectItemModal"));
-        if (!document.querySelector("#noSelectedItem").classList.contains("visually-hidden")) {
-            canGenerate = false;
-            // selectItemModal.show();
-            alert("Você precisa selecionar pelo menos um item para prosseguir.")
-        };
+    async saveContract() {
+        const checkedRadio = document.querySelector("#paymentMethods input[name=radioPayment]:checked");
 
-        if (canGenerate) {
-            const checkedRadio = document.querySelector("#paymentMethods input[name=radioPayment]:checked");
+        const client = {};
+        client.id = "client-" + UUID();
+        client.name = document.getElementById("name").value;
+        client.houseNumber = Number(document.getElementById("houseNumber").value);
+        client.address = document.getElementById("address").value;
+        client.city = document.getElementById("city").value;
+        client.cep = document.getElementById("cep").value;
+        client.district = document.getElementById("district").value;
+        client.phoneNumber = document.getElementById("tel").value;
+        client.email = document.getElementById("email").value;
+        client.observation = document.getElementById("observation").value;
+        client.paymentMethod = checkedRadio.value;
+        client.totalPrice = parseFloat(document.getElementById("formTotalPrice").value);
+        client.finalPrice = parseFloat(document.getElementById("formFinalPrice").value);
+        client.products = this.table.getSelectedItemsObject();
 
-            const client = {};
-            client.id = UUID();
-            client.name = document.getElementById("name").value;
-            client.houseNumber = Number(document.getElementById("houseNumber").value);
-            client.address = document.getElementById("address").value;
-            client.city = document.getElementById("city").value;
-            client.cep = document.getElementById("cep").value;
-            client.district = document.getElementById("district").value;
-            client.phoneNumber = document.getElementById("tel").value;
-            client.email = document.getElementById("email").value;
-            client.observation = document.getElementById("observation").value;
-            client.paymentMethod = checkedRadio.value;
-            client.totalPrice = parseFloat(document.getElementById("formTotalPrice").value);
-            client.finalPrice = parseFloat(document.getElementById("formFinalPrice").value);
-            client.products =  this.table.getSelectedItemsObject();
-            client.contracts = [{
-                id: UUID(),
-                generateDate: getCurrentDate(),
-                payDate: "",
-                cancelDate: "",
-                serviceStartDate: "",
-                serviceFinishDate: "",
-                status: "pending",
-            }];
+        client.contracts = [{
+            id: "contract-" + UUID(),
+            generateDate: getCurrentDate(),
+            payDate: "",
+            cancelDate: "",
+            serviceStartDate: "",
+            serviceFinishDate: "",
+            status: "pending",
+        }];
 
-            this.generateDocument(JSON.stringify(client));
-        };
+        await server.getNextSerialNumber().then(json => {
+            client.contracts[0]["serialNumber"] = json.nextSerialNumber
+        });
+
+
+        this.currentClient = client;
+        server.createClient(JSON.stringify(client));
+
+        let generatedContractModal = new bootstrap.Modal("#generatedContractModal")
+        generatedContractModal.show();
+
     };
 
-    generateDocument(data) {
-        // Novo contrato adicionado a sua lista de contratos.
-        document.getElementById("contract").src = "./generateContract";
+    downloadContractPDF(data) {
+        window.open("/contract/pdf?clientId=" + this.currentClient.id)
+        // window.location.href = "/";
 
-        // sessionStorage.setItem("data", data);
-        // window.location.href = "/generateContract";
-        // document.querySelector("form").reset();
+        // server.downloadPDFFromClient(this.currentClient.id);
     };
 };
