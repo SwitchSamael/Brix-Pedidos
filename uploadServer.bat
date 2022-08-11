@@ -1,4 +1,4 @@
 @echo off
-start Chrome /incognito http://192.168.100.20:9999
+start Chrome /incognito http://127.0.0.1:9999
 npm run nm
 pause

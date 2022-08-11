@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrato</title>
+
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../../dist/css/contract.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="pb-5 ps-4">
+            <div class="pt-3 pb-5"> <b>NÚMERO SÉRIE: <span>
+                        <%=serialNumber%>
+                    </span></b></div>
+
+            <div class=" text-center">
+                <div class="">
+                    <h5 class="text-primary"> PROPOSTA DE COMPRA E VENDA </h5>
+                </div>
+
+                <table class="table text-start" >
+                    <tr>
+                        <td>CLIENTE: <%=name%>
+                        </td>
+                        <td></td>
+                        <td>N°: <%=houseNumber%>
+                        </td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td>ENDEREÇO: <%=address%>
+                        </td>
+                        <td></td>
+                        <td>CEP: <%=cep%>
+                        </td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td>CIDADE: <%=city%>
+                        </td>
+                        <td></td>
+                        <td>BAIRRO: <%=district%>
+                        </td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td>TELEFONE: <%=phoneNumber%>
+                        </td>
+                        <td></td>
+                        <td> E-MAIL: <%=email%>
+                        </td>
+                        <td></td>
+                    </tr>
+            </div>
+        </div>
+
+        <div class="position-absolute end-0 top-0"><img src="../../dist/images/Brix_logo.jpeg" id="logoImg"></div>
+    </div>
+
+    <div class="container">
+        <table class="table table-bordered">
+            <thead>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>Preço Un.</th>
+                <th>Preço Total</th>
+            </thead>
+            <tbody>
+
+                <% items.forEach( item=> { %>
+                    <tr>
+                        <td>
+                            <%=item.id%>
+                        </td>
+                        <td>
+                            <%=item.description%>
+                        </td>
+                        <td>
+                            <%=item.quantity%>
+                        </td>
+                        <td>
+                            <%=item.presentPrice.toFixed(2) + " R$" %>
+                        </td>
+                        <td>
+                            <%=item.finalPrice.toFixed(2) + " R$" %>
+                        </td>
+                    </tr>
+                    <% })%>
+
+                        <tr>
+                            <th colspan="3">Preço Global</th>
+                            <th colspan="3">
+                                <%=finalPrice.toFixed(2) + "R$" %>
+                            </th>
+                        </tr>
+
+                        
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pt-3 pb-5">
+        <div><b class="pe-3">FORMA DE PAGAMENTO: </b>
+            <%=paymentMethod%>
+        </div>
+        <div><b class="pe-3">VALIDADE DA PROPOSTA:</b> Até 15 dias úteis</div>
+    </div>
+
+    <div>
+        <h5 class="text-center text-primary pb-3">CONDIÇÕES COMERCIAIS:</h5>
+        <ol class="ps-3">
+            <li>Formas de Pagamento: A vista 5% de desconto ou 4x no cartão de crédito;</li>
+            <li>Prazo de Entrega: 10 (Dez) Dias úteis a contar do aceite da proposta;</li>
+            <li>Frete: Entregue no cliente</li>
+            <li>Garantia do produto: 12 (doze) meses</li>
+        </ol>
+
+        <div class="danger-message">Equipamento entregue em nosso balcão.</d>
+        </div>
+
+        <div class="p-4">
+            As garantias seguem as especificações do fabricante, desde que observadas às condições de trabalho e
+            operação
+            constantes nos manuais dos mesmos.
+        </div>
+
+        <div>
+            <h5 class="text-primary text-center pb-4">
+                INSTALAÇÃO, CONFIGURAÇÃO E TREINAMENTO:
+            </h5>
+
+            <ul>
+                <li>Instalação e configuração bem como todas as despesas de deslocamento e alimentação fica por
+                    conta da contratada.</li>
+                <li>Treinamentos e configuração no celular do cliente.</li>
+                <li>A estabilidade elétrica de extrema importância para um bom funcionamento dos equipamentos e
+                    sistema é total responsabilidade do cliente, portanto indicamos o uso de aterramento e
+                    equipamentos auxiliares como: no-break, estabilizadores ou módulos isoladores.</li>
+            </ul>
+        </div>
+
+        <div class="danger-message p-3">
+            ATENDIMENTO DE VISITA TÉCNICA com custo adicional <u>após 90 dias</u> da instalação. ATENDIMENTO REMOTO
+            OU
+            TELEFÔNICO
+            sem custo adicional, podendo o mesmo ser agendado.
+        </div>
+
+        <div class="pt-3">Estando justo e acerto, firmo em presente via.</div>
+
+        <div class="text-end pt-4"> <b> Juazeiro do Norte, <span class="date-element"> <%=day%> </span> de <span class="date-element"> <%=month%> </span> de <span class="date-element"> <%=year%> </span></div></b>
+        <div class="pt-3">Atenciosamente,</div>
+
+        <div class="d-flex pt-5 justify-content-evenly">
+            <div>
+                <div class="pt-3">_______________________________________</div>
+                <div class="pt-3 ps-5"> <b> Consultor Comercial </b></div>
+            </div>
+
+            <div class="pt-3 pb-5 text-end">
+                <div>___________________________________</div>
+                <div><b> Assinatura e carimbo do cliente;</div></b>
+                <div><b> Aceito tal proposta de venda!</div></b>
+            </div>
+        </div>
+
+        <div class="p-4">
+            <div> <b>J V T REINALDO AUTOMAÇÃO E INTEGRAÇÃO TECNOLÓGICA – CNPJ 23.441.210/0001-10</b></div>
+            AV AÍlton Gomes de Alencar, 1087, Bairro Franciscanos - CEP: 63.020-005, Juazeiro do Norte-CE /
+            Contatos:
+            (88) 9 8829-8387 / (85) 9 9739-2442.
+        </div>
+    </div>
+</body>
+
+</html>

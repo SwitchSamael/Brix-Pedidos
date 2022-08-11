@@ -25,7 +25,7 @@ export default class Home {
     };
 
     autoGrowObservationField(textarea) {
-        textarea.style.height = "1px";
+        textarea.style.height = "2rem";
         textarea.style.height = textarea.scrollHeight + "px";
     };
 
@@ -65,7 +65,7 @@ export default class Home {
             this.setFeesRateVisibility(false);
         };
 
-        updateFormPayment();
+        this.updateFormPayment();
     };
 
     updateFormPayment() {
@@ -196,7 +196,7 @@ export default class Home {
 
     downloadContractPDF(data) {
         window.open("/contract/pdf?clientId=" + this.currentClient.id)
-        // window.location.href = "/";
+        window.location.href = "/";
 
         // server.downloadPDFFromClient(this.currentClient.id);
     };

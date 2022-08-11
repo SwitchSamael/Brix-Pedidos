@@ -96,7 +96,7 @@
 
                 <tr>
                     <td><label> Observação </label></td>
-                    <td><textarea class="w-100" id="observation" oninput="autoGrowObservationField(this)"></textarea></td>
+                    <td><textarea class="w-100" id="observation"></textarea></td>
                 </tr>
 
                 <tr>
@@ -201,7 +201,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" id="finishModalButton" data-bs-dismiss="modal">Voltar</button>
-                    <button type="button" class="btn btn-primary" id="GeneratePdfModalButton" data-bs-dismiss="modal">Gerar PDF</button>
+                    <button type="button" class="btn btn-primary" id="generatePdfModalButton" data-bs-dismiss="modal">Gerar PDF</button>
                 </div>
             </div>
 
@@ -219,17 +219,18 @@
 
         home.writeTable();
 
-        insertEventListenerInRadioPayment();
-        insertEventListenerInDropdownItem();
-        insertEventListenerInFormFinalPrice();
+        insertEventListenerInRadioPayment(home);
+        insertEventListenerInDropdownItem(home);
+        insertEventListenerInFormFinalPrice(home);
         insertEventListenerInForm(home);
         insertEventListenerInContractModal(home);
+        insertEventListenerInObservationTextarea(home)
 
-        // fetch("http://192.168.100.20:9999/pdf");
-   </script>
+        // fetch("http://127.0.0.1:9999/pdf");
+    </script>
 
     <script>
-        function insertEventListenerInRadioPayment() {
+        function insertEventListenerInRadioPayment(home) {
             const radioCashPayment = document.getElementById("radioCashPayment");
             const radioInstallmentPayment = document.getElementById("radioInstallmentPayment");
 
@@ -241,7 +242,7 @@
             });
         };
 
-        function insertEventListenerInDropdownItem() {
+        function insertEventListenerInDropdownItem(home) {
             [...document.getElementsByClassName("installment_dropdown_item")].
                 forEach(dropdownItem => {
                     dropdownItem.addEventListener("click", e => {
@@ -250,7 +251,7 @@
                 });
         };
 
-        function insertEventListenerInFormFinalPrice() {
+        function insertEventListenerInFormFinalPrice(home) {
             const formFinalPrice = document.getElementById("formFinalPrice");
             formFinalPrice.addEventListener("input", e => {
                 home.formFinalPriceListener(Number(e.target.value));
@@ -265,18 +266,24 @@
         };
 
         function insertEventListenerInContractModal(home) {
-            // const form = document.getElementById("form");
-            // form.reset();
 
             document.getElementById("finishModalButton").addEventListener("click", () => {
                 window.location.href = "/";
             });
 
-            document.getElementById("GeneratePdfModalButton").addEventListener("click", () => {
+            document.getElementById("generatePdfModalButton").addEventListener("click", () => {
                 home.downloadContractPDF();
-                // window.location.href = "/";
+                window.location.href = "/";
             });
         };
+
+        function insertEventListenerInObservationTextarea(home) {
+
+            document.getElementById("observation").addEventListener("input", e => {
+                home.autoGrowObservationField(e.target);
+            });
+        };
+
     </script>
 </body>
 

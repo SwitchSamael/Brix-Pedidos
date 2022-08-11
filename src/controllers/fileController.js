@@ -158,10 +158,8 @@ function getAlphaOrder() {
     return columnName;
 };
 
-const fileController = {
+export default {
     get: get,
     post: post,
     processEditTable: processEditTable
 };
-
-export { fileController };

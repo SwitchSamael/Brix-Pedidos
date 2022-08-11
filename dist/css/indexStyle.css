@@ -58,6 +58,6 @@
 #generalObservation{
     min-width: 12rem;
     min-height: 2rem;
-    max-height: 10rem;
     height: 2rem;
+    max-height: 10rem;
 }

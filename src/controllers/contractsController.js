@@ -5,13 +5,15 @@ const __dirname = path.dirname(__filename);
 import path from "path";
 import clientsJson from "../files/clients.json" assert {type: "json"};
 import puppeteer from "puppeteer";
-
 import ejs from "ejs";
+
+const htmlModelPath = path.join(__dirname, "..", "views", "contractModel.ejs");
+const htmlResultPath = path.join(__dirname, "..", "files", "contract.html");
+const pdfPath = path.join(__dirname, "..", "files", "contract.pdf");
 
 async function pdf(req, res) {
     const client = getClientById(req.query.clientId);
     const dataToReplace = generateDataToReplace(client);
-    console.log(dataToReplace)
     await renderHtml(dataToReplace);
     await htmlToPDF();
 
@@ -19,8 +21,6 @@ async function pdf(req, res) {
     //     res.status(502).send("Error While Generating PDF: " + error);
     // });
 
-
-    const pdfPath = path.join(__dirname, "..", "files", "contract.pdf");
     res.download(pdfPath);
 };
 
@@ -29,6 +29,49 @@ function getClientById(clientId) {
     return clientsJson.clients.filter(client => client.id === clientId)[0];
 };
 
+/*
+
+                <% items.forEach( item=> {
+ 
+                    <tr> 
+                        <td>
+                            <%=item.id%>
+                        </td>
+                        <td>
+                            <%=item.description%>
+                        </td>
+                        <td>
+                            <%=item.quantity%>
+                        </td> 
+                        <td>
+                            <%=item.presentPrice.toFixed(2) + " R$"%>
+                        </td> 
+                        <td>
+                            <%=item.finalPrice.toFixed(2) + " R$"%>
+                        </td>
+                    </tr>
+                    })%>
+
+                    <% <tr>
+                        <th colspan="3">Preço Global</th>
+                        <th colspan="3">
+                            <%=item.finalPrice.toFixed(2) + "R$"%>
+                        </th>
+                        </tr>
+
+                        insertInstallmentRow()
+
+                        function insertInstallmentRow() {
+                        if (paymentMethod === "installment") {
+                        <tr>
+                            <th colspan="5">
+                                <%= Parcelado em <%=installments%> X de <%=installmentPrice.toFixed(2) R$%> %>
+                            </th>
+                        </tr>
+                        };
+                        %>
+
+*/
 function generateDataToReplace(client) {
     const data = {};
     data["serialNumber"] = client.contracts[0].serialNumber;
@@ -38,23 +81,27 @@ function generateDataToReplace(client) {
     data["cep"] = client.cep;
     data["city"] = client.city;
     data["district"] = client.district;
-    data["phone"] = client.phone;
+    data["phoneNumber"] = client.phoneNumber;
     data["email"] = client.email;
-    data["products"] = client.products;
+    data["items"] = client.products.items;
+    data["finalPrice"] = client.products.finalPrice;
+    data["paymentMethod"] = client.paymentMethod;
+    data["installments"] = client.products.installments;
+    data["installmentPrice"] = client.products.installmentPrice;
+    data["day"] = client.contracts[0].generateDate.day;
+    data["month"] = client.contracts[0].generateDate.month;
+    data["year"] = client.contracts[0].generateDate.year;
 
     return data;
 };
 
 function renderHtml(dataToReplace) {
     return new Promise(resolve => {
-
-        const htmlPath = path.join(__dirname, "..", "views", "contract.ejs");
-
-        fs.readFile(htmlPath, { encoding: "utf8" }, (error, data) => {
+        fs.readFile(htmlModelPath, { encoding: "utf8" }, (error, data) => {
             if (error) throw error;
             const html = ejs.render(data, dataToReplace);
 
-            fs.writeFile(htmlPath, html, () => {
+            fs.writeFile(htmlResultPath, html, () => {
                 resolve();
             });
         });
@@ -69,7 +116,7 @@ function htmlToPDF() {
             const page = await browser.newPage();
 
             await page.screenshot({ path: path.join(__dirname, "..", "..", "dist", "images", "Brix_logo.jpeg") });
-            const ejsFile = fs.readFileSync(path.join(__dirname, "..", "views", "contract.ejs"), "utf8");
+            const ejsFile = fs.readFileSync(htmlResultPath, "utf8");
             const pdfConfiguration = {
                 "path": "src/files/contract.pdf",
                 "format": "A4",

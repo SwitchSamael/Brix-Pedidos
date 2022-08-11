@@ -103,7 +103,7 @@
 
             await readXlsxFile(inputFile.files[0])
 
-                .then(async rows => {
+            .then(async rows => {
                     let editedTable = await server.processEditTable(JSON.stringify(rows));
                     table.write(editedTable);
                 });

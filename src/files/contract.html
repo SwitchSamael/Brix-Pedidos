@@ -19,7 +19,7 @@
     <div class="container">
         <div class="pb-5 ps-4">
             <div class="pt-3 pb-5"> <b>NÚMERO SÉRIE: <span id="nextSerialNumber">
-                        <%=serialNumber%>
+                        21
                     </span></b></div>
 
             <div class=" text-center">
@@ -29,30 +29,38 @@
 
                 <table class="table text-start" id="clientDataTable">
                     <tr>
-                        <td>CLIENTE:</td>
+                        <td>CLIENTE: Samuel
+                        </td>
                         <td id="name"></td>
-                        <td>N°:</td>
+                        <td>N°: 1296
+                        </td>
                         <td id="houseNumber"></td>
                     </tr>
 
                     <tr>
-                        <td>ENDEREÇO:</td>
+                        <td>ENDEREÇO: Poeta José Bernado Da Silva.
+                        </td>
                         <td id="address"></td>
-                        <td>CEP:</td>
+                        <td>CEP: 63040795
+                        </td>
                         <td id="cep"></td>
                     </tr>
 
                     <tr>
-                        <td>CIDADE:</td>
+                        <td>CIDADE: JUAZEIRO DO NORTE
+                        </td>
                         <td id="city"></td>
-                        <td>BAIRRO:</td>
+                        <td>BAIRRO: Triangulo
+                        </td>
                         <td id="district"></td>
                     </tr>
 
                     <tr>
-                        <td>TELEFONE:</td>
+                        <td>TELEFONE: +5588988224372
+                        </td>
                         <td id="phoneNumber"></td>
-                        <td> E-MAIL:</td>
+                        <td> E-MAIL: Samuelvalmir@gmail.com
+                        </td>
                         <td id="email"></td>
                     </tr>
             </div>
@@ -70,12 +78,99 @@
                 <th>Preço Un.</th>
                 <th>Preço Total</th>
             </thead>
-            <tbody></tbody>
+            <tbody>
+
+                
+                    <tr>
+                        <td>
+                            4000074
+                        </td>
+                        <td>
+                            TC 60 ID - Telefone com fio
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            272.87 R$
+                        </td>
+                        <td>
+                            272.87 R$
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            4005020
+                        </td>
+                        <td>
+                            SG 2400 QR - Switch Rack 24 portas Giga com QoS
+                        </td>
+                        <td>
+                            2
+                        </td>
+                        <td>
+                            1997.31 R$
+                        </td>
+                        <td>
+                            3994.62 R$
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            4008012
+                        </td>
+                        <td>
+                            IVP 3000 MW
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            268.25 R$
+                        </td>
+                        <td>
+                            355.56 R$
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            4008202
+                        </td>
+                        <td>
+                            XAC 3000 4K
+                        </td>
+                        <td>
+                            3
+                        </td>
+                        <td>
+                            100.99 R$
+                        </td>
+                        <td>
+                            322.98 R$
+                        </td>
+                    </tr>
+                    
+
+                        <tr>
+                            <th colspan="3">Preço Global</th>
+                            <th colspan="3">
+                                5000.02R$
+                            </th>
+                        </tr>
+
+                        
+
+            </tbody>
         </table>
     </div>
 
     <div class="pt-3 pb-5">
-        <div><b class="pe-3">FORMA DE PAGAMENTO:</b> <span id="paymentMethod"></span> </div>
+        <div><b class="pe-3">FORMA DE PAGAMENTO: </b>
+            Parcelado
+        </div>
         <div><b class="pe-3">VALIDADE DA PROPOSTA:</b> Até 15 dias úteis</div>
     </div>
 
@@ -121,7 +216,7 @@
 
         <div class="pt-3">Estando justo e acerto, firmo em presente via.</div>
 
-        <div class="text-end pt-4"> <b> Juazeiro do Norte, <span class="date-element" id="day"></span> de <span class="date-element" id="month"></span> de <span class="date-element" id="year"></span></div></b>
+        <div class="text-end pt-4"> <b> Juazeiro do Norte, <span class="date-element"> 11 </span> de <span class="date-element"> Agosto </span> de <span class="date-element"> 2022 </span></div></b>
         <div class="pt-3">Atenciosamente,</div>
 
         <div class="d-flex pt-5 justify-content-evenly">
@@ -158,96 +253,26 @@
         // document.getElementById("saveContractButton").addEventListener("click", () => {
         //     saveContract();
         // });
-        
+
         // document.getElementById("printButton").addEventListener("click", () => {
         //     print();
         // });
 
-        
-        const clientData = {name: "nome", houseNumber: "123"}
+
+        const clientData = { name: "nome", houseNumber: "123" }
         const clientDocuments = clientData.clientData;
         const products = clientData.products;
-        
+
         server.getNextSerialNumber().then(json => {
             clientData.contracts[0][nextSerialNumber] = json.nextSerialNumber;
             sessionStorage.setItem("data", JSON.stringify(clientData));
         });
 
         (function fillDocument() {
-            fillClientFields();
-            fillProductsTable();
+
             fillAfterTableFields();
-            fillDateFields();
         })();
 
-        function fillClientFields() {
-            const nameElement = document.querySelector("#clientDataTable #name");
-            const houseNumberElement = document.querySelector("#clientDataTable #houseNumber");
-            const addressElement = document.querySelector("#clientDataTable #address");
-            const cepElement = document.querySelector("#clientDataTable #cep");
-            const cityElement = document.querySelector("#clientDataTable #city");
-            const districtElement = document.querySelector("#clientDataTable #district");
-            const telElement = document.querySelector("#clientDataTable #phoneNumber");
-            const emailElement = document.querySelector("#clientDataTable #email");
-
-            nameElement.innerText = clientData.name;
-            houseNumberElement.innerText = clientData.houseNumber;
-            addressElement.innerText = clientData.address;
-            cepElement.innerText = clientData.cep;
-            cityElement.innerText = clientData.city;
-            districtElement.innerText = clientData.district;
-            telElement.innerText = clientData.phoneNumber;
-            emailElement.innerText = clientData.email;
-        };
-
-        function fillProductsTable() {
-            const productsTable = document.querySelector("#productsTable tbody");
-            products.items.forEach(product => {
-                productsTable.appendChild(createItemElement(product));
-            });
-
-            const globalPriceRow = document.createElement("tr");
-            const globalPriceTitle = document.createElement("th");
-            const globalPriceValue = document.createElement("th");
-
-            globalPriceTitle.setAttribute("colspan", "3");
-            globalPriceTitle.textContent = "Preço Global:";
-
-            globalPriceValue.setAttribute("colspan", "3");
-            globalPriceValue.textContent = products.finalPrice.toFixed(2) + " R$";
-
-            globalPriceRow.appendChild(globalPriceTitle);
-            globalPriceRow.appendChild(globalPriceValue);
-            productsTable.appendChild(globalPriceRow);
-
-            insertInstallmentRow()
-
-            function insertInstallmentRow() {
-                if (products.paymentMethod === "installment") {
-                    const installmentRow = document.createElement("tr");
-                    const installmentElement = document.createElement("th");
-                    installmentElement.setAttribute("colspan", "5");
-                    installmentElement.textContent = `Parcelado em ${products.installments} X de ${products.installmentPrice.toFixed(2)} R$`;
-                    installmentRow.appendChild(installmentElement)
-                    productsTable.appendChild(installmentRow);
-
-                };
-            };
-        };
-
-        function fillDateFields() {
-            const day = getCurrentDate().day;
-            const month = getCurrentDate().month;
-            const year = getCurrentDate().year;
-
-            const dayElement = document.querySelector("#day");
-            const monthElement = document.querySelector("#month");
-            const yearElement = document.querySelector("#year");
-
-            dayElement.textContent += day;
-            monthElement.textContent += month;
-            yearElement.textContent += year;
-        };
 
         function fillAfterTableFields() {
             let paymentMethod;
@@ -288,8 +313,8 @@
             // console.log(clientData.contracts)
             // localStorage.setItem()
         };
-        
-        function print(){
+
+        function print() {
             document.querySelector("#printButton").style.display = "none";
             window.print();
         };

@@ -1,5 +1,5 @@
 async function getTableFromServer() {
-    return await fetch("http://192.168.100.20:9999/file/get", {
+    return await fetch("http://127.0.0.1:9999/file/get", {
         method: "get",
         headers: { "Content-Type": "text/plain" }
     })
@@ -18,7 +18,7 @@ async function getTableFromServer() {
 };
 
 async function getIntelbrasTableFromServer() {
-    return await fetch("http://192.168.100.20:9999/table/intelbras/get", {
+    return await fetch("http://127.0.0.1:9999/table/intelbras/get", {
         method: "get",
         headers: { "Content-Type": "text/plain" }
     })
@@ -38,7 +38,7 @@ async function getIntelbrasTableFromServer() {
 
 
 function sendIntelbrasTableToServer(jsonString) {
-    fetch("http://192.168.100.20:9999/table/intelbras/post", {
+    fetch("http://127.0.0.1:9999/table/intelbras/post", {
         method: "post",
         headers: {
             "Accept": "application/json",
@@ -49,7 +49,7 @@ function sendIntelbrasTableToServer(jsonString) {
 };
 
 async function processEditTable(jsonString) {
-    return await fetch("http://192.168.100.20:9999/table/editTable/process", {
+    return await fetch("http://127.0.0.1:9999/table/editTable/process", {
         method: "post",
         headers: {
             "Accept": "application/json",
@@ -61,7 +61,7 @@ async function processEditTable(jsonString) {
 
 function getNextSerialNumber() {
     return new Promise(resolve => {
-        fetch("http://192.168.100.20:9999/contract/nextSerialNumber",
+        fetch("http://127.0.0.1:9999/contract/nextSerialNumber",
             { method: "get" })
             .then(response => {
                 resolve(response.json());
@@ -70,7 +70,7 @@ function getNextSerialNumber() {
 };
 
 function createClient(clientJsonString) {
-    fetch("http://192.168.100.20:9999/client/create", {
+    fetch("http://127.0.0.1:9999/client/create", {
         method: "post",
         headers: {
             "Accept": "application/json",
@@ -82,7 +82,7 @@ function createClient(clientJsonString) {
 
 // I must get by client id in query field (method get)
 function downloadPDFFromClient(clientId) {
-    fetch(`http://192.168.100.20:9999/contract/pdf?clientId=${clientId}`, {
+    fetch(`http://127.0.0.1:9999/contract/pdf?clientId=${clientId}`, {
         method: "get"
     });
 };

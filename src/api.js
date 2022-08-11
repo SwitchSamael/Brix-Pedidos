@@ -7,12 +7,12 @@ import express from "express";
 import path from "path";
 // const path = require("path");
 
-import {fileURLToPath} from "url";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-import {router} from "./routes.js";
+import { router } from "./routes.js";
 // const router = require("./routes");
 
 import bodyParser from "body-parser";
@@ -21,20 +21,20 @@ import bodyParser from "body-parser";
 const app = express();
 const port = process.env.PORT || 9999;
 
-const corsList = [`http://192.168.100.20:${port}`,
-"http://127.0.0.1:5500/dist/index.html",
-`http://127.0.0.1:${port}`];
+const corsList = ["http://localhost:9999",
+    "http://127.0.0.1:5500/dist/index.html",
+    `http://127.0.0.1:${port}`];
 
-app.use((req, res, next)=>{
-    if(!corsList.includes(req.headers.origin)){
+app.use((req, res, next) => {
+    if (!corsList.includes(req.headers.origin)) {
         res.header("Access-Control-Allow-Origin", req.headers.origin);
         res.header(('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept'));
     }
     next();
 });
 
-app.use(bodyParser.urlencoded({extended: true})); 
-app.use(bodyParser.json({limit: "1mb"})); 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: "1mb" }));
 
 // //XX router.get("/", express.static(path.join("dist")));
 app.use("/", express.static(path.join(__dirname, "..", "dist")));
@@ -47,7 +47,8 @@ app.use(router);
 
 // This must be deleted when upload to hosted server
 app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+    console.log(`Server running on port ${port}.`);
+    console.log("Access http://127.0.0.1:9999");
 });
 
 // //XX module.exports = app;

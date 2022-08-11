@@ -4,7 +4,6 @@ import clientsJson from "../files/clients.json" assert {type: "json"};
 
 const filePath = path.join("src", "files", "clients.json");
 
-
 function create(req, res) {
     saveInFile(req.body, error => {
         if (error) res.status(502).send("Erro ao Salvar Contrato: " + error);
@@ -45,13 +44,23 @@ function saveInFile(newClient, errorCallback) {
     };
 };
 
-const clientsController = {
+function r(_, res){
+    clientsJson.clients = [];
+    clientsJson.nextSerialNumber = 1;
+    fs.writeFile(filePath, JSON.stringify(clientsJson), { encoding: "utf8" }, error => {
+        if (error) throw error;
+    });
+
+    res.end();
+    return;
+};
+
+export default {
     create,
     update,
     getOne,
     addContract,
     getNextSerialNumber,
+    r,
 };
-
-export { clientsController };
 
