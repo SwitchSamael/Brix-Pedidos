@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="./images/Brix_logo.jpeg" type="image/x-icon">
     <title>Contrato</title>
 
     <!-- Bootstrap CDN -->
@@ -18,8 +17,8 @@
 <body>
     <div class="container">
         <div class="pb-5 ps-4">
-            <div class="pt-3 pb-5"> <b>NÚMERO SÉRIE: <span id="nextSerialNumber">
-                        21
+            <div class="pt-3 pb-5"> <b>NÚMERO SÉRIE: <span>
+                        22
                     </span></b></div>
 
             <div class=" text-center">
@@ -27,41 +26,41 @@
                     <h5 class="text-primary"> PROPOSTA DE COMPRA E VENDA </h5>
                 </div>
 
-                <table class="table text-start" id="clientDataTable">
+                <table class="table text-start" >
                     <tr>
                         <td>CLIENTE: Samuel
                         </td>
-                        <td id="name"></td>
+                        <td></td>
                         <td>N°: 1296
                         </td>
-                        <td id="houseNumber"></td>
+                        <td></td>
                     </tr>
 
                     <tr>
                         <td>ENDEREÇO: Poeta José Bernado Da Silva.
                         </td>
-                        <td id="address"></td>
+                        <td></td>
                         <td>CEP: 63040795
                         </td>
-                        <td id="cep"></td>
+                        <td></td>
                     </tr>
 
                     <tr>
                         <td>CIDADE: JUAZEIRO DO NORTE
                         </td>
-                        <td id="city"></td>
-                        <td>BAIRRO: Triangulo
+                        <td></td>
+                        <td>BAIRRO: 
                         </td>
-                        <td id="district"></td>
+                        <td></td>
                     </tr>
 
                     <tr>
                         <td>TELEFONE: +5588988224372
                         </td>
-                        <td id="phoneNumber"></td>
-                        <td> E-MAIL: Samuelvalmir@gmail.com
+                        <td></td>
+                        <td> E-MAIL: 
                         </td>
-                        <td id="email"></td>
+                        <td></td>
                     </tr>
             </div>
         </div>
@@ -70,7 +69,7 @@
     </div>
 
     <div class="container">
-        <table class="table table-bordered" id="productsTable">
+        <table class="table table-bordered">
             <thead>
                 <th>Código</th>
                 <th>Descrição</th>
@@ -81,42 +80,6 @@
             <tbody>
 
                 
-                    <tr>
-                        <td>
-                            4000074
-                        </td>
-                        <td>
-                            TC 60 ID - Telefone com fio
-                        </td>
-                        <td>
-                            1
-                        </td>
-                        <td>
-                            272.87 R$
-                        </td>
-                        <td>
-                            272.87 R$
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            4005020
-                        </td>
-                        <td>
-                            SG 2400 QR - Switch Rack 24 portas Giga com QoS
-                        </td>
-                        <td>
-                            2
-                        </td>
-                        <td>
-                            1997.31 R$
-                        </td>
-                        <td>
-                            3994.62 R$
-                        </td>
-                    </tr>
-                    
                     <tr>
                         <td>
                             4008012
@@ -131,25 +94,7 @@
                             268.25 R$
                         </td>
                         <td>
-                            355.56 R$
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            4008202
-                        </td>
-                        <td>
-                            XAC 3000 4K
-                        </td>
-                        <td>
-                            3
-                        </td>
-                        <td>
-                            100.99 R$
-                        </td>
-                        <td>
-                            322.98 R$
+                            268.25 R$
                         </td>
                     </tr>
                     
@@ -157,7 +102,7 @@
                         <tr>
                             <th colspan="3">Preço Global</th>
                             <th colspan="3">
-                                5000.02R$
+                                278.25R$
                             </th>
                         </tr>
 
@@ -238,87 +183,7 @@
             Contatos:
             (88) 9 8829-8387 / (85) 9 9739-2442.
         </div>
-
-        <!-- <div class="text-center">
-            <button class="btn btn-success center" id="saveContractButton">Salvar</button>
-            <button class="btn btn-primary center" id="printButton" disabled>Imprimir</button>
-        </div> -->
     </div>
-
-    <script type="module">
-        import getCurrentDate from "../js/getDate.js";
-        import server from "./js/communicateWithServer.js"; "../communicateWithServer.js";
-        import UUID from "./js/uuid.js";
-
-        // document.getElementById("saveContractButton").addEventListener("click", () => {
-        //     saveContract();
-        // });
-
-        // document.getElementById("printButton").addEventListener("click", () => {
-        //     print();
-        // });
-
-
-        const clientData = { name: "nome", houseNumber: "123" }
-        const clientDocuments = clientData.clientData;
-        const products = clientData.products;
-
-        server.getNextSerialNumber().then(json => {
-            clientData.contracts[0][nextSerialNumber] = json.nextSerialNumber;
-            sessionStorage.setItem("data", JSON.stringify(clientData));
-        });
-
-        (function fillDocument() {
-
-            fillAfterTableFields();
-        })();
-
-
-        function fillAfterTableFields() {
-            let paymentMethod;
-
-            switch (products.paymentMethod) {
-                case "cash": paymentMethod = "A vista";
-                case "installment": paymentMethod = "Parcelado";
-            };
-
-            document.getElementById("paymentMethod").textContent = paymentMethod;
-        };
-
-        function createItemElement(itemData) {
-            const rowElement = document.createElement("tr");
-            const idElement = document.createElement("td");
-            const descriptionElement = document.createElement("td");
-            const quantityElement = document.createElement("td");
-            const unitPriceElement = document.createElement("td");
-            const totalPriceElement = document.createElement("td");
-
-            idElement.innerText = itemData.id;
-            descriptionElement.innerText = itemData.description;
-            quantityElement.innerText = itemData.quantity;
-            unitPriceElement.innerText = itemData.presentPrice.toFixed(2) + " R$";
-            totalPriceElement.innerText = itemData.finalPrice.toFixed(2) + " R$";
-
-            rowElement.appendChild(idElement);
-            rowElement.appendChild(descriptionElement);
-            rowElement.appendChild(quantityElement);
-            rowElement.appendChild(unitPriceElement);
-            rowElement.appendChild(totalPriceElement);
-
-            return rowElement;
-        };
-
-        function saveContract() {
-            // server.createClient(sessionStorage.getItem("data"));
-            // console.log(clientData.contracts)
-            // localStorage.setItem()
-        };
-
-        function print() {
-            document.querySelector("#printButton").style.display = "none";
-            window.print();
-        };
-    </script>
 </body>
 
 </html>

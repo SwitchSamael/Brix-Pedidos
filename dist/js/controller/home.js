@@ -189,7 +189,7 @@ export default class Home {
         this.currentClient = client;
         server.createClient(JSON.stringify(client));
 
-        let generatedContractModal = new bootstrap.Modal("#generatedContractModal")
+        let generatedContractModal = new bootstrap.Modal("#generatedContractModal");
         generatedContractModal.show();
 
     };
